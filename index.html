@@ -64,6 +64,15 @@
   --measure: 38rem;   /* readable line length */
   --gutter:  1.25rem;
   --radius:  4px;
+
+  /* ---- hero ----
+     --hero-h is deliberately over 100vh: the last chunk of the photo sits below
+     the fold, which is what gives you something to scroll into. --boat-top is
+     where the illustration floats, as a share of the viewport — nudge it until
+     the hull sits on the waterline of whatever photo you end up using. */
+  --hero-h:    134svh;
+  --boat-top:  100svh;
+  --hero-focus: 50% 42%;   /* background-position: keep the water low in frame */
 }
 
 @media (prefers-color-scheme: dark) {
@@ -88,13 +97,23 @@ a { color: inherit; }
 .wrap { max-width: var(--measure); margin: 0 auto; padding: 0 var(--gutter); }
 .wide { max-width: 60rem; margin: 0 auto; padding: 0 var(--gutter); }
 
-/* ---- menu ---- */
+/* ---- menu ----
+   Fixed rather than sticky so the hero photo starts at the very top of the page
+   and runs underneath it. Over the photo the bar is invisible and the links go
+   white; .nav--solid is added by script once you've scrolled past the hero. */
 nav {
-  position: sticky; top: 0; z-index: 10;
+  position: fixed; top: 0; left: 0; right: 0; z-index: 10;
   background: color-mix(in srgb, var(--bg) 88%, transparent);
   backdrop-filter: blur(8px);
   border-bottom: 1px solid var(--line);
+  transition: background .3s ease, border-color .3s ease;
 }
+nav.nav--over {
+  background: transparent; backdrop-filter: none; border-bottom-color: transparent;
+}
+nav.nav--over a { color: rgba(255,255,255,.82); text-shadow: 0 1px 12px rgba(0,0,0,.45); }
+nav.nav--over a:hover, nav.nav--over a.here { color: #fff; }
+nav.nav--over .cta { color: #fff; font-weight: 600; }
 nav ul {
   display: flex; gap: 1.5rem; margin: 0; padding: .9rem var(--gutter);
   list-style: none; overflow-x: auto; scrollbar-width: none;
@@ -105,11 +124,110 @@ nav a { text-decoration: none; color: var(--muted); white-space: nowrap; }
 nav a:hover, nav a.here { color: var(--fg); }
 nav .cta { color: var(--cta); font-weight: 600; }
 
-/* ---- hero ---- */
-header.hero { text-align: center; padding: 5rem var(--gutter) 3.5rem; }
-header.hero h1 { font-size: clamp(2.5rem, 9vw, 4.5rem); margin: 0 0 1rem; }
-header.hero .when { font-size: 1.125rem; margin: 0; }
-header.hero .where { color: var(--muted); margin: .35rem 0 2rem; }
+/* ---- hero ----
+   One tall block: the photo fills it edge to edge, the words sit centred in the
+   first viewport, and the boat waits just under the fold. Script writes --sail
+   (0 at the top of the page, 1 once the hero has fully scrolled past) and
+   everything below reads off it. */
+header.hero {
+  --sail: 0;
+  position: relative; overflow: hidden; isolation: isolate;
+  height: 134vh; height: var(--hero-h);
+  color: #fff; text-align: center;
+}
+
+/* Gradient underneath is a stand-in: if images/hero.jpg is missing you get a
+   Karoo-ish sky rather than a broken box. */
+.hero__photo {
+  position: absolute; inset: 0; z-index: -2;
+  background:
+    image-set(url('images/hero.jpg') 1x) var(--hero-focus) / cover no-repeat,
+    linear-gradient(#a9c4d4 0%, #cdd8d5 42%, #8fa08a 52%, #7d8f92 100%);
+}
+/* Top scrim for the nav, bottom one so the white linework never lands on glare. */
+.hero__scrim {
+  position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background:
+    linear-gradient(to bottom, rgba(20,26,30,.42), rgba(20,26,30,0) 34%),
+    linear-gradient(to top,    rgba(20,26,30,.30), rgba(20,26,30,0) 40%);
+}
+
+.hero__copy {
+  position: absolute; inset-inline: 0; top: 0;
+  height: 100vh; height: 100svh;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 0 var(--gutter);
+  text-shadow: 0 2px 24px rgba(0,0,0,.4);
+  /* Fades out as you scroll into the water, so the drawing gets the stage. */
+  opacity: clamp(0, calc(1 - var(--sail) * 2.4), 1);
+  will-change: opacity;
+}
+/* Order is eyebrow → names → place → date → button. All of it stays #fff:
+   hierarchy comes from size and letter-spacing, not from fading anything out,
+   because the photo behind is already low-contrast at the horizon. */
+.hero__eyebrow {
+  font-size: clamp(.8125rem, 2.2vw, 1rem); margin: 0 0 1rem;
+  letter-spacing: .18em; text-transform: uppercase; color: #fff;
+  /* Stops "yet" stranding on its own line on narrow screens. */
+  text-wrap: balance; max-width: 24ch;
+}
+.hero__copy h1 { font-size: clamp(2.75rem, 11vw, 6rem); margin: 0 0 1.25rem; letter-spacing: -.01em; color: #fff; }
+.hero__copy .where { font-size: 1.125rem; margin: 0; letter-spacing: .04em; color: #fff; }
+.hero__copy .when  { font-size: 1.125rem; margin: .35rem 0 2rem; letter-spacing: .04em; color: #fff; }
+.hero__copy .btn { background: color-mix(in srgb, var(--cta) 92%, #000); box-shadow: 0 6px 28px rgba(0,0,0,.28); }
+
+/* Scroll cue, gone the moment you take the hint. */
+.hero__cue {
+  position: absolute; inset-inline: 0; top: calc(100svh - 3.25rem); z-index: 1;
+  font-size: .6875rem; letter-spacing: .18em; text-transform: uppercase;
+  opacity: clamp(0, calc(1 - var(--sail) * 6), .8);
+  text-shadow: 0 2px 16px rgba(0,0,0,.5);
+}
+.hero__cue span { display: block; font-size: 1rem; letter-spacing: 0; animation: nudge 2.4s ease-in-out infinite; }
+@keyframes nudge { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(5px); } }
+
+/* ---- the boat ---- */
+.hero__scene {
+  --sail-span: 44vw;   /* how far it travels, left edge of the trip to right */
+  position: absolute; inset-inline: 0; top: var(--boat-top);
+  display: flex; justify-content: center;
+  /* Sails left to right across the water as the hero scrolls past. */
+  transform: translate3d(calc(var(--sail) * var(--sail-span) - var(--sail-span) / 2), 0, 0);
+  will-change: transform;
+}
+/* Every path inherits these — the drawing is nothing but white outline. */
+.hero__scene svg {
+  width: min(34rem, 68vw); height: auto; overflow: visible;
+  fill: none; stroke: #fff; stroke-width: 3.2;
+  stroke-linecap: round; stroke-linejoin: round;
+  filter: drop-shadow(0 2px 10px rgba(0,0,0,.35));
+}
+
+#hull      { animation: bob 5s ease-in-out infinite; transform-origin: 300px 210px; }
+#oar       { animation: row 5s ease-in-out infinite; transform-origin: 428px 190px; }
+#wake path { animation: drift 6s linear infinite; }
+#wake path:nth-child(2) { animation-duration: 8s;   animation-delay: -2s; }
+#wake path:nth-child(3) { animation-duration: 7s;   animation-delay: -4s; }
+#birds     { animation: bob 7s ease-in-out infinite; transform-origin: 300px 40px; }
+
+@keyframes bob   { 0%, 100% { transform: translateY(0) rotate(-1.6deg); }
+                   50%      { transform: translateY(-7px) rotate(1.6deg); } }
+@keyframes row   { 0%, 100% { transform: rotate(-9deg); }
+                   50%      { transform: rotate(7deg); } }
+@keyframes drift { from { transform: translateX(0); opacity: .75; }
+                   50%  { opacity: .35; }
+                   to   { transform: translateX(-46px); opacity: .75; } }
+
+/* On a phone there is no room to sail: bigger boat, shorter crossing. */
+@media (max-width: 40rem) {
+  .hero__scene { --sail-span: 22vw; }
+  .hero__scene svg { width: 82vw; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #hull, #oar, #wake path, #birds, .hero__cue span { animation: none; }
+  .hero__scene { transform: none; }
+}
 
 .btn {
   display: inline-block; padding: .8rem 2rem; border-radius: var(--radius);
@@ -193,11 +311,75 @@ footer { text-align: center; padding: 2.5rem var(--gutter) 4rem; color: var(--mu
   </ul>
 </nav>
 
-<header class="hero">
-  <h1>Affy &amp; Gabby</h1>
-  <p class="when">14&ndash;20 March 2027</p>
-  <p class="where">Cape Town &amp; the Little Karoo &middot; South Africa</p>
-  <a class="btn" href="/rsvp">RSVP</a>
+<header class="hero" id="hero">
+  <div class="hero__photo"></div>
+  <div class="hero__scrim"></div>
+
+  <div class="hero__copy">
+    <p class="hero__eyebrow">Join us for our biggest adventure yet</p>
+    <h1>Gabby &amp; Affy</h1>
+    <p class="where">South Africa</p>
+    <p class="when">March 2027</p>
+    <a class="btn" href="/rsvp">RSVP</a>
+  </div>
+
+  <p class="hero__cue">Scroll<span aria-hidden="true">&darr;</span></p>
+
+  <!-- The two of us, out on the water. Pure outline, no fills: the photo shows
+       through it. Stroke colour and weight are set once in .hero__scene svg. -->
+  <div class="hero__scene" aria-hidden="true">
+    <svg viewBox="0 0 600 320" xmlns="http://www.w3.org/2000/svg" role="img"
+         aria-label="Line drawing of Affy and Gabby in a rowing boat">
+
+      <g id="birds">
+        <path d="M96 54q10-10 20 0q10-10 20 0"/>
+        <path d="M160 30q7-7 14 0q7-7 14 0"/>
+      </g>
+
+      <g id="wake">
+        <path d="M20 254q22-10 44 0t44 0t44 0t44 0t44 0t44 0t44 0t44 0t44 0t44 0t44 0t44 0"/>
+        <path d="M-10 274q22-10 44 0t44 0t44 0t44 0t44 0t44 0t44 0t44 0t44 0t44 0t44 0t44 0"/>
+        <path d="M40 292q22-10 44 0t44 0t44 0t44 0t44 0t44 0t44 0t44 0t44 0t44 0t44 0t44 0"/>
+      </g>
+
+      <g id="hull">
+        <!-- boat -->
+        <path d="M168 196h264q-28 48-132 48T168 196z"/>
+        <path d="M184 208q116 20 232 0"/>
+        <path d="M118 240q16-8 32 0"/>
+        <path d="M450 240q16-8 32 0"/>
+
+        <!-- Gabby: fringe, long hair over the shoulders, far arm up, waving -->
+        <g id="gabby">
+          <circle cx="262" cy="124" r="16"/>
+          <path d="M248 116q6-10 14-10t14 10"/>
+          <path d="M255 132q7 6 14 0"/>
+          <path d="M246 116q-16 26-9 50"/>
+          <path d="M278 116q16 26 9 50"/>
+          <path d="M262 140v12"/>
+          <path d="M234 196q2-34 12-42q16-10 32 0q10 8 12 42"/>
+          <path d="M242 158q-18-4-20-26"/>
+        </g>
+
+        <!-- Affy: cap, beard, doing all the rowing -->
+        <g id="affy">
+          <circle cx="352" cy="126" r="16"/>
+          <path d="M338 118q4-16 14-16t14 16"/>
+          <path d="M339 119q-12 1-15 5q7 4 14 2"/>
+          <path d="M337 130q15 20 30 0"/>
+          <path d="M352 142v10"/>
+          <path d="M324 196q2-34 12-42q16-10 32 0q10 8 12 42"/>
+          <path d="M376 162q12 4 14 12"/>
+        </g>
+
+        <!-- One oar, out over the water on his side -->
+        <g id="oar">
+          <path d="M386 176l110 30"/>
+          <path d="M496 206q22-9 37 3q-13 15-37 5z"/>
+        </g>
+      </g>
+    </svg>
+  </div>
 </header>
 
 <div class="timeline" id="timeline">
@@ -410,6 +592,30 @@ footer { text-align: center; padding: 2.5rem var(--gutter) 4rem; color: var(--mu
 </footer>
 
 <script>
+// ---- hero ----
+// One number does all of it: --sail runs 0 → 1 over the stretch of hero that
+// sits below the fold. The boat sails, the words fade, the nav goes solid.
+(() => {
+  const hero = document.getElementById('hero');
+  const nav  = document.querySelector('nav');
+  let queued = false;
+
+  function update() {
+    queued = false;
+    const r = hero.getBoundingClientRect();
+    const range = r.height - window.innerHeight;
+    const sail = range > 0 ? Math.min(Math.max(-r.top / range, 0), 1) : 1;
+    hero.style.setProperty('--sail', sail.toFixed(4));
+    nav.classList.toggle('nav--over', r.bottom > 80);
+  }
+
+  addEventListener('scroll', () => {
+    if (!queued) { queued = true; requestAnimationFrame(update); }
+  }, { passive: true });
+  addEventListener('resize', update);
+  update();
+})();
+
 // Highlight the section you're currently in.
 const links = [...document.querySelectorAll('nav a[href^="#"]')];
 const seen = new Map();
