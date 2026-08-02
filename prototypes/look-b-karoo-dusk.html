@@ -1,0 +1,533 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Look B — Karoo Dusk · Gabby &amp; Affy</title>
+<meta name="robots" content="noindex">
+
+<!--
+  LOOK B — "KAROO DUSK". Same assets, inverted.
+
+  The page alternates on purpose:
+
+    dark   hero, timeline, story + photos, RSVP     — the feeling
+    linen  the three events, what to wear, FAQs     — the reading
+
+  Everything a guest has to actually absorb (times, places, what to pack)
+  stays on linen at full contrast. Everything that only has to land
+  emotionally runs on the near-black Karoo ground, where the flower cut-outs
+  and the photos glow instead of sitting flat.
+
+  Only one couple photo exists (images/photos/orangerie.jpg). The rest of the
+  strip is marked placeholder.
+-->
+
+<link rel="preload" href="../fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
+
+<style>
+@font-face {
+  font-family: 'Fraunces';
+  src: url('../fonts/fraunces-var.woff2') format('woff2-variations'),
+       url('../fonts/fraunces-var.woff2') format('woff2');
+  font-weight: 100 900; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Inter';
+  src: url('../fonts/inter-var.woff2') format('woff2-variations'),
+       url('../fonts/inter-var.woff2') format('woff2');
+  font-weight: 100 900; font-style: normal; font-display: swap;
+}
+
+:root {
+  --linen:     #f4efe6;
+  --linen-lit: #fbf8f2;
+  --bark:      #3a2e24;
+  --bark-soft: #6e6055;
+  --gold:      #c99a3f;      /* lifted from #b0802c: the brand gold goes muddy on black */
+  --gold-ink:  #b0802c;      /* the brand value, kept for use on linen */
+  --oxblood:   #8d2c34;      /* likewise lifted */
+
+  /* The dusk ground. Green-black rather than neutral black, so the hero photo's
+     scrub and the flower stems belong to it. */
+  --dusk:      #1c2117;
+  --dusk-2:    #232a1d;      /* one step up, for cards on dark */
+  --dusk-fg:   #e9e3d5;
+  --dusk-mute: #a8a08d;
+  --dusk-line: #3a4232;
+
+  --bg:      var(--linen);
+  --surface: var(--linen-lit);
+  --fg:      var(--bark);
+  --muted:   var(--bark-soft);
+  --line:    #e2d8c9;
+  --accent:  var(--gold-ink);
+
+  --ev-picnic:  #a4626d;
+  --ev-holud:   #c4571a;
+  --ev-wedding: #6e1f27;
+
+  --cta: #6d8a5e; --cta-fg: #12160e;   /* on dark the green button has to come up, not down */
+
+  --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
+  --font-body:    'Inter', system-ui, -apple-system, sans-serif;
+
+  --measure: 38rem;
+  --gutter: 1.25rem;
+  --radius: 4px;
+
+  --hero-h: 132svh;
+  --boat-top: 104svh;
+  --hero-focus: 50% 44%;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 6.5rem; color-scheme: dark light; }
+body {
+  margin: 0; background: var(--dusk); color: var(--fg);
+  font: 1rem/1.65 var(--font-body); font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+}
+h1, h2, h3 { font-family: var(--font-display); font-weight: 400; line-height: 1.15; }
+a { color: inherit; }
+
+.wrap { max-width: var(--measure); margin: 0 auto; padding: 0 var(--gutter); }
+.wide { max-width: 62rem; margin: 0 auto; padding: 0 var(--gutter); }
+
+/* ---- nav: dark by default here, since most of what it floats over is dark ---- */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 10;
+  background: color-mix(in srgb, var(--dusk) 86%, transparent);
+  backdrop-filter: blur(10px); border-bottom: 1px solid var(--dusk-line);
+  transition: background .3s ease, border-color .3s ease;
+}
+nav.nav--over {
+  background: linear-gradient(to bottom, rgba(8,10,7,.5), rgba(8,10,7,0));
+  backdrop-filter: none; border-bottom-color: transparent;
+}
+nav > ul.wide {
+  display: flex; justify-content: center; flex-wrap: wrap;
+  gap: .75rem 2rem; margin: 0; padding: 1.75rem var(--gutter); list-style: none;
+  font-size: .8125rem; letter-spacing: .1em; text-transform: uppercase;
+}
+nav a { text-decoration: none; color: var(--dusk-mute); white-space: nowrap; }
+nav a:hover, nav a.here { color: var(--dusk-fg); }
+nav .cta { color: var(--gold); font-weight: 600; }
+
+/* ---- hero ----
+   Darker and moodier than the live site: the extra scrim plus a touch of
+   saturation is what turns first light into dusk without a second photo. */
+header.hero {
+  --sail: 0;
+  position: relative; overflow: hidden; isolation: isolate;
+  height: var(--hero-h); color: var(--dusk-fg); text-align: center;
+}
+.hero__photo {
+  position: absolute; inset: 0; z-index: -2;
+  background:
+    image-set(url('../images/hero.jpg') 1x) var(--hero-focus) / cover no-repeat,
+    linear-gradient(#3d4a52 0%, #55605c 42%, #3f4a3c 52%, #262e2a 100%);
+  filter: saturate(.82) brightness(.72) contrast(1.06);
+}
+/* Two scrims and a warm one: the top holds the nav, the bottom hands off to the
+   dusk ground below, and the warm wash pulls the whole photo towards sundown. */
+.hero__scrim {
+  position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background:
+    linear-gradient(to bottom, rgba(8,10,7,.55), rgba(8,10,7,.15) 34%, rgba(8,10,7,0) 55%),
+    linear-gradient(to top,    var(--dusk) 2%, rgba(28,33,23,.55) 22%, rgba(28,33,23,0) 55%),
+    radial-gradient(120% 70% at 50% 18%, rgba(201,154,63,.16), transparent 60%);
+}
+.hero__copy {
+  position: absolute; inset-inline: 0; top: 0; height: 100svh;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 0 var(--gutter);
+  opacity: clamp(0, calc(1 - var(--sail) * 2.4), 1);
+  will-change: opacity;
+}
+.hero__eyebrow {
+  margin: 0 0 2rem; font-size: clamp(.6875rem, 1.4vw, .8125rem);
+  letter-spacing: .3em; text-transform: uppercase;
+  color: var(--gold); text-wrap: balance; max-width: 30ch;
+}
+/* Names stacked with a gold ampersand doing the work, rather than one long
+   italic line. Upright Fraunces, wide-tracked — reads as engraved. */
+.hero__names {
+  margin: 0; font-size: clamp(2.75rem, 10vw, 6rem);
+  letter-spacing: .01em; color: #fff; line-height: 1.02;
+  text-shadow: 0 2px 30px rgba(0,0,0,.5);
+}
+.hero__names .amp {
+  display: block; font-size: .42em; color: var(--gold);
+  font-style: italic; margin: .1em 0; text-shadow: none;
+}
+/* One centred line, hairline-ruled top and bottom. */
+.hero__meta {
+  margin-top: 2.5rem; padding: .85rem 0;
+  border-block: 1px solid color-mix(in srgb, var(--gold) 45%, transparent);
+  display: flex; gap: 1.25rem; align-items: baseline; flex-wrap: wrap; justify-content: center;
+  font-size: clamp(.8125rem, 1.8vw, .9375rem);
+  letter-spacing: .16em; text-transform: uppercase; color: var(--dusk-fg);
+}
+.hero__meta [lang="bn"] { letter-spacing: 0; text-transform: none; font-size: 1.15em; color: var(--gold); }
+.hero__meta i { font-style: normal; color: color-mix(in srgb, var(--gold) 60%, transparent); }
+
+/* ---- boat: gold outline instead of white, so it belongs to the dusk ---- */
+.hero__scene {
+  --sail-span: 36vw; --sail-rise: 20svh;
+  position: absolute; inset-inline: 0; top: var(--boat-top);
+  display: flex; justify-content: center;
+  transform: translate3d(
+    calc(var(--sail) * var(--sail-span) - var(--sail-span) / 2),
+    calc((1 - var(--sail)) * var(--sail-rise)), 0);
+  will-change: transform;
+}
+.hero__scene svg {
+  width: min(38rem, 70vw); height: auto; overflow: visible;
+  fill: none; stroke: #f0dcb0; stroke-width: 2.9;
+  stroke-linecap: round; stroke-linejoin: round;
+  filter: drop-shadow(0 0 14px rgba(201,154,63,.35)) drop-shadow(0 2px 8px rgba(0,0,0,.5));
+}
+#hull { animation: bob 5s ease-in-out infinite; transform-origin: 300px 210px; }
+#oar  { animation: row 5s ease-in-out infinite; transform-origin: 428px 190px; }
+#wake path { animation: drift 6s linear infinite; }
+#wake path:nth-child(2) { animation-duration: 8s; animation-delay: -2s; }
+#wake path:nth-child(3) { animation-duration: 7s; animation-delay: -4s; }
+#birds { animation: bob 7s ease-in-out infinite; transform-origin: 300px 40px; }
+@keyframes bob   { 0%,100% { transform: translateY(0) rotate(-1.6deg); } 50% { transform: translateY(-7px) rotate(1.6deg); } }
+@keyframes row   { 0%,100% { transform: rotate(-9deg); } 50% { transform: rotate(7deg); } }
+@keyframes drift { from { transform: translateX(0); opacity:.75; } 50% { opacity:.35; } to { transform: translateX(-46px); opacity:.75; } }
+@media (max-width: 40rem) { .hero__scene { --sail-span: 16vw; } .hero__scene svg { width: 80vw; } }
+@media (prefers-reduced-motion: reduce) {
+  #hull, #oar, #wake path, #birds { animation: none; }
+  .hero__scene { transform: translate3d(0,0,0); }
+}
+
+.btn {
+  display: inline-block; padding: .85rem 2.25rem; border-radius: var(--radius);
+  background: var(--cta); color: var(--cta-fg);
+  text-decoration: none; font-weight: 700; letter-spacing: .06em;
+  text-transform: uppercase; font-size: .8125rem;
+}
+.btn:hover { filter: brightness(1.08); }
+
+/* ---- dark / light blocks ---- */
+.dark  { background: var(--dusk); color: var(--dusk-fg); }
+.dark h2, .dark h3 { color: #fff; }
+.dark .kicker { color: var(--gold); }
+.dark p { color: color-mix(in srgb, var(--dusk-fg) 84%, transparent); }
+.light { background: var(--bg); color: var(--fg); }
+
+/* ---- timeline, on dark ----
+   The cut-outs were photographed on dark to begin with, so this is the ground
+   they were made for. Warm glow rather than a grey drop shadow. */
+.timeline { padding: 4rem 0; border-block: 1px solid var(--dusk-line); }
+.track { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+.stop { text-align: center; }
+.bloom {
+  display: block; width: 5.25rem; height: 5.25rem; margin: 0 auto 1.1rem;
+  background: var(--stem) center / contain no-repeat;
+  filter: drop-shadow(0 0 18px color-mix(in srgb, var(--event) 55%, transparent));
+}
+.stop--picnic  { --stem: url('../images/flowers/picnic.webp');  --event: var(--ev-picnic); }
+.stop--holud   { --stem: url('../images/flowers/holud.webp');   --event: var(--ev-holud); }
+.stop--wedding { --stem: url('../images/flowers/wedding.webp'); --event: var(--ev-wedding); }
+.stop .place {
+  margin: 0; font-size: .6875rem; letter-spacing: .18em; text-transform: uppercase;
+  color: var(--gold); font-weight: 600;
+}
+.stop .name { font-family: var(--font-display); font-size: 1.45rem; color: #fff; margin: .3rem 0 .25rem; }
+.stop .day  { margin: 0; font-size: .8125rem; color: var(--dusk-mute); }
+@media (max-width: 40rem) {
+  .bloom { width: 3.5rem; height: 3.5rem; }
+  .stop .name { font-size: 1.0625rem; }
+}
+
+/* ---- story + photo strip, on dark ---- */
+.story { padding: 5rem 0; }
+.story__grid { display: grid; gap: 3rem; grid-template-columns: 1fr 1fr; align-items: center; }
+.story h2 { font-size: clamp(2rem, 5vw, 3rem); margin: 0 0 1rem; }
+/* Photos on dark want a thin warm edge, like a slide in a projector tray. */
+.strip { display: grid; grid-template-columns: 1fr 1fr; gap: .85rem; grid-template-rows: repeat(8, 3.1rem); }
+.strip figure {
+  margin: 0; overflow: hidden; border-radius: 2px;
+  border: 1px solid color-mix(in srgb, var(--gold) 30%, transparent);
+  box-shadow: 0 12px 40px rgba(0,0,0,.45);
+}
+.strip img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.strip .t1 { grid-column: 1; grid-row: 1 / 5; }
+.strip .t2 { grid-column: 2; grid-row: 1 / 4; }
+.strip .t3 { grid-column: 2; grid-row: 4 / 9; }
+.strip .t4 { grid-column: 1; grid-row: 5 / 9; }
+.strip .empty {
+  display: grid; place-items: center; text-align: center; padding: .5rem;
+  border-style: dashed; box-shadow: none; background: rgba(255,255,255,.03);
+  font-size: .625rem; letter-spacing: .12em; text-transform: uppercase; color: var(--dusk-mute);
+}
+@media (max-width: 52rem) {
+  .story__grid { grid-template-columns: 1fr; gap: 2.5rem; }
+  .strip { grid-template-rows: repeat(8, 4.2rem); }
+}
+
+/* ---- sections on linen: the practical half of the page ---- */
+section.light { padding: 4.5rem 0; border-bottom: 1px solid var(--line); }
+section h2 { font-size: clamp(1.75rem, 5vw, 2.375rem); margin: 0 0 .35rem; }
+section .kicker {
+  font-size: .75rem; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--event, var(--accent)); margin: 0 0 .5rem;
+}
+#picnic  { --event: var(--ev-picnic); }
+#holud   { --event: var(--ev-holud); }
+#wedding { --event: var(--ev-wedding); }
+#picnic h2, #holud h2, #wedding h2 { color: var(--event); }
+/* Each event carries a full-height bar in its own colour down the left edge —
+   the register that the tinted backgrounds used to carry. */
+#picnic .wrap, #holud .wrap, #wedding .wrap {
+  border-left: 3px solid var(--event); padding-left: 1.5rem;
+  max-width: calc(var(--measure) + 1.5rem);
+}
+section p { margin: 0 0 1rem; }
+.lede { font-size: 1.0625rem; color: var(--muted); margin-bottom: 2rem; }
+.note { font-size: .9375rem; color: var(--muted); border-left: 2px solid var(--event, var(--accent)); padding-left: .9rem; margin-top: 1.5rem; }
+dl.facts { display: grid; grid-template-columns: auto 1fr; gap: .5rem 1.25rem; margin: 0 0 1.5rem; }
+dl.facts dt { color: var(--muted); font-size: .875rem; }
+dl.facts dd { margin: 0; }
+.cards { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 1.25rem; }
+.card h3 { margin: 0 0 .5rem; font-size: 1.125rem; }
+.card p:last-child { margin-bottom: 0; }
+
+section.rsvp { text-align: center; padding: 5.5rem 0; border: 0; }
+section.rsvp h2 { font-size: clamp(2rem, 6vw, 3rem); }
+section.rsvp .lede { color: var(--dusk-mute); }
+footer { text-align: center; padding: 2.5rem var(--gutter) 4rem; color: var(--dusk-mute); font-size: .875rem; background: var(--dusk); }
+</style>
+</head>
+<body>
+<div id="top"></div>
+
+<nav>
+  <ul class="wide">
+    <li><a href="#top">Home</a></li>
+    <li><a href="#story">Our story</a></li>
+    <li><a href="#picnic">Picnic</a></li>
+    <li><a href="#holud">Holud</a></li>
+    <li><a href="#wedding">Wedding</a></li>
+    <li><a href="/rsvp" class="cta">RSVP</a></li>
+  </ul>
+</nav>
+
+<header class="hero" id="hero">
+  <div class="hero__photo"></div>
+  <div class="hero__scrim"></div>
+
+  <div class="hero__copy">
+    <p class="hero__eyebrow">Join us for our biggest adventure yet</p>
+    <h1 class="hero__names">Gabby<span class="amp">&amp;</span>Affy</h1>
+    <div class="hero__meta">
+      <span>South Africa</span><i>&middot;</i>
+      <span lang="bn">আমাদের বিয়ে</span><i>&middot;</i>
+      <span>March 2027</span>
+    </div>
+  </div>
+
+  <div class="hero__scene" aria-hidden="true">
+    <svg viewBox="0 0 600 320" xmlns="http://www.w3.org/2000/svg" role="img"
+         aria-label="Line drawing of Affy and Gabby in a rowing boat">
+      <g id="birds">
+        <path d="M96 54q10-10 20 0q10-10 20 0"/>
+        <path d="M160 30q7-7 14 0q7-7 14 0"/>
+      </g>
+      <g id="wake">
+        <path d="M20 254q22-10 44 0t44 0t44 0t44 0t44 0t44 0t44 0t44 0t44 0t44 0t44 0t44 0"/>
+        <path d="M-10 274q22-10 44 0t44 0t44 0t44 0t44 0t44 0t44 0t44 0t44 0t44 0t44 0t44 0"/>
+        <path d="M40 292q22-10 44 0t44 0t44 0t44 0t44 0t44 0t44 0t44 0t44 0t44 0t44 0t44 0"/>
+      </g>
+      <g id="hull">
+        <path d="M168 196h264q-28 48-132 48T168 196z"/>
+        <path d="M184 208q116 20 232 0"/>
+        <path d="M118 240q16-8 32 0"/>
+        <path d="M450 240q16-8 32 0"/>
+        <g id="gabby">
+          <circle cx="256" cy="118" r="20"/>
+          <path d="M241 106q6-11 15-11t15 11"/>
+          <path d="M256 98v8"/>
+          <path d="M247 115q3-4 6 0"/>
+          <path d="M259 115q3-4 6 0"/>
+          <path d="M248 126q8 8 16 0"/>
+          <circle cx="241" cy="134" r="3.5"/>
+          <path d="M253 99q-21 3-23 25q-1 14-7 26q-5 11 1 21q3 6 10 7"/>
+          <path d="M259 99q21 3 23 25q2 15 9 28q5 11-1 22q-3 6-10 7"/>
+          <path d="M256 138v10"/>
+          <path d="M230 196q2-32 12-40q14-10 28 0q10 8 12 40"/>
+          <path d="M240 154l-22-24"/>
+          <path d="M218 130l-2-8"/>
+          <path d="M218 130l-7-4"/>
+          <path d="M218 130l-8 3"/>
+        </g>
+        <g id="affy">
+          <circle cx="354" cy="120" r="20"/>
+          <path d="M334 112q4-24 20-24t20 24"/>
+          <path d="M334 112q-16 1-20 7q9 6 18 3"/>
+          <path d="M336 118q-6 4-2 9"/>
+          <path d="M374 116q8 2 6 10q-2 6-8 5"/>
+          <path d="M373 129q7 3 4 10"/>
+          <path d="M344 122q3-4 6 0"/>
+          <path d="M358 122q3-4 6 0"/>
+          <path d="M345 132q9 5 18 0"/>
+          <path d="M336 124q2 26 18 28q16-2 18-28"/>
+          <path d="M354 152v6"/>
+          <path d="M328 196q2-32 12-40q14-10 28 0q10 8 12 40"/>
+          <path d="M374 164q12 4 18 14"/>
+        </g>
+        <g id="oar">
+          <path d="M392 178l104 28"/>
+          <path d="M496 206q22-9 37 3q-13 15-37 5z"/>
+        </g>
+      </g>
+    </svg>
+  </div>
+</header>
+
+<div class="timeline dark" id="timeline">
+  <div class="wide">
+    <div class="track">
+      <div class="stop stop--picnic">
+        <span class="bloom"></span>
+        <p class="place">Cape Town</p>
+        <p class="name">Welcome picnic</p>
+        <p class="day">Sunday, 14 March 2027</p>
+      </div>
+      <div class="stop stop--holud">
+        <span class="bloom"></span>
+        <p class="place">Cape Town</p>
+        <p class="name">The Holud</p>
+        <p class="day">Tuesday, 16 March 2027</p>
+      </div>
+      <div class="stop stop--wedding">
+        <span class="bloom"></span>
+        <p class="place">Oudtshoorn</p>
+        <p class="name">The Wedding</p>
+        <p class="day">Saturday, 20 March 2027</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<main>
+
+<section class="story dark" id="story">
+  <div class="wide story__grid">
+    <div>
+      <p class="kicker">How we got here</p>
+      <h2>Our story</h2>
+      <p>The short version, for people who are about to fly a long way for us:
+        an accidental meeting, a first real date that ran long, some years of
+        going places together, and then a question with an obvious answer.</p>
+      <p>Full wording still to settle — there's a draft in
+        <code>prototype-1-timeline.html</code>.</p>
+    </div>
+    <div class="strip">
+      <figure class="t1"><img src="../images/photos/orangerie.jpg" alt="Affy and Gabby at the Musée de l'Orangerie"></figure>
+      <figure class="t2 empty">Photo 2<br>needed</figure>
+      <figure class="t3 empty">Photo 3<br>needed</figure>
+      <figure class="t4 empty">Photo 4<br>needed</figure>
+    </div>
+  </div>
+</section>
+
+<section class="light" id="picnic">
+  <div class="wrap">
+    <p class="kicker">Sunday &middot; An adda under the mountain</p>
+    <h2>Welcome picnic</h2>
+    <dl class="facts">
+      <dt>When</dt><dd>Sun 14 March, 15h00 &ndash; 19h00</dd>
+      <dt>Where</dt><dd>Kirstenbosch Botanical Gardens, Cape Town</dd>
+      <dt>Dress</dt><dd>Picnic florals</dd>
+    </dl>
+    <p>An <em>adda</em> is a Bengali tradition, essentially the art of hanging out.
+      Think long, easy, unstructured conversation with good people, unhurried chats
+      that go wherever they go.</p>
+    <p class="note">We'll hand out your Holud outfit here, so do come to this one if you can.</p>
+  </div>
+</section>
+
+<section class="light" id="holud">
+  <div class="wrap">
+    <p class="kicker">Tuesday &middot; Gilded and ungovernable</p>
+    <h2>Holud</h2>
+    <dl class="facts">
+      <dt>When</dt><dd>Tue 16 March, 15h00 &ndash; 21h00</dd>
+      <dt>Where</dt><dd>Norval Foundation gardens, Cape Town</dd>
+      <dt>Dress</dt><dd>We're providing your outfit</dd>
+    </dl>
+    <p>People come to the holud (which actually means yellow but also means turmeric)
+      wearing really colourful clothes. If you're boring and bland don't worry we've
+      got you covered for this fun event only.</p>
+  </div>
+</section>
+
+<section class="light" id="wedding">
+  <div class="wrap">
+    <p class="kicker">Saturday &middot; A wild dream at the edge of the world</p>
+    <h2>The wedding</h2>
+    <dl class="facts">
+      <dt>When</dt><dd>Sat 20 March 2027, from 15h00</dd>
+      <dt>Where</dt><dd>Buffelsdrift Game Lodge, Oudtshoorn</dd>
+      <dt>Dress</dt><dd>Earthy and natural</dd>
+    </dl>
+    <p>Following the beautiful Route 62, there will be coaches picking us up from
+      Cape Town, and all guests will travel about six hours into the wilderness of
+      the Karoo.</p>
+  </div>
+</section>
+
+<section class="light" id="wear">
+  <div class="wrap">
+    <p class="kicker">Practical</p>
+    <h2>What to wear</h2>
+    <p class="lede">Three events, three answers, one suitcase.</p>
+    <div class="cards">
+      <div class="card"><h3>Welcome picnic</h3><p><strong>Picnic florals.</strong> Easy and summery, on grass.</p></div>
+      <div class="card"><h3>Holud</h3><p><strong>Gold and bright.</strong> We're providing the outfit.</p></div>
+      <div class="card"><h3>Wedding</h3><p><strong>Earthy and natural.</strong> Grass and gravel underfoot.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="rsvp dark">
+  <div class="wrap">
+    <h2>Will you come?</h2>
+    <p class="lede">Let us know by <strong>31 August 2026</strong>.</p>
+    <a class="btn" href="/rsvp">RSVP</a>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <p>Affy &amp; Gabby &middot; 20 March 2027</p>
+  <p><em>Prototype: Look B — Karoo Dusk. Not the live site.</em></p>
+</footer>
+
+<script>
+(() => {
+  const hero = document.getElementById('hero');
+  const nav  = document.querySelector('nav');
+  let queued = false;
+  function update() {
+    queued = false;
+    const r = hero.getBoundingClientRect();
+    const range = r.height - window.innerHeight;
+    const sail = range > 0 ? Math.min(Math.max(-r.top / range, 0), 1) : 1;
+    hero.style.setProperty('--sail', sail.toFixed(4));
+    nav.classList.toggle('nav--over', r.bottom > 80);
+  }
+  addEventListener('scroll', () => { if (!queued) { queued = true; requestAnimationFrame(update); } }, { passive: true });
+  addEventListener('resize', update);
+  update();
+})();
+</script>
+</body>
+</html>

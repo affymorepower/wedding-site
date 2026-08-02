@@ -385,6 +385,22 @@ dl.facts dd { margin: 0; }
 details { border-bottom: 1px solid var(--line); padding: .9rem 0; }
 details summary { cursor: pointer; font-weight: 600; }
 details p { margin: .75rem 0 0; color: var(--muted); }
+details strong { color: var(--fg); }
+
+/* ---- rate tables ----
+   The wrapper scrolls, not the page: a wide table must never make the whole
+   document scroll sideways on a phone. */
+.table-scroll { overflow-x: auto; margin: 1rem 0 0; }
+table.rates { border-collapse: collapse; width: 100%; min-width: 21rem; font-size: .9375rem; }
+table.rates th, table.rates td { text-align: left; padding: .5rem .75rem .5rem 0; border-bottom: 1px solid var(--line); }
+table.rates th {
+  font-size: .6875rem; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--muted); font-weight: 600;
+}
+table.rates td:not(:first-child) { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+table.rates th:not(:first-child) { text-align: right; }
+table.rates .hint { display: block; font-size: .8125rem; color: var(--muted); }
+.fineprint { font-size: .8125rem; color: var(--muted); margin-top: 1rem; }
 
 .todo {
   display: inline-block; font-size: .6875rem; letter-spacing: .08em;
@@ -690,8 +706,32 @@ footer { text-align: center; padding: 2.5rem var(--gutter) 4rem; color: var(--mu
       <p><span class="todo">Answer needed.</span> People book flights around this one, so
         it should be near the top and unambiguous.</p></details>
     <details><summary>What about the safari?</summary>
-      <p><span class="todo">Answer needed</span>. Which options, what they cost,
-        and that spots are limited so the RSVP is how you claim one.</p></details>
+      <p><strong>Staying at Buffelsdrift?</strong> Your wedding package includes one
+        activity, and you choose: a bush safari or the elephant experience. Not both, and
+        not automatically a game drive, so tell us which one you'd like on the
+        <a href="/rsvp">RSVP</a>. Any extra activities are at a reduced rate for guests
+        staying over &mdash; <span class="todo">discount TBC</span>.</p>
+      <p><strong>Staying elsewhere?</strong> You can still do any of these as a day visit,
+        at the lodge's own prices:</p>
+      <div class="table-scroll">
+        <table class="rates">
+          <thead><tr><th>Activity</th><th>Adult</th><th>Child 4&ndash;12</th></tr></thead>
+          <tbody>
+            <tr><td>Bush safari</td><td>R870</td><td>R435</td></tr>
+            <tr><td>Night drive</td><td>R870</td><td>R435</td></tr>
+            <tr><td>Lion feeding</td><td>R870</td><td>R435</td></tr>
+            <tr><td>Meerkat safari <span class="hint">8 yrs and up</span></td><td>R1 030</td><td>R515</td></tr>
+            <tr><td>Elephant experience</td><td>R590</td><td>R295</td></tr>
+            <tr><td>Elephant observation</td><td>R1 135</td><td>R565</td></tr>
+            <tr><td>Cheetah experience <span class="hint">12 yrs and up, min 2 people</span></td><td>R1 665</td><td>&mdash;</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="fineprint">Under 3s go free. Prices exclude Buffelsdrift's mandatory
+        conservation fee and can change without notice &mdash; these are their published
+        rates for October 2026 to September 2027. We'll be running the drives across
+        several days because everyone can't go at once, so we'll tell you your slot
+        nearer the time rather than asking you to pick now.</p></details>
     <details><summary>Are you doing gifts or a registry?</summary>
       <p><span class="todo">Answer needed.</span> Saying nothing reads as awkward rather
         than as "no gifts, honestly".</p></details>

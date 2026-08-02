@@ -189,7 +189,20 @@ a.back { color:var(--muted); font-size:.875rem; }
 <script>
 // TODO: replace with the real safari options once confirmed with the operator.
 // Spots are limited, so these need to match what can actually be booked.
-const SAFARI_OPTIONS = ['Morning game drive (price TBC)', 'Sunset game drive (price TBC)', 'Not interested'];
+// Buffelsdrift's activity list. Prices deliberately NOT baked into these strings —
+// they live once, in the rate table on the site, so a price change is a one-place edit
+// and Airtable doesn't fill with stale amounts inside option names.
+// The first two are the pair an in-house guest can take as their included activity.
+const SAFARI_OPTIONS = [
+  'Bush safari',
+  'Elephant experience',
+  'Night drive',
+  'Lion feeding',
+  'Meerkat safari',
+  'Elephant observation',
+  'Cheetah experience',
+  'Not interested',
+];
 const SIZES = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'Not sure, measure me'];
 // Pink for the girls, green for the boys, as the Holud section on the site says.
 // These strings are the Airtable "Holud outfit" select options: change them here and
@@ -232,7 +245,9 @@ function guestBlock(i) {
       <label for="g${i}diet">Dietary requirements <span class="hint">(allergies too)</span></label>
       <input id="g${i}diet" data-field="dietary">
 
-      <label for="g${i}safari">Safari <span class="hint">(you'd book and pay your own; spots are limited)</span></label>
+      <label for="g${i}safari">Game activity
+        <span class="hint">staying at Buffelsdrift? one is included, and it's bush safari
+        or elephant experience. Anything else is a paid extra, prices on the site</span></label>
       <select id="g${i}safari" data-field="safari"><option value="">Choose…</option>${opts(SAFARI_OPTIONS)}</select>
     </fieldset>`;
 }
