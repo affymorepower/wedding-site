@@ -75,8 +75,10 @@ to Holud attendees, and read off sizes without touching linked records.
 
 1. Create a base with a table called `RSVPs`
 2. Add these fields, exactly as named. **Airtable's API is case-sensitive** — `Party Name`
-   is a different field from `Party name`, and a mismatch is dropped silently rather than
-   erroring.
+   is a different field from `Party name`. A mismatch returns `422 UNKNOWN_FIELD_NAME` and
+   the whole write is rejected, so a wrong name fails loudly and atomically rather than
+   half-saving. (Select *values* behave differently: `typecast: true` creates a missing
+   option instead of erroring, so a typo there shows up as a duplicate choice in the base.)
 
    | Field | Type | Level |
    |---|---|---|

@@ -90,8 +90,10 @@ without touching linked records.
 | Email / Phone / Song request / Message | — | party |
 
 Exact field names and setup steps are in [README.md](README.md). Airtable's API is
-case-sensitive and `typecast: true` means a mismatched name is dropped **silently** —
-you'd get a row with blanks and no error.
+case-sensitive; a wrong field name returns `422 UNKNOWN_FIELD_NAME` and rejects the entire
+write, so mismatches fail loudly rather than half-saving. Select *values* are the looser
+case — `typecast: true` creates a missing option rather than erroring, so a typo there
+becomes a duplicate choice in the base.
 
 ## Travel
 
