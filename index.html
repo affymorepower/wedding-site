@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Affy &amp; Gabby — 20 March 2027</title>
-<meta name="description" content="Affy &amp; Gabby are getting married in the Little Karoo, 18–20 March 2027.">
+<meta name="description" content="Affy &amp; Gabby are getting married in the Little Karoo, 14–20 March 2027.">
 <meta name="robots" content="noindex">
 
 <!--
@@ -17,7 +17,32 @@
   Content marked [TBC] is placeholder and needs Affy/Gabby to fill in.
 -->
 
+<link rel="preload" href="fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
+
 <style>
+/* ---- fonts ----
+   Self-hosted variable fonts, subset to Latin. Fraunces for display, Inter for
+   body. Both keep their wght and opsz axes, so font-optical-sizing works and any
+   weight in 100–900 is available without loading another file.
+   Licences: fonts/OFL-Fraunces.txt, fonts/OFL-Inter.txt (SIL Open Font License). */
+@font-face {
+  font-family: 'Fraunces';
+  src: url('fonts/fraunces-var.woff2') format('woff2-variations'),
+       url('fonts/fraunces-var.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Inter';
+  src: url('fonts/inter-var.woff2') format('woff2-variations'),
+       url('fonts/inter-var.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   /* ---- theme tokens: this is the block you replace ---- */
   --bg:        #faf8f5;
@@ -28,8 +53,8 @@
   --accent:    #8a6f4e;
   --accent-fg: #ffffff;
 
-  --font-display: Georgia, 'Times New Roman', serif;
-  --font-body:    system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
+  --font-body:    'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
 
   --measure: 38rem;   /* readable line length */
   --gutter:  1.25rem;
@@ -48,6 +73,7 @@ html { scroll-behavior: smooth; scroll-padding-top: 4.5rem; }
 body {
   margin: 0; background: var(--bg); color: var(--fg);
   font: 1rem/1.65 var(--font-body);
+  font-optical-sizing: auto;
   -webkit-font-smoothing: antialiased;
 }
 h1, h2, h3 { font-family: var(--font-display); font-weight: 400; line-height: 1.15; }
@@ -113,6 +139,10 @@ section .kicker {
 }
 section p { margin: 0 0 1rem; }
 .lede { font-size: 1.0625rem; color: var(--muted); margin-bottom: 2rem; }
+.note {
+  font-size: .9375rem; color: var(--muted);
+  border-left: 2px solid var(--accent); padding-left: .9rem; margin-top: 1.5rem;
+}
 
 dl.facts { display: grid; grid-template-columns: auto 1fr; gap: .5rem 1.25rem; margin: 0 0 1.5rem; }
 dl.facts dt { color: var(--muted); font-size: .875rem; }
@@ -145,7 +175,7 @@ footer { text-align: center; padding: 2.5rem var(--gutter) 4rem; color: var(--mu
 
 <nav>
   <ul class="wide">
-    <li><a href="#timeline">The weekend</a></li>
+    <li><a href="#timeline">The week</a></li>
     <li><a href="#story">Our story</a></li>
     <li><a href="#picnic">Picnic</a></li>
     <li><a href="#holud">Holud</a></li>
@@ -159,8 +189,8 @@ footer { text-align: center; padding: 2.5rem var(--gutter) 4rem; color: var(--mu
 
 <header class="hero">
   <h1>Affy &amp; Gabby</h1>
-  <p class="when">18&ndash;20 March 2027</p>
-  <p class="where">Oudtshoorn, Little Karoo &middot; South Africa <span class="todo">venue TBC</span></p>
+  <p class="when">14&ndash;20 March 2027</p>
+  <p class="where">Cape Town &amp; the Little Karoo &middot; South Africa</p>
   <a class="btn" href="/rsvp">RSVP</a>
 </header>
 
@@ -168,19 +198,19 @@ footer { text-align: center; padding: 2.5rem var(--gutter) 4rem; color: var(--mu
   <div class="wide">
     <div class="track">
       <div class="stop">
-        <p class="day">Thu 18 <span class="todo">TBC</span></p>
+        <p class="day">Sun 14 March</p>
         <p class="name">Welcome picnic</p>
-        <p class="sub">Arrive, eat, say hello</p>
+        <p class="sub">Kirstenbosch, Cape Town</p>
       </div>
       <div class="stop">
-        <p class="day">Fri 19 <span class="todo">TBC</span></p>
+        <p class="day">Tue 16 March</p>
         <p class="name">Holud</p>
-        <p class="sub">Turmeric, colour, noise</p>
+        <p class="sub">Norval Foundation, Cape Town</p>
       </div>
       <div class="stop">
         <p class="day">Sat 20 March</p>
         <p class="name">Wedding</p>
-        <p class="sub">The main event</p>
+        <p class="sub">Buffelsdrift, Oudtshoorn</p>
       </div>
     </div>
   </div>
@@ -202,26 +232,31 @@ footer { text-align: center; padding: 2.5rem var(--gutter) 4rem; color: var(--mu
 
 <section id="picnic">
   <div class="wrap">
-    <p class="kicker">Thursday</p>
+    <p class="kicker">Sunday &middot; An adda under the mountain</p>
     <h2>Welcome picnic</h2>
     <dl class="facts">
-      <dt>When</dt><dd>Thu 18 March, time <span class="todo">TBC</span></dd>
-      <dt>Where</dt><dd><span class="todo">TBC</span></dd>
-      <dt>Dress</dt><dd>Relaxed &mdash; <a href="#wear">see what to wear</a></dd>
+      <dt>When</dt><dd>Sun 14 March, 15h00 &ndash; 19h00</dd>
+      <dt>Where</dt><dd>Kirstenbosch Botanical Gardens, Cape Town</dd>
+      <dt>Dress</dt><dd>Picnic florals &mdash; <a href="#wear">see what to wear</a></dd>
     </dl>
-    <p><span class="todo">Content needed</span> &mdash; what it is, who it's for, whether
-      it's everyone or just the people who've travelled in early.</p>
+    <p>An <em>adda</em> is a Bengali tradition &mdash; essentially the art of hanging out.
+      Think long, easy, unstructured conversation with good people, unhurried chats that go
+      wherever they go.</p>
+    <p>That's exactly the spirit we want to start the week with. Join us for a mountain-side
+      picnic, meet each other, swap some stories, play some games and stay for as long as
+      you like.</p>
+    <p class="note">We'll hand out your Holud outfit here, so do come to this one if you can.</p>
   </div>
 </section>
 
 <section id="holud">
   <div class="wrap">
-    <p class="kicker">Friday</p>
+    <p class="kicker">Tuesday &middot; Gilded and ungovernable</p>
     <h2>Holud</h2>
     <dl class="facts">
-      <dt>When</dt><dd>Fri 19 March, time <span class="todo">TBC</span></dd>
-      <dt>Where</dt><dd><span class="todo">TBC</span></dd>
-      <dt>Dress</dt><dd>We're sorting your outfit &mdash; <a href="/rsvp">give us your size</a></dd>
+      <dt>When</dt><dd>Tue 16 March, 15h00 &ndash; 21h00</dd>
+      <dt>Where</dt><dd>Norval Foundation gardens, Cape Town</dd>
+      <dt>Dress</dt><dd>We're providing your outfit &mdash; <a href="/rsvp">give us your size</a></dd>
     </dl>
 
     <h3>What actually happens</h3>
@@ -230,18 +265,20 @@ footer { text-align: center; padding: 2.5rem var(--gutter) 4rem; color: var(--mu
       honest questions are: what is it, what happens to me, am I going to get turmeric on
       my clothes, and how long does it last. Answer those four plainly and people will
       turn up relaxed instead of anxious.</p>
-    <p>Because you're providing outfits, the RSVP asks for a clothing size per person.</p>
+    <p>We're providing traditional Bengali wear for everyone &mdash; kurtas and saris.
+      Accessories should be gold and bright. We'll hand the outfits out at the welcome
+      picnic on the 14th, so the RSVP asks for a size per person.</p>
   </div>
 </section>
 
 <section id="wedding">
   <div class="wrap">
-    <p class="kicker">Saturday</p>
+    <p class="kicker">Saturday &middot; A wild dream at the edge of the world</p>
     <h2>The wedding</h2>
     <dl class="facts">
-      <dt>When</dt><dd>Sat 20 March 2027, time <span class="todo">TBC</span></dd>
-      <dt>Where</dt><dd><span class="todo">TBC</span></dd>
-      <dt>Dress</dt><dd><a href="#wear">See what to wear</a></dd>
+      <dt>When</dt><dd>Sat 20 March 2027, from 15h00</dd>
+      <dt>Where</dt><dd>Buffelsdrift Game Lodge, Oudtshoorn</dd>
+      <dt>Dress</dt><dd>Earthy and natural &mdash; <a href="#wear">see what to wear</a></dd>
     </dl>
     <p><span class="todo">Content needed</span> &mdash; ceremony, dinner, dancing, carriages at.</p>
   </div>
@@ -251,8 +288,14 @@ footer { text-align: center; padding: 2.5rem var(--gutter) 4rem; color: var(--mu
   <div class="wrap">
     <p class="kicker">Logistics</p>
     <h2>Getting there &amp; staying</h2>
-    <p class="lede">Oudtshoorn is about four to five hours from Cape Town. There are two
-      good ways to do it and one of them is free.</p>
+    <p class="lede">The week happens in two places. The picnic and the Holud are both in
+      Cape Town; the wedding is in Oudtshoorn, about four to five hours inland. There are
+      two good ways to make that drive and one of them is free.</p>
+
+    <p><span class="todo">Content needed</span> &mdash; the gap between the Holud on the
+      16th and the wedding on the 20th needs a plain answer: whether people stay in Cape
+      Town and travel over on the Friday or Saturday, or head to the Karoo earlier and
+      make a few days of it.</p>
 
     <div class="cards">
       <div class="card">
@@ -282,23 +325,26 @@ footer { text-align: center; padding: 2.5rem var(--gutter) 4rem; color: var(--mu
   <div class="wrap">
     <p class="kicker">Practical</p>
     <h2>What to wear</h2>
-    <p class="lede">Three events, three answers, one suitcase. March in the Karoo is hot
-      and dry in the day and cools off sharply at night.</p>
+    <p class="lede">Three events, three answers, one suitcase. Cape Town in March is warm
+      and windy; the Karoo is hot and dry in the day and cools off sharply at night.</p>
 
     <div class="cards">
       <div class="card">
         <h3>Welcome picnic</h3>
-        <p><span class="todo">TBC</span> &mdash; relaxed. Say something about shoes and grass.</p>
+        <p><strong>Picnic florals.</strong> Easy and summery. It's a garden, on grass, so
+          bring shoes that agree with that.</p>
       </div>
       <div class="card">
         <h3>Holud</h3>
-        <p>We're providing outfits. <span class="todo">TBC</span> &mdash; explain what
-          they'll get and warn them the turmeric stains.</p>
+        <p><strong>Gold and bright.</strong> We're providing the outfit &mdash; a kurta or
+          a sari &mdash; and handing them out at the picnic. Bring accessories in gold and
+          bright colours. <span class="todo">TBC</span> &mdash; warn them the turmeric stains.</p>
       </div>
       <div class="card">
         <h3>Wedding</h3>
-        <p><span class="todo">TBC</span> &mdash; the actual dress code, plus a note on
-          heels if any of it is on grass or gravel.</p>
+        <p><strong>Earthy, natural, elemental.</strong> Please avoid bright colours where
+          you can. It's a game lodge, so some of the evening will be on grass and gravel
+          &mdash; worth thinking about heels.</p>
       </div>
     </div>
   </div>
@@ -328,7 +374,7 @@ footer { text-align: center; padding: 2.5rem var(--gutter) 4rem; color: var(--mu
         the coach.</p></details>
     <details><summary>Who do we ask if something goes wrong?</summary>
       <p><span class="todo">Answer needed</span> &mdash; a name and a number for the
-        weekend itself.</p></details>
+        week itself.</p></details>
   </div>
 </section>
 

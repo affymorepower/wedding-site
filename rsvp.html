@@ -17,12 +17,33 @@
   [TBC] markers = options that need real values from Affy/Gabby.
 -->
 
+<link rel="preload" href="fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
+
 <style>
+/* ---- fonts: keep in sync with index.html ---- */
+@font-face {
+  font-family: 'Fraunces';
+  src: url('fonts/fraunces-var.woff2') format('woff2-variations'),
+       url('fonts/fraunces-var.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Inter';
+  src: url('fonts/inter-var.woff2') format('woff2-variations'),
+       url('fonts/inter-var.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --bg:#faf8f5; --surface:#fffdfa; --fg:#23201c; --muted:#6b645c;
   --line:#e0d9cf; --accent:#8a6f4e; --accent-fg:#fff; --error:#a8342a;
-  --font-display: Georgia, 'Times New Roman', serif;
-  --font-body: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
+  --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --measure: 34rem; --gutter: 1.25rem; --radius: 4px;
 }
 @media (prefers-color-scheme: dark) {
@@ -32,7 +53,8 @@
 *, *::before, *::after { box-sizing: border-box; }
 body {
   margin:0; background:var(--bg); color:var(--fg);
-  font:1rem/1.6 var(--font-body); -webkit-font-smoothing:antialiased;
+  font:1rem/1.6 var(--font-body); font-optical-sizing:auto;
+  -webkit-font-smoothing:antialiased;
 }
 .wrap { max-width:var(--measure); margin:0 auto; padding:3rem var(--gutter) 5rem; }
 h1 { font-family:var(--font-display); font-weight:400; font-size:2.25rem; margin:0 0 .35rem; }
@@ -93,8 +115,8 @@ a.back { color:var(--muted); font-size:.875rem; }
 
   <form id="rsvp">
     <h1>RSVP</h1>
-    <p class="lede">Three events over three days. Tell us which ones you're up for.
-      Please reply by <span class="todo">date TBC</span>.</p>
+    <p class="lede">Three events over a week &mdash; two in Cape Town, one in the Karoo.
+      Tell us which ones you're up for. Please reply by <span class="todo">date TBC</span>.</p>
 
     <h2>Who's replying</h2>
     <label for="partyName">Your name <span class="hint">— or family name, if you're answering for everyone</span></label>
@@ -192,12 +214,12 @@ function guestBlock(i) {
 
       <label>Which events?</label>
       <div class="checks">
-        <label><input type="checkbox" data-field="picnic" checked> Welcome picnic — Thu 18</label>
-        <label><input type="checkbox" data-field="holud"  checked> Holud — Fri 19</label>
-        <label><input type="checkbox" data-field="wedding" checked> Wedding — Sat 20</label>
+        <label><input type="checkbox" data-field="picnic" checked> Welcome picnic — Sun 14, Cape Town</label>
+        <label><input type="checkbox" data-field="holud"  checked> Holud — Tue 16, Cape Town</label>
+        <label><input type="checkbox" data-field="wedding" checked> Wedding — Sat 20, Oudtshoorn</label>
       </div>
 
-      <label for="g${i}size">Holud outfit size <span class="hint">— we're providing these</span></label>
+      <label for="g${i}size">Holud outfit size <span class="hint">— we're providing these, handed out at the picnic</span></label>
       <select id="g${i}size" data-field="size"><option value="">Choose…</option>${opts(SIZES)}</select>
 
       <label for="g${i}diet">Dietary requirements <span class="hint">— allergies too</span></label>

@@ -1,6 +1,6 @@
 # Wedding Website — Plan
 
-*Last updated: 2026-08-02. Affy & Gabby, 18–20 March 2027, Oudtshoorn, Little Karoo.*
+*Last updated: 2026-08-02. Affy & Gabby, 14–20 March 2027, Cape Town and the Little Karoo.*
 
 ## The shape of it
 
@@ -14,14 +14,24 @@ Two surfaces, different jobs:
 Keep logistics off Instagram. Stories vanish, captions get buried, and someone will
 screenshot the wrong date. Instagram links to the site; the site never depends on Instagram.
 
-## The weekend
+## The week
 
-| Day | Event | Notes |
-|---|---|---|
-| Thu 18 Mar | Welcome picnic | [TBC] who it's for — everyone, or early arrivals |
-| Fri 19 Mar | Holud | Outfits provided by us → RSVP collects sizes per person |
-| Sat 20 Mar | Wedding | The main event |
-| — | Safari | Optional, guests pay their own way, **spots limited** → needs capacity tracking and coordination with the operator |
+Not a weekend — a week, in two cities about four to five hours apart.
+
+| Day | Event | Where | Notes |
+|---|---|---|---|
+| Sun 14 Mar | Welcome picnic, 15h00–19h00 | Kirstenbosch, Cape Town | Theme: *an adda under the mountain*. Dress: picnic florals. **Holud outfits are handed out here** |
+| Tue 16 Mar | Holud, 15h00–21h00 | Norval Foundation gardens, Cape Town | Theme: *gilded and ungovernable*. Outfits provided by us → RSVP collects sizes per person; accessories gold and bright |
+| Sat 20 Mar | Wedding, from 15h00 | Buffelsdrift Game Lodge, Oudtshoorn | Theme: *a wild dream at the edge of the world*. Dress: earthy, natural, elemental — no bright colours |
+| — | Safari | Oudtshoorn | Optional, guests pay their own way, **spots limited** → needs capacity tracking and coordination with the operator |
+
+**The 17th–19th is an unanswered gap.** Guests are in Cape Town on the Tuesday and need to
+be in Oudtshoorn on the Saturday. Whether they stay put and travel over on the Friday, or
+head inland earlier and make a few days of it, changes the coach booking, the
+accommodation options and how many nights people book flights around.
+
+**Outfit distribution depends on picnic attendance.** Anyone who skips the 14th has no
+route to a Holud outfit yet. Worth a fallback before launch.
 
 ## Live
 
