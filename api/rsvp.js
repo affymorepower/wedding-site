@@ -11,7 +11,7 @@
 // The Airtable token MUST stay server-side. Never move this into the page.
 // Set in Vercel → Project → Settings → Environment Variables:
 //   AIRTABLE_TOKEN    personal access token, data.records:write on the base
-//   AIRTABLE_BASE_ID  appCPqCVlHqL1sr2T
+//   AIRTABLE_BASE_ID  the app… id from the base URL
 //   AIRTABLE_TABLE    table name or id, defaults to "RSVPs"
 
 const MAX_GUESTS = 10;

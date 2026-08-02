@@ -13,3 +13,6 @@ node_modules/
 *.docx
 *.doc
 .~lock.*#
+
+# Planning doc — budget figures, kept out of the public repo
+website-plan.md

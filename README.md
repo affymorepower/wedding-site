@@ -10,7 +10,9 @@ Three events, spread over a week and split across two cities:
 | Tue 16 Mar | Holud | Norval Foundation gardens, Cape Town |
 | Sat 20 Mar | Wedding | Buffelsdrift Game Lodge, Oudtshoorn |
 
-The plan, the reasoning and the open questions live in [website-plan.md](website-plan.md). Read that first.
+The plan, the reasoning and the open questions live in `website-plan.md`, which is kept
+out of this repo — it holds budget figures. Affy and Gabby have it locally; ask if you
+need it.
 
 ## What's here
 
@@ -21,7 +23,7 @@ api/rsvp.js         serverless function: form → Airtable, one row per guest
 vercel.json         cleanUrls, so /rsvp works without the .html
 game/index.html     the save-the-date platformer, unchanged
 prototypes/         early explorations (timeline, chat) — reference only, not deployed
-website-plan.md     the plan
+# website-plan.md is deliberately not in this repo (budget figures)
 ```
 
 **Styling is a skeleton.** Every colour, font and spacing value is a token in the `:root`
