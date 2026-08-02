@@ -107,9 +107,15 @@ to Holud attendees, and read off sizes without touching linked records.
    | Song request | Single line text | party |
    | Message | Long text | party |
 
-   The two "TBC" selects need real options before launch. Their values live at the top of
-   the `<script>` block in `rsvp.html` (`SAFARI_OPTIONS`) and in the accommodation
-   `<select>` — the strings there must match the Airtable choices exactly.
+   **The single-select fields were created with no options on purpose.** `typecast: true`
+   makes Airtable add a missing option on first write, so the choice lists fill themselves
+   in as RSVPs arrive — you never hand-type them twice and they can't drift out of sync.
+   The trade-off is that a typo in the code becomes a new option rather than an error, so
+   the source of truth is the form: `SAFARI_OPTIONS`, `SIZES` and `OUTFITS` at the top of
+   the `<script>` block in `rsvp.html`, plus the accommodation `<select>`.
+
+   The safari and accommodation options are still `[TBC]` placeholders and need real
+   values before launch.
 
 3. Create a personal access token at [airtable.com/create/tokens](https://airtable.com/create/tokens) with the `data.records:write` scope on that base
 4. In Vercel → Project → Settings → Environment Variables, add:
