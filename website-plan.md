@@ -1,6 +1,6 @@
 # Wedding Website — Plan
 
-*Last updated: 2026-08-02. Affy & Gabby, 20 March 2027.*
+*Last updated: 2026-08-02. Affy & Gabby, 18–20 March 2027, Oudtshoorn, Little Karoo.*
 
 ## The shape of it
 
@@ -8,122 +8,138 @@ Two surfaces, different jobs:
 
 | Surface | Job | Update frequency |
 |---|---|---|
-| **Website** | RSVP + logistics. The thing guests are *sent to* once and return to for details. Source of truth. | Rarely, after launch |
-| **Instagram** | Ongoing engagement — countdown, venue teasers, story-so-far, day-of hashtag | Weekly-ish |
+| **Website** | RSVP + logistics. Source of truth. | Rarely, after launch |
+| **Instagram** | Ongoing engagement — countdown, venue teasers, story-so-far | Weekly-ish |
 
-Keep logistics off Instagram. Stories vanish, captions get buried, and Aunty will screenshot the wrong date. Instagram links to the site; the site never depends on Instagram.
+Keep logistics off Instagram. Stories vanish, captions get buried, and someone will
+screenshot the wrong date. Instagram links to the site; the site never depends on Instagram.
+
+## The weekend
+
+| Day | Event | Notes |
+|---|---|---|
+| Thu 18 Mar | Welcome picnic | [TBC] who it's for — everyone, or early arrivals |
+| Fri 19 Mar | Holud | Outfits provided by us → RSVP collects sizes per person |
+| Sat 20 Mar | Wedding | The main event |
+| — | Safari | Optional, guests pay their own way, **spots limited** → needs capacity tracking and coordination with the operator |
+
+## Live
+
+- **Site:** https://affyandgabby.vercel.app
+- **Repo:** https://github.com/affymorepower/wedding-site (private)
+- **Airtable base:** `appCPqCVlHqL1sr2T`
 
 ## Stack
 
-- **Host:** Vercel — free tier, git-connected, auto-deploy on push
+- **Host:** Vercel, free tier, git-connected, auto-deploy on push
 - **Backend:** Airtable, written via a Vercel Serverless Function (`/api/rsvp`)
-- **Frontend:** plain HTML/CSS/JS to start — no build step, same as the existing game. Add a framework only if the theme demands it.
+- **Frontend:** plain HTML/CSS/JS, no build step
 - **Repo:** private GitHub, Affy + Gabby as collaborators
 
-### Why Vercel (you asked for a better idea — there isn't a materially better one)
+The load-bearing reason for Vercel isn't Vercel — it's that an Airtable token in
+client-side JavaScript is public, so the host must be able to run a function. That rules
+out GitHub Pages. Netlify and Cloudflare Pages are equivalent; Vercel wins on per-branch
+preview URLs, which matter when two people are building.
 
-The load-bearing reason isn't Vercel specifically, it's that **you need a server-side hop.** An Airtable API key in client-side JavaScript is public — anyone can view-source it and read or wipe your guest list. So the host must be able to run a small function. That rules out GitHub Pages.
+**Airtable must be a personal account, not the Okra one.** Gabby has no access to Okra's
+workspace and shouldn't, guest phone numbers don't belong in a company account, and if
+that account rotates the guest list goes with it.
 
-Vercel, Netlify, and Cloudflare Pages are all equivalent for this. Vercel edges ahead on one thing that actually matters for two people building together: **every branch gets its own preview URL**, so Gabby can look at your change on her phone before it goes live. Pick Vercel, stop deliberating.
+## Structure
 
-**The one alternative worth a thought:** skip the custom form and embed an Airtable form directly. Faster, zero backend, zero API key. You lose styling control and get Airtable branding on the free tier. Since you're about to send me theme inspiration, you clearly care about the look — so custom form it is.
-
-### ⚠️ Which Airtable account
-
-The Airtable connected to this workspace is the **Okra work account**. Do not put the wedding base there:
-
-- Gabby has no access to Okra's workspace, and shouldn't
-- Guest phone numbers, dietary and medical-adjacent info in a company account is the wrong side of the personal/work line
-- If you ever leave or rotate that account, the guest list goes with it
-
-Create a **free personal Airtable account** (or use Gabby's) and build the base there. One free base handles 1,000 records — far more than a wedding needs.
-
-## Data model — first draft
-
-Single `RSVPs` table is enough. One row per invited party, not per person.
-
-| Field | Type | Notes |
-|---|---|---|
-| Party name | Text | "Hannan Family", "Jess & Tom" |
-| Attending | Single select | Yes / No / Maybe |
-| Headcount | Number | Confirmed attendees in the party |
-| Guest names | Long text | Everyone attending, for place cards |
-| Email | Email | Primary contact |
-| Phone | Phone | For day-of WhatsApp group |
-| Dietary requirements | Long text | Feeds into the braai buffet menu |
-| Bus from Cape Town | Single select | Yes / No / Not sure — **capacity planning, see below** |
-| Accommodation | Single select | Booking own / Need help / Not staying over |
-| Song request | Text | |
-| Message | Long text | |
-| Submitted at | Created time | Auto |
-
-**The bus field earns its place.** Prior research in this folder puts a Cape Town → Buffelsdrift coach charter at roughly R90k–150k return for 120 pax. Coach count is a step function — you need the yes/no split early, and you need it to firm up over time, not on one final deadline. Consider a "confirm your seat" nudge closer to the date rather than trusting a March 2026 answer.
-
-### Guest-list-gated vs open form
-
-Two options, real trade-off:
-
-- **Open form** — anyone with the link can RSVP. Simple to build. Vulnerable to bots and to your cousin adding four people you didn't invite.
-- **Gated** — pre-load the guest list in Airtable; guest enters their name or a code, sees their invite, confirms. Controls plus-ones properly and blocks spam by construction. Maybe an extra half-day of work.
-
-For a wedding with a coach charter and a fixed-cost buffet, **gated is worth it** — plus-one drift costs real money. If you go open, at minimum add a honeypot field and a rate limit.
-
-## Repo & how you two work together
+Single scroll, plus a separate RSVP page:
 
 ```
-wedding-site/
-  index.html          # landing + RSVP
-  api/rsvp.js         # serverless function → Airtable
-  game/index.html     # the save-the-date game, kept as-is
-  assets/
-  README.md           # setup for Gabby
+/            hero → timeline → our story → picnic → holud → wedding
+             → getting there → what to wear → FAQ → RSVP call-to-action
+/rsvp        the form
+/game/       the save-the-date platformer
 ```
 
-- `main` auto-deploys to production. Branches get preview URLs.
-- The Airtable API key lives **only** in Vercel's env vars. Never in the repo. `.env` is already gitignored.
-- For a two-person wedding site, committing straight to `main` is fine. Use branches when you want the other person to look before it's live.
+RSVP is a separate page on purpose — the link gets pasted into WhatsApp dozens of times,
+and an anchor to the bottom of a scroll is not a link.
 
-### Access — who needs an account where
+**Dress code is one section covering all three events**, not three scattered ones. A guest
+engages with dress code exactly once, while packing, and at that moment needs to see all
+three at the same time.
 
-**Gabby needs a GitHub account. She does not need a Vercel account.**
+**Travel and accommodation are top-level**, not sub-items of the wedding day. People are
+flying into Cape Town, driving four to five hours, and staying several nights. It's the
+largest source of guest anxiety and the most re-read part of the site.
 
-GitHub's free tier allows unlimited collaborators on private repos, so adding her costs nothing. Vercel's free Hobby plan is *single-user* — a genuinely shared Vercel project needs Pro at $20/user/month. Skip it: the Vercel project is connected to the **repo**, not to a person, so it deploys whatever lands on `main` no matter who pushed. Gabby's commits deploy exactly like Affy's, and preview URLs come back as status checks on her PRs inside GitHub.
+## Data model — one row per guest
 
-The only asymmetry: env vars (i.e. the Airtable key) are editable by the Vercel account owner only. Fine for this — arguably good.
+Not per party. Holud outfit sizes and safari spots are per-person, and the safari operator
+needs names rather than a count. Party-level answers repeat on each guest's row —
+denormalized on purpose, so a grid view can filter to Holud attendees and read off sizes
+without touching linked records.
 
-| Decision | Options | Call |
+| Field | Type | Level |
 |---|---|---|
-| Her repo permission | Write / Admin | **Write** is enough. Admin also allows settings changes and deleting the repo. |
-| Ownership model | Personal repo + collaborator, or a free **GitHub Organization** both own | Org if you want it to feel jointly owned rather than "Affy's repo Gabby can edit". Free, slightly more setup. |
-| How she edits | Claude Code / github.dev (press `.` on any repo page for browser VS Code) / pencil icon for small edits | Depends on her comfort — all three push to the same repo. |
+| Guest name | Single line text (primary) | guest |
+| Party | Single line text | party |
+| Attending | Single select — `Yes` / `No` | party |
+| Welcome picnic | Checkbox | guest |
+| Holud | Checkbox | guest |
+| Wedding | Checkbox | guest |
+| Holud outfit size | Single select | guest |
+| Dietary requirements | Long text | guest |
+| Coach seat | Checkbox | guest |
+| Safari | Single select — **options TBC** | guest |
+| Accommodation | Single select — **options TBC** | party |
+| Email / Phone / Song request / Message | — | party |
 
-**Existing files to sort out before the repo goes up:** `index.html` (the game) is modified but uncommitted, and `prototype-1-timeline.html` / `prototype-2-chat.html` are untracked. The budget spreadsheet and menu docs should stay out of the repo entirely — they're planning docs, not site content, and one of them is a live-editing lock file.
+Exact field names and setup steps are in [README.md](README.md). Airtable's API is
+case-sensitive and `typecast: true` means a mismatched name is dropped **silently** —
+you'd get a row with blanks and no error.
 
-## Build order
+## Travel
 
-| Phase | What | Blocked on |
+**Route 62**, the inland Little Karoo route — not the Garden Route.
+
+- **Coach from Cape Town, paid by us.** The RSVP asks per person, so the answer doubles as
+  the charter headcount. Earlier research put a return charter for ~120 at roughly
+  R90k–150k.
+- **Self-drive Route 62** as the scenic alternative for anyone with time.
+
+Coach numbers should firm up over time rather than resting on one answer given a year out.
+Worth a "confirm your seat" nudge closer to the date.
+
+## Status
+
+| Phase | | |
 |---|---|---|
-| 0 | GitHub repo + Vercel connected + skeleton deploying | Nothing — can start now |
-| 1 | RSVP form → Airtable, end to end, ugly but working | Personal Airtable account |
-| 2 | Theme it | Your inspiration |
-| 3 | Content: story, venue, travel, accommodation, dress code, registry, FAQ | Copy from you two |
-| 4 | Instagram set up, cross-linked | Handle decision |
+| 0 | Repo + Vercel + skeleton deploying | **Done** |
+| 1 | RSVP → Airtable end to end | **Untested** — see below |
+| 2 | Theme it | Waiting on inspiration |
+| 3 | Real content — every `[TBC]` on the site | Waiting on Affy & Gabby |
+| 4 | Instagram set up, cross-linked | Handle undecided |
 
-Doing phase 1 before phase 2 is deliberate — prove the data path works while it's still cheap to change, then make it beautiful.
-
-## Instagram
-
-- Grid: venue, Karoo/Oudtshoorn scenery, the two of you, vendor tags
-- Stories: countdown, behind-the-scenes, "who's coming" polls
-- Bio links to the website
-- Set the day-of hashtag early so guests learn it before the day
-- Decide now: does it stay up after the wedding as a photo archive, or get archived?
+**Phase 1 is not actually proven.** The env vars reach the function and validation works,
+but nothing has ever been written to Airtable. The token could be wrong, the base id could
+be wrong, and the field names have never been checked against the real table. A single
+test submission settles all three.
 
 ## Open questions
 
-1. **Which Airtable account** — new personal one, or Gabby's existing?
-2. **Venue** — README says Cape Town; the transport research points at Buffelsdrift (Oudtshoorn). Which is the ceremony venue, and is Cape Town just where guests depart from?
-3. **Domain** — custom (`affyandgabby.com`) or `something.vercel.app`? Custom is ~R200/year and worth it on a printed invite.
-4. **Names** — the two prototypes are titled "Affy & Sam". Placeholder, or something to fix?
-5. **Gabby's git comfort** — determines whether she works in Claude Code, the GitHub web editor, or you drive and she reviews preview links.
-6. **Gated or open RSVP** — see above. My vote: gated.
+1. **Venue** — Oudtshoorn is confirmed, the venue itself isn't named on the site yet.
+2. **Safari options and prices** — needed before the RSVP field means anything. Placeholder
+   values live in `SAFARI_OPTIONS` at the top of the script block in `rsvp.html`.
+3. **Accommodation options and prices** — two or three named choices with per-night rates.
+4. **RSVP deadline** — currently `[TBC]` in two places.
+5. **Kids** — people book flights around this answer.
+6. **Gifts / registry** — silence reads as awkward rather than as "no gifts".
+7. **Gated vs open RSVP** — still undecided. With a fixed-cost buffet and a paid-for coach,
+   plus-one drift costs real money. Gating means pre-loading the guest list and having
+   people find their invite. Currently the form is open to anyone with the link.
+8. **Custom domain** — `affyandgabby.vercel.app` is fine for testing; a printed invite
+   wants `affyandgabby.com` (~R200/year).
+9. **Names** — the two prototypes are titled "Affy & Sam". Placeholder, or to fix?
+
+## Instagram
+
+- Grid: venue, Karoo scenery, the two of you, vendor tags
+- Stories: countdown, behind-the-scenes, "who's coming" polls
+- Bio links to the website
+- Set the day-of hashtag early so guests learn it before the day
+- Decide now whether it stays up afterwards as a photo archive
