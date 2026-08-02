@@ -1,18 +1,28 @@
 # Affy &amp; Gabby — Wedding Site
 
-**20 March 2027.** Venue TBC.
+**18–20 March 2027.** Oudtshoorn, Little Karoo. Venue TBC.
+
+Three events: welcome picnic (Thu), holud (Fri), wedding (Sat).
 
 The plan, the reasoning and the open questions live in [website-plan.md](website-plan.md). Read that first.
 
 ## What's here
 
 ```
-index.html          landing page + RSVP form   ← placeholder styling, replace when the theme lands
-api/rsvp.js         serverless function: form → Airtable
+index.html          single-scroll site: timeline, story, three events, travel, dress, FAQ
+rsvp.html           the RSVP form — served at /rsvp
+api/rsvp.js         serverless function: form → Airtable, one row per guest
+vercel.json         cleanUrls, so /rsvp works without the .html
 game/index.html     the save-the-date platformer, unchanged
 prototypes/         early explorations (timeline, chat) — reference only, not deployed
 website-plan.md     the plan
 ```
+
+**Styling is a skeleton.** Every colour, font and spacing value is a token in the `:root`
+block at the top of each page. Theming should mean editing that block — if you find
+yourself hunting for hard-coded colours further down, something has gone wrong.
+
+Search the pages for `[TBC]` and `todo` to find everything still needing real content.
 
 ## Making changes
 
@@ -58,22 +68,37 @@ Hosted on Vercel, connected to this repo. Whoever pushes, it deploys — you don
 
 The RSVP form won't save anything until this is done. **Use a personal Airtable account, not a work one.**
 
-1. Create a base with a table called `RSVPs`
-2. Add these fields, exactly as named:
+**One row per guest, not per party.** Holud outfit sizes and safari spots are per-person,
+so a party-shaped row can't hold them. Party-level answers (email, accommodation, message)
+repeat on each guest's row — denormalized on purpose, so you can open a grid view, filter
+to Holud attendees, and read off sizes without touching linked records.
 
-   | Field | Type |
-   |---|---|
-   | Party name | Single line text |
-   | Attending | Single select — `Yes` / `No` / `Maybe` |
-   | Headcount | Number |
-   | Guest names | Long text |
-   | Email | Email |
-   | Phone | Phone |
-   | Dietary requirements | Long text |
-   | Bus from Cape Town | Single select — `Yes` / `No` / `Not sure yet` |
-   | Accommodation | Single select — `Booking our own` / `Need help` / `Not staying over` |
-   | Song request | Single line text |
-   | Message | Long text |
+1. Create a base with a table called `RSVPs`
+2. Add these fields, exactly as named. **Airtable's API is case-sensitive** — `Party Name`
+   is a different field from `Party name`, and a mismatch is dropped silently rather than
+   erroring.
+
+   | Field | Type | Level |
+   |---|---|---|
+   | Guest name | Single line text | per guest — make this the primary field |
+   | Party | Single line text | party |
+   | Attending | Single select — `Yes` / `No` | party |
+   | Welcome picnic | Checkbox | per guest |
+   | Holud | Checkbox | per guest |
+   | Wedding | Checkbox | per guest |
+   | Holud outfit size | Single select — `XS` `S` `M` `L` `XL` `XXL` `Not sure — measure me` | per guest |
+   | Dietary requirements | Long text | per guest |
+   | Coach seat | Checkbox | per guest |
+   | Safari | Single select — options TBC | per guest |
+   | Accommodation | Single select — options TBC | party |
+   | Email | Email | party |
+   | Phone | Phone | party |
+   | Song request | Single line text | party |
+   | Message | Long text | party |
+
+   The two "TBC" selects need real options before launch. Their values live at the top of
+   the `<script>` block in `rsvp.html` (`SAFARI_OPTIONS`) and in the accommodation
+   `<select>` — the strings there must match the Airtable choices exactly.
 
 3. Create a personal access token at [airtable.com/create/tokens](https://airtable.com/create/tokens) with the `data.records:write` scope on that base
 4. In Vercel → Project → Settings → Environment Variables, add:

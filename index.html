@@ -4,159 +4,361 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Affy &amp; Gabby — 20 March 2027</title>
+<meta name="description" content="Affy &amp; Gabby are getting married in the Little Karoo, 18–20 March 2027.">
 <meta name="robots" content="noindex">
+
 <!--
-  PLACEHOLDER LAYOUT — intentionally unstyled.
-  This exists to prove the RSVP path works end to end. Replace wholesale
-  once the theme is decided; don't build on top of these styles.
+  SKELETON. Structure is real, styling is not.
+
+  Everything visual is a token in :root below — colours, fonts, spacing rhythm,
+  corner radius. Theming this later should mean editing that block, not hunting
+  through rules. Resist adding hard-coded colours further down.
+
+  Content marked [TBC] is placeholder and needs Affy/Gabby to fill in.
 -->
+
 <style>
-  :root { color-scheme: light dark; }
-  * { box-sizing: border-box; }
-  body {
-    font: 16px/1.6 system-ui, -apple-system, sans-serif;
-    max-width: 34rem; margin: 0 auto; padding: 3rem 1.25rem 5rem;
+:root {
+  /* ---- theme tokens: this is the block you replace ---- */
+  --bg:        #faf8f5;
+  --surface:   #fffdfa;
+  --fg:        #23201c;
+  --muted:     #6b645c;
+  --line:      #e0d9cf;
+  --accent:    #8a6f4e;
+  --accent-fg: #ffffff;
+
+  --font-display: Georgia, 'Times New Roman', serif;
+  --font-body:    system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --measure: 38rem;   /* readable line length */
+  --gutter:  1.25rem;
+  --radius:  4px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #17150f; --surface: #201d16; --fg: #f0ebe3;
+    --muted: #a49b8e; --line: #37322a; --accent: #c9a97a; --accent-fg: #17150f;
   }
-  header { text-align: center; margin-bottom: 3rem; }
-  h1 { font-size: 2rem; margin: 0 0 .5rem; font-weight: 600; letter-spacing: -.02em; }
-  .date { opacity: .7; margin: 0; }
-  .tbc { font-size: .875rem; opacity: .5; margin: .25rem 0 0; }
-  h2 { font-size: 1.125rem; margin: 2.5rem 0 1rem; }
-  label { display: block; margin: 1rem 0 .25rem; font-weight: 500; font-size: .9375rem; }
-  .hint { font-weight: 400; opacity: .6; font-size: .8125rem; }
-  input, select, textarea, button {
-    font: inherit; width: 100%; padding: .55rem .7rem;
-    border: 1px solid color-mix(in srgb, currentColor 25%, transparent);
-    border-radius: 6px; background: transparent; color: inherit;
-  }
-  textarea { min-height: 4.5rem; resize: vertical; }
-  button {
-    margin-top: 2rem; padding: .75rem; font-weight: 600; cursor: pointer;
-    background: currentColor; border: none;
-  }
-  button span { color: Canvas; }
-  button[disabled] { opacity: .5; cursor: default; }
-  .hp { position: absolute; left: -9999px; }
-  #status { margin-top: 1rem; text-align: center; min-height: 1.5rem; font-size: .9375rem; }
-  #status.error { color: #c0392b; }
-  footer { margin-top: 4rem; text-align: center; font-size: .875rem; opacity: .6; }
-  footer a { color: inherit; }
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 4.5rem; }
+body {
+  margin: 0; background: var(--bg); color: var(--fg);
+  font: 1rem/1.65 var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+h1, h2, h3 { font-family: var(--font-display); font-weight: 400; line-height: 1.15; }
+a { color: inherit; }
+
+.wrap { max-width: var(--measure); margin: 0 auto; padding: 0 var(--gutter); }
+.wide { max-width: 60rem; margin: 0 auto; padding: 0 var(--gutter); }
+
+/* ---- menu ---- */
+nav {
+  position: sticky; top: 0; z-index: 10;
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--line);
+}
+nav ul {
+  display: flex; gap: 1.5rem; margin: 0; padding: .9rem var(--gutter);
+  list-style: none; overflow-x: auto; scrollbar-width: none;
+  font-size: .8125rem; letter-spacing: .08em; text-transform: uppercase;
+}
+nav ul::-webkit-scrollbar { display: none; }
+nav a { text-decoration: none; color: var(--muted); white-space: nowrap; }
+nav a:hover, nav a.here { color: var(--fg); }
+nav .cta { color: var(--accent); font-weight: 600; }
+
+/* ---- hero ---- */
+header.hero { text-align: center; padding: 5rem var(--gutter) 3.5rem; }
+header.hero h1 { font-size: clamp(2.5rem, 9vw, 4.5rem); margin: 0 0 1rem; }
+header.hero .when { font-size: 1.125rem; margin: 0; }
+header.hero .where { color: var(--muted); margin: .35rem 0 2rem; }
+
+.btn {
+  display: inline-block; padding: .8rem 2rem; border-radius: var(--radius);
+  background: var(--accent); color: var(--accent-fg);
+  text-decoration: none; font-weight: 600; letter-spacing: .02em;
+}
+.btn:hover { opacity: .88; }
+
+/* ---- timeline ---- */
+.timeline { border-block: 1px solid var(--line); padding: 2.5rem 0; background: var(--surface); }
+.track { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; position: relative; }
+.track::before {
+  content: ''; position: absolute; top: .45rem; left: 12%; right: 12%;
+  height: 1px; background: var(--line);
+}
+.stop { text-align: center; position: relative; }
+.stop::before {
+  content: ''; display: block; width: .6rem; height: .6rem; margin: .15rem auto .9rem;
+  border-radius: 50%; background: var(--accent); position: relative;
+}
+.stop .day { font-size: .75rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.stop .name { font-family: var(--font-display); font-size: 1.25rem; margin: .15rem 0; }
+.stop .sub { font-size: .8125rem; color: var(--muted); }
+
+/* ---- sections ---- */
+section { padding: 4rem 0; border-bottom: 1px solid var(--line); }
+section h2 {
+  font-size: clamp(1.75rem, 5vw, 2.25rem); margin: 0 0 .35rem;
+}
+section .kicker {
+  font-size: .75rem; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--accent); margin: 0 0 .5rem;
+}
+section p { margin: 0 0 1rem; }
+.lede { font-size: 1.0625rem; color: var(--muted); margin-bottom: 2rem; }
+
+dl.facts { display: grid; grid-template-columns: auto 1fr; gap: .5rem 1.25rem; margin: 0 0 1.5rem; }
+dl.facts dt { color: var(--muted); font-size: .875rem; }
+dl.facts dd { margin: 0; }
+
+.cards { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); }
+.card {
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: var(--radius); padding: 1.25rem;
+}
+.card h3 { margin: 0 0 .5rem; font-size: 1.125rem; }
+.card p:last-child { margin-bottom: 0; }
+
+details { border-bottom: 1px solid var(--line); padding: .9rem 0; }
+details summary { cursor: pointer; font-weight: 600; }
+details p { margin: .75rem 0 0; color: var(--muted); }
+
+.todo {
+  display: inline-block; font-size: .6875rem; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--accent);
+  border: 1px dashed currentColor; border-radius: 2px;
+  padding: .1rem .4rem; vertical-align: middle;
+}
+
+section.rsvp { text-align: center; border-bottom: none; padding: 5rem 0; }
+footer { text-align: center; padding: 2.5rem var(--gutter) 4rem; color: var(--muted); font-size: .875rem; }
 </style>
 </head>
 <body>
 
-<header>
+<nav>
+  <ul class="wide">
+    <li><a href="#timeline">The weekend</a></li>
+    <li><a href="#story">Our story</a></li>
+    <li><a href="#picnic">Picnic</a></li>
+    <li><a href="#holud">Holud</a></li>
+    <li><a href="#wedding">Wedding</a></li>
+    <li><a href="#travel">Getting there</a></li>
+    <li><a href="#wear">What to wear</a></li>
+    <li><a href="#faq">FAQ</a></li>
+    <li><a href="/rsvp" class="cta">RSVP</a></li>
+  </ul>
+</nav>
+
+<header class="hero">
   <h1>Affy &amp; Gabby</h1>
-  <p class="date">20 March 2027</p>
-  <p class="tbc">Venue and travel details to follow</p>
+  <p class="when">18&ndash;20 March 2027</p>
+  <p class="where">Oudtshoorn, Little Karoo &middot; South Africa <span class="todo">venue TBC</span></p>
+  <a class="btn" href="/rsvp">RSVP</a>
 </header>
 
-<form id="rsvp">
-  <h2>RSVP</h2>
-
-  <label for="partyName">Who are you? <span class="hint">— name, or family name</span></label>
-  <input id="partyName" name="partyName" required autocomplete="name">
-
-  <label for="attending">Can you make it?</label>
-  <select id="attending" name="attending" required>
-    <option value="">Choose…</option>
-    <option>Yes</option>
-    <option>No</option>
-    <option>Maybe</option>
-  </select>
-
-  <div id="ifYes" hidden>
-    <label for="headcount">How many of you?</label>
-    <input id="headcount" name="headcount" type="number" min="1" max="12" value="1">
-
-    <label for="guestNames">Names of everyone coming <span class="hint">— for place cards</span></label>
-    <textarea id="guestNames" name="guestNames"></textarea>
-
-    <label for="dietary">Dietary requirements <span class="hint">— allergies too</span></label>
-    <textarea id="dietary" name="dietary"></textarea>
-
-    <label for="bus">Would you use a coach from Cape Town?</label>
-    <select id="bus" name="bus">
-      <option value="">Choose…</option>
-      <option>Yes</option>
-      <option>No</option>
-      <option>Not sure yet</option>
-    </select>
-
-    <label for="accommodation">Accommodation</label>
-    <select id="accommodation" name="accommodation">
-      <option value="">Choose…</option>
-      <option>Booking our own</option>
-      <option>Need help</option>
-      <option>Not staying over</option>
-    </select>
-
-    <label for="song">A song that will get you dancing</label>
-    <input id="song" name="song">
+<div class="timeline" id="timeline">
+  <div class="wide">
+    <div class="track">
+      <div class="stop">
+        <p class="day">Thu 18 <span class="todo">TBC</span></p>
+        <p class="name">Welcome picnic</p>
+        <p class="sub">Arrive, eat, say hello</p>
+      </div>
+      <div class="stop">
+        <p class="day">Fri 19 <span class="todo">TBC</span></p>
+        <p class="name">Holud</p>
+        <p class="sub">Turmeric, colour, noise</p>
+      </div>
+      <div class="stop">
+        <p class="day">Sat 20 March</p>
+        <p class="name">Wedding</p>
+        <p class="sub">The main event</p>
+      </div>
+    </div>
   </div>
+</div>
 
-  <label for="email">Email</label>
-  <input id="email" name="email" type="email" autocomplete="email">
+<main>
 
-  <label for="phone">Phone <span class="hint">— for the day-of group</span></label>
-  <input id="phone" name="phone" type="tel" autocomplete="tel">
-
-  <label for="message">Anything you'd like to say to us</label>
-  <textarea id="message" name="message"></textarea>
-
-  <!-- honeypot: hidden from people, catnip for bots -->
-  <div class="hp" aria-hidden="true">
-    <label for="website">Leave this blank</label>
-    <input id="website" name="website" tabindex="-1" autocomplete="off">
+<section id="story">
+  <div class="wrap">
+    <p class="kicker">How we got here</p>
+    <h2>Our story</h2>
+    <p class="lede">The short version, for people who are about to fly a long way for us.</p>
+    <p><span class="todo">Content needed</span> — there's a working draft of this in
+      <code>prototypes/prototype-1-timeline.html</code>: the accidental meeting, the first
+      real date, the years in between, the question. Worth lifting across once you've
+      settled the wording.</p>
   </div>
+</section>
 
-  <button type="submit"><span>Send RSVP</span></button>
-  <p id="status" role="status"></p>
-</form>
+<section id="picnic">
+  <div class="wrap">
+    <p class="kicker">Thursday</p>
+    <h2>Welcome picnic</h2>
+    <dl class="facts">
+      <dt>When</dt><dd>Thu 18 March, time <span class="todo">TBC</span></dd>
+      <dt>Where</dt><dd><span class="todo">TBC</span></dd>
+      <dt>Dress</dt><dd>Relaxed &mdash; <a href="#wear">see what to wear</a></dd>
+    </dl>
+    <p><span class="todo">Content needed</span> &mdash; what it is, who it's for, whether
+      it's everyone or just the people who've travelled in early.</p>
+  </div>
+</section>
+
+<section id="holud">
+  <div class="wrap">
+    <p class="kicker">Friday</p>
+    <h2>Holud</h2>
+    <dl class="facts">
+      <dt>When</dt><dd>Fri 19 March, time <span class="todo">TBC</span></dd>
+      <dt>Where</dt><dd><span class="todo">TBC</span></dd>
+      <dt>Dress</dt><dd>We're sorting your outfit &mdash; <a href="/rsvp">give us your size</a></dd>
+    </dl>
+
+    <h3>What actually happens</h3>
+    <p><span class="todo">Content needed</span> &mdash; this is the section doing the most
+      work on the whole site. A good number of guests won't have been to a Holud, and the
+      honest questions are: what is it, what happens to me, am I going to get turmeric on
+      my clothes, and how long does it last. Answer those four plainly and people will
+      turn up relaxed instead of anxious.</p>
+    <p>Because you're providing outfits, the RSVP asks for a clothing size per person.</p>
+  </div>
+</section>
+
+<section id="wedding">
+  <div class="wrap">
+    <p class="kicker">Saturday</p>
+    <h2>The wedding</h2>
+    <dl class="facts">
+      <dt>When</dt><dd>Sat 20 March 2027, time <span class="todo">TBC</span></dd>
+      <dt>Where</dt><dd><span class="todo">TBC</span></dd>
+      <dt>Dress</dt><dd><a href="#wear">See what to wear</a></dd>
+    </dl>
+    <p><span class="todo">Content needed</span> &mdash; ceremony, dinner, dancing, carriages at.</p>
+  </div>
+</section>
+
+<section id="travel">
+  <div class="wrap">
+    <p class="kicker">Logistics</p>
+    <h2>Getting there &amp; staying</h2>
+    <p class="lede">Oudtshoorn is about four to five hours from Cape Town. There are two
+      good ways to do it and one of them is free.</p>
+
+    <div class="cards">
+      <div class="card">
+        <h3>Coach from Cape Town</h3>
+        <p>We're paying for it. Tell us on the RSVP if you want a seat and we'll sort
+          the rest.</p>
+        <p><span class="todo">TBC</span> departure point, times, return.</p>
+      </div>
+      <div class="card">
+        <h3>Drive Route 62</h3>
+        <p>The inland route through the Little Karoo &mdash; wine, mountain passes, farm
+          stalls. Worth stretching over two days if you can.</p>
+        <p><span class="todo">TBC</span> suggested stops and where to break the journey.</p>
+      </div>
+    </div>
+
+    <h3 style="margin-top:2.5rem">Where to stay</h3>
+    <p><span class="todo">Content needed</span> &mdash; the RSVP asks people to pick from
+      named options with prices rather than asking what they're willing to spend. That
+      needs two or three actual options here first: somewhere on-site, somewhere mid,
+      somewhere cheap. List them with a per-night rate and people will self-select
+      without anyone feeling awkward.</p>
+  </div>
+</section>
+
+<section id="wear">
+  <div class="wrap">
+    <p class="kicker">Practical</p>
+    <h2>What to wear</h2>
+    <p class="lede">Three events, three answers, one suitcase. March in the Karoo is hot
+      and dry in the day and cools off sharply at night.</p>
+
+    <div class="cards">
+      <div class="card">
+        <h3>Welcome picnic</h3>
+        <p><span class="todo">TBC</span> &mdash; relaxed. Say something about shoes and grass.</p>
+      </div>
+      <div class="card">
+        <h3>Holud</h3>
+        <p>We're providing outfits. <span class="todo">TBC</span> &mdash; explain what
+          they'll get and warn them the turmeric stains.</p>
+      </div>
+      <div class="card">
+        <h3>Wedding</h3>
+        <p><span class="todo">TBC</span> &mdash; the actual dress code, plus a note on
+          heels if any of it is on grass or gravel.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="wrap">
+    <p class="kicker">Everything else</p>
+    <h2>Questions</h2>
+    <p class="lede">All of these need real answers &mdash; each one you leave blank is a
+      WhatsApp you'll get instead.</p>
+
+    <details><summary>Can we bring our kids?</summary>
+      <p><span class="todo">Answer needed.</span> People book flights around this one, so
+        it should be near the top and unambiguous.</p></details>
+    <details><summary>What about the safari?</summary>
+      <p><span class="todo">Answer needed</span> &mdash; which options, what they cost,
+        and that spots are limited so the RSVP is how you claim one.</p></details>
+    <details><summary>Are you doing gifts or a registry?</summary>
+      <p><span class="todo">Answer needed.</span> Saying nothing reads as awkward rather
+        than as "no gifts, honestly".</p></details>
+    <details><summary>What's the weather like in March?</summary>
+      <p><span class="todo">Answer needed</span> &mdash; hot days, cold nights, and
+        whatever the rain situation actually is.</p></details>
+    <details><summary>Do we need a car once we're there?</summary>
+      <p><span class="todo">Answer needed</span> &mdash; matters a lot to anyone taking
+        the coach.</p></details>
+    <details><summary>Who do we ask if something goes wrong?</summary>
+      <p><span class="todo">Answer needed</span> &mdash; a name and a number for the
+        weekend itself.</p></details>
+  </div>
+</section>
+
+<section class="rsvp">
+  <div class="wrap">
+    <h2>Will you come?</h2>
+    <p class="lede">Let us know by <span class="todo">date TBC</span> so we can count
+      heads, seats and outfits.</p>
+    <a class="btn" href="/rsvp">RSVP</a>
+  </div>
+</section>
+
+</main>
 
 <footer>
-  <p>Bored? <a href="/game/">Rescue Gabby from an ostrich.</a></p>
+  <p>Affy &amp; Gabby &middot; 20 March 2027</p>
+  <p>Waiting? <a href="/game/">Rescue Gabby from an ostrich.</a></p>
 </footer>
 
 <script>
-const form = document.getElementById('rsvp');
-const attending = document.getElementById('attending');
-const ifYes = document.getElementById('ifYes');
-const status = document.getElementById('status');
-const button = form.querySelector('button');
+// Highlight the section you're currently in.
+const links = [...document.querySelectorAll('nav a[href^="#"]')];
+const seen = new Map();
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(e => seen.set(e.target.id, e.isIntersecting));
+  const active = links.find(a => seen.get(a.hash.slice(1)));
+  links.forEach(a => a.classList.toggle('here', a === active));
+}, { rootMargin: '-20% 0px -70% 0px' });
 
-const toggleDetails = () => { ifYes.hidden = attending.value !== 'Yes'; };
-attending.addEventListener('change', toggleDetails);
-toggleDetails();
-
-form.addEventListener('submit', async (e) => {
-  e.preventDefault();
-  button.disabled = true;
-  status.className = '';
-  status.textContent = 'Sending…';
-
-  try {
-    const res = await fetch('/api/rsvp', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(Object.fromEntries(new FormData(form))),
-    });
-    const data = await res.json().catch(() => ({}));
-
-    if (res.ok) {
-      form.hidden = true;
-      status.textContent = attending.value === 'No'
-        ? 'Thank you for letting us know — we will miss you.'
-        : 'Got it. See you on 20 March 2027.';
-    } else {
-      throw new Error(data.error || 'Something went wrong.');
-    }
-  } catch (err) {
-    status.className = 'error';
-    status.textContent = err.message;
-    button.disabled = false;
-  }
-});
+document.querySelectorAll('main section, #timeline').forEach(s => io.observe(s));
 </script>
 
 </body>

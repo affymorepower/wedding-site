@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RSVP — Affy &amp; Gabby</title>
+<meta name="robots" content="noindex">
+
+<!--
+  SKELETON. Shares the token block with index.html — keep the two in sync, or
+  pull :root into a shared stylesheet once the theme lands.
+
+  Writes ONE AIRTABLE ROW PER GUEST, not per party. Holud outfit sizes and
+  safari spots are per-person, so a party-shaped row can't hold them.
+  Party-level answers are repeated onto each guest's row.
+
+  [TBC] markers = options that need real values from Affy/Gabby.
+-->
+
+<style>
+:root {
+  --bg:#faf8f5; --surface:#fffdfa; --fg:#23201c; --muted:#6b645c;
+  --line:#e0d9cf; --accent:#8a6f4e; --accent-fg:#fff; --error:#a8342a;
+  --font-display: Georgia, 'Times New Roman', serif;
+  --font-body: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --measure: 34rem; --gutter: 1.25rem; --radius: 4px;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg:#17150f; --surface:#201d16; --fg:#f0ebe3; --muted:#a49b8e;
+          --line:#37322a; --accent:#c9a97a; --accent-fg:#17150f; --error:#e88b80; }
+}
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin:0; background:var(--bg); color:var(--fg);
+  font:1rem/1.6 var(--font-body); -webkit-font-smoothing:antialiased;
+}
+.wrap { max-width:var(--measure); margin:0 auto; padding:3rem var(--gutter) 5rem; }
+h1 { font-family:var(--font-display); font-weight:400; font-size:2.25rem; margin:0 0 .35rem; }
+.lede { color:var(--muted); margin:0 0 2.5rem; }
+h2 {
+  font-size:.75rem; letter-spacing:.12em; text-transform:uppercase; color:var(--accent);
+  margin:2.5rem 0 .25rem; font-family:var(--font-body); font-weight:600;
+}
+h2 + .note { color:var(--muted); font-size:.875rem; margin:0 0 1rem; }
+
+label { display:block; margin:1.1rem 0 .3rem; font-weight:500; font-size:.9375rem; }
+.hint { font-weight:400; color:var(--muted); font-size:.8125rem; }
+input, select, textarea {
+  font:inherit; width:100%; padding:.6rem .7rem; color:inherit;
+  background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
+}
+input:focus, select:focus, textarea:focus { outline:2px solid var(--accent); outline-offset:1px; }
+textarea { min-height:4.5rem; resize:vertical; }
+
+fieldset { border:1px solid var(--line); border-radius:var(--radius); padding:1.25rem; margin:1rem 0; background:var(--surface); }
+legend { font-family:var(--font-display); font-size:1.125rem; padding:0 .5rem; }
+
+.checks { display:grid; gap:.55rem; margin-top:.5rem; }
+.checks label { display:flex; gap:.6rem; align-items:flex-start; margin:0; font-weight:400; }
+.checks input { width:auto; margin-top:.3rem; flex:none; }
+
+.row { display:grid; gap:1rem; grid-template-columns:1fr 1fr; }
+@media (max-width:30rem) { .row { grid-template-columns:1fr; } }
+
+button {
+  font:inherit; font-weight:600; width:100%; margin-top:2rem; padding:.85rem;
+  background:var(--accent); color:var(--accent-fg);
+  border:none; border-radius:var(--radius); cursor:pointer;
+}
+button[disabled] { opacity:.5; cursor:default; }
+.hp { position:absolute; left:-9999px; }
+#status { margin-top:1rem; text-align:center; min-height:1.5rem; font-size:.9375rem; }
+#status.error { color:var(--error); }
+.done { text-align:center; padding:3rem 0; }
+.done h1 { margin-bottom:1rem; }
+.todo {
+  display:inline-block; font-size:.6875rem; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--accent); border:1px dashed currentColor; border-radius:2px; padding:.1rem .4rem;
+}
+a.back { color:var(--muted); font-size:.875rem; }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <a class="back" href="/">&larr; Back</a>
+
+  <div id="thanks" class="done" hidden>
+    <h1>Thank you</h1>
+    <p id="thanksMsg" class="lede"></p>
+    <a class="back" href="/">Back to the site</a>
+  </div>
+
+  <form id="rsvp">
+    <h1>RSVP</h1>
+    <p class="lede">Three events over three days. Tell us which ones you're up for.
+      Please reply by <span class="todo">date TBC</span>.</p>
+
+    <h2>Who's replying</h2>
+    <label for="partyName">Your name <span class="hint">— or family name, if you're answering for everyone</span></label>
+    <input id="partyName" name="partyName" required autocomplete="name">
+
+    <div class="row">
+      <div>
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email" required autocomplete="email">
+      </div>
+      <div>
+        <label for="phone">Phone <span class="hint">— for the group</span></label>
+        <input id="phone" name="phone" type="tel" autocomplete="tel">
+      </div>
+    </div>
+
+    <label for="coming">Can you make it?</label>
+    <select id="coming" name="coming" required>
+      <option value="">Choose…</option>
+      <option value="Yes">Yes, we'll be there</option>
+      <option value="No">Sadly not</option>
+    </select>
+
+    <!-- ===== everything below only applies to a yes ===== -->
+    <div id="yesOnly" hidden>
+
+      <label for="headcount">How many of you, including yourself?</label>
+      <input id="headcount" type="number" min="1" max="10" value="1">
+
+      <h2>Each of you</h2>
+      <p class="note">Outfit sizes and safari spots are per person, so we need everyone
+        separately. Sorry — it saves a lot of chasing later.</p>
+      <div id="guests"></div>
+
+      <h2>Getting there</h2>
+      <p class="note">We're paying for the coach from Cape Town. Seats are per person.</p>
+      <div id="travel"></div>
+
+      <h2>Staying over</h2>
+      <label for="accommodation">Where would you like to stay?</label>
+      <select id="accommodation" name="accommodation">
+        <option value="">Choose…</option>
+        <!-- TODO: replace with real options and per-night prices. Named choices with
+             prices beat asking people what they're willing to spend. -->
+        <option>On-site at the venue — [TBC per night]</option>
+        <option>Nearby guesthouse — [TBC per night]</option>
+        <option>Something cheaper, please suggest</option>
+        <option>We'll sort our own</option>
+        <option>Not staying over</option>
+      </select>
+
+      <h2>Anything else</h2>
+      <label for="song">A song that will get you dancing</label>
+      <input id="song" name="song">
+    </div>
+
+    <label for="message">A message for us <span class="hint">— optional</span></label>
+    <textarea id="message" name="message"></textarea>
+
+    <div class="hp" aria-hidden="true">
+      <label for="website">Leave this blank</label>
+      <input id="website" name="website" tabindex="-1" autocomplete="off">
+    </div>
+
+    <button type="submit">Send RSVP</button>
+    <p id="status" role="status"></p>
+  </form>
+</div>
+
+<script>
+// TODO: replace with the real safari options once confirmed with the operator.
+// Spots are limited, so these need to match what can actually be booked.
+const SAFARI_OPTIONS = ['Morning game drive — [TBC]', 'Sunset game drive — [TBC]', 'Not interested'];
+const SIZES = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'Not sure — measure me'];
+
+const form   = document.getElementById('rsvp');
+const coming = document.getElementById('coming');
+const yesOnly= document.getElementById('yesOnly');
+const count  = document.getElementById('headcount');
+const guests = document.getElementById('guests');
+const travel = document.getElementById('travel');
+const status = document.getElementById('status');
+const button = form.querySelector('button');
+
+const opts = (list) => list.map(o => `<option>${o}</option>`).join('');
+
+function guestBlock(i) {
+  const n = i + 1;
+  return `
+    <fieldset data-guest="${i}">
+      <legend>${n === 1 ? 'You' : 'Guest ' + n}</legend>
+
+      <label for="g${i}name">Name</label>
+      <input id="g${i}name" data-field="name" required>
+
+      <label>Which events?</label>
+      <div class="checks">
+        <label><input type="checkbox" data-field="picnic" checked> Welcome picnic — Thu 18</label>
+        <label><input type="checkbox" data-field="holud"  checked> Holud — Fri 19</label>
+        <label><input type="checkbox" data-field="wedding" checked> Wedding — Sat 20</label>
+      </div>
+
+      <label for="g${i}size">Holud outfit size <span class="hint">— we're providing these</span></label>
+      <select id="g${i}size" data-field="size"><option value="">Choose…</option>${opts(SIZES)}</select>
+
+      <label for="g${i}diet">Dietary requirements <span class="hint">— allergies too</span></label>
+      <input id="g${i}diet" data-field="dietary">
+
+      <label for="g${i}safari">Safari <span class="hint">— you'd book and pay your own; spots are limited</span></label>
+      <select id="g${i}safari" data-field="safari"><option value="">Choose…</option>${opts(SAFARI_OPTIONS)}</select>
+    </fieldset>`;
+}
+
+function travelBlock(i) {
+  const n = i + 1;
+  return `<label><input type="checkbox" data-seat="${i}" checked>
+    Coach seat for ${n === 1 ? 'me' : 'guest ' + n}</label>`;
+}
+
+function render() {
+  const n = Math.max(1, Math.min(10, Number(count.value) || 1));
+  // Preserve what's already typed when the headcount changes.
+  const kept = readGuests();
+  guests.innerHTML = Array.from({ length: n }, (_, i) => guestBlock(i)).join('');
+  travel.innerHTML = `<div class="checks">${Array.from({ length: n }, (_, i) => travelBlock(i)).join('')}</div>`;
+  kept.slice(0, n).forEach((g, i) => {
+    const fs = guests.querySelector(`[data-guest="${i}"]`);
+    Object.entries(g).forEach(([k, v]) => {
+      const el = fs.querySelector(`[data-field="${k}"]`);
+      if (!el) return;
+      if (el.type === 'checkbox') el.checked = v; else el.value = v;
+    });
+  });
+}
+
+function readGuests() {
+  return [...guests.querySelectorAll('[data-guest]')].map(fs => {
+    const out = {};
+    fs.querySelectorAll('[data-field]').forEach(el => {
+      out[el.dataset.field] = el.type === 'checkbox' ? el.checked : el.value;
+    });
+    return out;
+  });
+}
+
+const toggle = () => {
+  const yes = coming.value === 'Yes';
+  yesOnly.hidden = !yes;
+  yesOnly.querySelectorAll('input,select').forEach(el => el.disabled = !yes);
+  if (yes && !guests.children.length) render();
+};
+
+coming.addEventListener('change', toggle);
+count.addEventListener('input', render);
+toggle();
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  button.disabled = true;
+  status.className = '';
+  status.textContent = 'Sending…';
+
+  const attending = coming.value === 'Yes';
+  const seats = [...travel.querySelectorAll('[data-seat]')].map(el => el.checked);
+
+  const payload = {
+    website: document.getElementById('website').value,   // honeypot
+    party: {
+      partyName: document.getElementById('partyName').value,
+      email: document.getElementById('email').value,
+      phone: document.getElementById('phone').value,
+      attending: coming.value,
+      accommodation: attending ? document.getElementById('accommodation').value : '',
+      song: attending ? document.getElementById('song').value : '',
+      message: document.getElementById('message').value,
+    },
+    guests: attending
+      ? readGuests().map((g, i) => ({ ...g, coach: !!seats[i] }))
+      : [],
+  };
+
+  try {
+    const res = await fetch('/api/rsvp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || 'Something went wrong.');
+
+    form.hidden = true;
+    document.getElementById('thanks').hidden = false;
+    document.getElementById('thanksMsg').textContent = attending
+      ? 'That is all of it. See you in the Karoo.'
+      : 'Thank you for letting us know — we will miss you.';
+    window.scrollTo(0, 0);
+  } catch (err) {
+    status.className = 'error';
+    status.textContent = err.message;
+    button.disabled = false;
+  }
+});
+</script>
+
+</body>
+</html>
