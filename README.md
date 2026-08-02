@@ -36,21 +36,17 @@ git pull
 
 1. **Accept the repo invite.** It arrives by email — it won't do anything until you click accept.
 2. **Install Claude Code.** The desktop app is easier than the CLI. Needs a paid Claude plan; the free tier won't run it.
-3. **Sign in to GitHub** from a terminal:
+3. **Get the repo onto your machine.** Easiest way, no terminal needed — install
+   [GitHub Desktop](https://desktop.github.com), sign in with your GitHub account,
+   then File → Clone Repository → `wedding-site`. It handles the sign-in invisibly
+   and puts the folder somewhere you can find it.
 
-   ```bash
-   gh auth login
-   ```
+   *If you'd rather use a terminal:* install the [GitHub CLI](https://cli.github.com)
+   first (`brew install gh` on a Mac, after installing [Homebrew](https://brew.sh)),
+   then `gh auth login` followed by `gh repo clone affymorepower/wedding-site`.
 
-   Choose GitHub.com → HTTPS → log in with a browser.
-
-4. **Clone the repo:**
-
-   ```bash
-   gh repo clone affymorepower/wedding-site
-   ```
-
-5. **Open that folder in Claude Code** and describe what you want changed. It'll handle the commit and push.
+4. **Open that folder in Claude Code** and describe what you want changed. It'll handle
+   the commit and push.
 
 You don't need a Vercel account, an Airtable account, or any of the tokens to work on the site.
 
