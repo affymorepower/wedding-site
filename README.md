@@ -26,6 +26,34 @@ Three ways to work, pick whichever suits you:
 
 Push to `main` and it goes live in about a minute. Push to a branch and open a pull request instead if you'd like the other person to see it first — you'll get a preview link on the PR.
 
+**Pull before you start.** Two people editing the same file on the same afternoon is the one way this gets annoying:
+
+```bash
+git pull
+```
+
+## First time setup (Claude Code)
+
+1. **Accept the repo invite.** It arrives by email — it won't do anything until you click accept.
+2. **Install Claude Code.** The desktop app is easier than the CLI. Needs a paid Claude plan; the free tier won't run it.
+3. **Sign in to GitHub** from a terminal:
+
+   ```bash
+   gh auth login
+   ```
+
+   Choose GitHub.com → HTTPS → log in with a browser.
+
+4. **Clone the repo:**
+
+   ```bash
+   gh repo clone affymorepower/wedding-site
+   ```
+
+5. **Open that folder in Claude Code** and describe what you want changed. It'll handle the commit and push.
+
+You don't need a Vercel account, an Airtable account, or any of the tokens to work on the site.
+
 ## Deployment
 
 Hosted on Vercel, connected to this repo. Whoever pushes, it deploys — you don't need a Vercel account to work on the site.
