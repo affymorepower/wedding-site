@@ -8,12 +8,23 @@ Until it exists the hero falls back to a gradient, so nothing looks broken.
 ## What's in here
 
 ```
-hero.jpg          the dam at first light, behind the hero
+hero.jpg          the dam and the snow-capped Swartberg, behind the hero
 flowers/          web-ready cut-outs, 256px webp, transparent, what the page loads
 source/           full-resolution transparent PNGs of the same flowers
 photos/           photographs of the two of us
+photos/venue/     Buffelsdrift, alternative heroes, all unused
 *.png (loose)     the original flower renders, on their baked-in dark backgrounds
 ```
+
+**Swapping the hero** is a file swap, not a code change: copy something out of
+`photos/venue/` over `hero.jpg`. Two things decide whether a photo works there.
+It needs open water low in the frame, because the boat illustration is
+positioned to sit on the waterline. `--boat-top` in the `:root` block is the
+dial for that, as a percentage of the viewport. And it wants to be at least
+2000px wide and under ~600KB; the current one is 2000x1324 at 555KB.
+
+`photos/venue/` currently holds the elephants at the dam, hippos, the lodge at
+dusk, and the earlier first-light shot of the dam that used to be the hero.
 
 **flowers/** is what the site actually uses. `picnic`, `holud` and `wedding` are
 wired to the timeline stops in `index.html` through the `--stem` custom
