@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Affy & Sam — Our Story (Timeline Prototype)</title>
+<style>
+  :root{
+    --ink:#2b2622;
+    --cream:#f7f1e8;
+    --blush:#e9c9c2;
+    --sage:#9bae9b;
+    --gold:#c08a3e;
+    --paper:#fffdf9;
+    --serif:"Georgia","Times New Roman",serif;
+    --sans:"Helvetica Neue",Arial,sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:var(--serif);
+    color:var(--ink);
+    background:var(--cream);
+    overflow-x:hidden;
+  }
+
+  /* ---------- prototype banner ---------- */
+  .proto-tag{
+    position:fixed;top:0;left:0;right:0;z-index:100;
+    background:rgba(43,38,34,.92);color:#fff;
+    font-family:var(--sans);font-size:11px;letter-spacing:.12em;
+    text-transform:uppercase;text-align:center;padding:7px 10px;
+  }
+
+  /* ---------- sticky date ticker ---------- */
+  .ticker{
+    position:fixed;top:32px;right:22px;z-index:90;
+    font-family:var(--sans);text-align:right;
+    mix-blend-mode:difference;color:#fff;
+    transition:opacity .4s;
+  }
+  .ticker .year{font-size:46px;font-weight:700;line-height:1;letter-spacing:-.02em}
+  .ticker .label{font-size:11px;letter-spacing:.2em;text-transform:uppercase;opacity:.85}
+
+  /* ---------- progress line ---------- */
+  .progress{
+    position:fixed;left:0;top:0;height:3px;width:0;z-index:95;
+    background:linear-gradient(90deg,var(--blush),var(--gold));
+  }
+
+  /* ---------- hero ---------- */
+  .hero{
+    height:100vh;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;text-align:center;
+    background:radial-gradient(circle at 50% 35%, #fff7ee 0%, var(--cream) 60%);
+    position:relative;
+  }
+  .hero h1{font-size:clamp(42px,9vw,104px);font-weight:400;letter-spacing:.01em}
+  .hero .amp{color:var(--gold);font-style:italic}
+  .hero .sub{font-family:var(--sans);letter-spacing:.34em;text-transform:uppercase;
+    font-size:13px;margin-top:18px;color:#7a7065}
+  .scroll-hint{position:absolute;bottom:34px;font-family:var(--sans);font-size:11px;
+    letter-spacing:.25em;text-transform:uppercase;color:#9a8f82;animation:bob 2s infinite}
+  @keyframes bob{0%,100%{transform:translateY(0);opacity:.5}50%{transform:translateY(8px);opacity:1}}
+
+  /* ---------- chapters ---------- */
+  .chapter{
+    min-height:100vh;display:flex;align-items:center;
+    padding:14vh 8vw;position:relative;
+  }
+  .chapter .inner{
+    max-width:560px;
+    opacity:0;transform:translateY(48px);
+    transition:opacity 1s ease,transform 1s ease;
+  }
+  .chapter.show .inner{opacity:1;transform:none}
+  .chapter:nth-child(even) .inner{margin-left:auto;text-align:right}
+
+  .yr{font-family:var(--sans);font-size:13px;letter-spacing:.3em;
+    color:var(--gold);text-transform:uppercase;margin-bottom:14px;display:block}
+  .chapter h2{font-size:clamp(30px,5vw,52px);font-weight:400;margin-bottom:20px;line-height:1.1}
+  .chapter p{font-size:19px;line-height:1.7;color:#534c44}
+
+  /* photo cards */
+  .photo{
+    width:100%;max-width:430px;aspect-ratio:4/3;border-radius:4px;
+    margin-bottom:30px;position:relative;overflow:hidden;
+    box-shadow:0 24px 50px -24px rgba(43,38,34,.45);
+    display:flex;align-items:center;justify-content:center;
+    font-family:var(--sans);color:rgba(255,255,255,.92);
+    font-size:13px;letter-spacing:.18em;text-transform:uppercase;
+    transform:rotate(-2deg);
+  }
+  .chapter:nth-child(even) .photo{margin-left:auto;transform:rotate(2deg)}
+  .photo span{position:relative;z-index:2;text-align:center;padding:10px}
+  .photo .emoji{font-size:42px;display:block;margin-bottom:8px}
+  .p1{background:linear-gradient(135deg,#c7b8a1,#8d7a63)}
+  .p2{background:linear-gradient(135deg,#e9c9c2,#c98b7f)}
+  .p3{background:linear-gradient(135deg,#9bae9b,#6f8a72)}
+  .p4{background:linear-gradient(135deg,#a9b8c9,#6d7f96)}
+  .p5{background:linear-gradient(135deg,#d8b56b,#b07d2e)}
+
+  /* ---------- horizontal gallery within a chapter ---------- */
+  .gallery-section{padding:10vh 0;background:var(--paper)}
+  .gallery-section .lead{text-align:center;margin-bottom:6vh;padding:0 8vw}
+  .gallery-section .lead .yr{display:block}
+  .gallery-section h2{font-size:clamp(28px,4.5vw,46px);font-weight:400}
+  .rail{
+    display:flex;gap:26px;overflow-x:auto;padding:10px 8vw 40px;
+    scroll-snap-type:x mandatory;
+  }
+  .rail::-webkit-scrollbar{height:8px}
+  .rail::-webkit-scrollbar-thumb{background:var(--blush);border-radius:8px}
+  .rail .card{
+    flex:0 0 300px;height:380px;border-radius:6px;scroll-snap-align:center;
+    box-shadow:0 18px 40px -22px rgba(43,38,34,.5);
+    display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
+    color:#fff;font-family:var(--sans);padding:22px;text-align:center;
+  }
+  .rail .card .cap{font-size:13px;letter-spacing:.12em}
+  .rail .hint{font-family:var(--sans);font-size:11px;letter-spacing:.25em;
+    text-transform:uppercase;text-align:center;color:#9a8f82;margin-top:-10px}
+
+  /* ---------- finale ---------- */
+  .finale{
+    min-height:100vh;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;text-align:center;
+    background:radial-gradient(circle at 50% 50%, #fff7ee, var(--blush));
+    padding:10vh 8vw;
+  }
+  .finale .yr{display:block}
+  .finale h2{font-size:clamp(34px,7vw,76px);font-weight:400;margin-bottom:18px}
+  .finale p{font-size:20px;line-height:1.7;max-width:520px;margin-bottom:34px;color:#5a4f45}
+  .btn{
+    font-family:var(--sans);letter-spacing:.18em;text-transform:uppercase;font-size:13px;
+    background:var(--ink);color:#fff;border:none;padding:18px 40px;border-radius:40px;
+    cursor:pointer;transition:transform .2s,box-shadow .2s;
+  }
+  .btn:hover{transform:translateY(-2px);box-shadow:0 14px 30px -12px rgba(43,38,34,.6)}
+
+  .note{font-family:var(--sans);font-size:12px;color:#9a8f82;margin-top:40px;letter-spacing:.05em}
+</style>
+</head>
+<body>
+  <div class="proto-tag">Prototype · "Scroll = Time Travel" · placeholder text &amp; photos — swap with your real story</div>
+  <div class="progress" id="bar"></div>
+  <div class="ticker" id="ticker"><div class="year">2018</div><div class="label">where it began</div></div>
+
+  <!-- HERO -->
+  <section class="hero">
+    <h1>Affy <span class="amp">&amp;</span> Sam</h1>
+    <div class="sub">A love story · in scroll</div>
+    <div class="scroll-hint">scroll to begin ↓</div>
+  </section>
+
+  <!-- CHAPTERS -->
+  <section class="chapter" data-year="2018" data-label="where it began">
+    <div class="inner">
+      <div class="photo p1"><span><span class="emoji">☕</span>the coffee shop</span></div>
+      <span class="yr">Spring 2018</span>
+      <h2>The accidental meeting</h2>
+      <p>We reached for the same oat-milk flat white. Sam apologised three times; Affy didn't catch the name but caught the laugh. Neither of us left for two hours.</p>
+    </div>
+  </section>
+
+  <section class="chapter" data-year="2018" data-label="first date">
+    <div class="inner">
+      <div class="photo p2"><span><span class="emoji">🌃</span>that first night</span></div>
+      <span class="yr">June 2018</span>
+      <h2>The first (real) date</h2>
+      <p>Dinner that ran past closing. A walk that ran past midnight. The text the next morning that just said "again?" — and the rest, as they say.</p>
+    </div>
+  </section>
+
+  <!-- HORIZONTAL GALLERY -->
+  <section class="gallery-section">
+    <div class="lead">
+      <span class="yr">2019 – 2022</span>
+      <h2>The years in between</h2>
+    </div>
+    <div class="rail">
+      <div class="card p3"><div class="cap">First trip · Lisbon</div></div>
+      <div class="card p1"><div class="cap">Moved in together</div></div>
+      <div class="card p4"><div class="cap">Adopted Biscuit 🐶</div></div>
+      <div class="card p2"><div class="cap">First Christmas</div></div>
+      <div class="card p5"><div class="cap">The road trip</div></div>
+    </div>
+    <div class="hint">← swipe through the years →</div>
+  </section>
+
+  <section class="chapter" data-year="2024" data-label="the proposal">
+    <div class="inner">
+      <div class="photo p5"><span><span class="emoji">💍</span>the proposal</span></div>
+      <span class="yr">October 2024</span>
+      <h2>The question</h2>
+      <p>Same coffee shop. Same order. Sam got down on one knee while the barista pretended not to film it. (She did film it. We're grateful.)</p>
+    </div>
+  </section>
+
+  <!-- FINALE -->
+  <section class="finale" data-year="2026" data-label="the wedding">
+    <span class="yr">September 2026</span>
+    <h2>…and now, the part with you in it.</h2>
+    <p>Eight years from a spilled coffee to a celebration. We'd love you there for the next chapter.</p>
+    <button class="btn" onclick="alert('This would link to your RSVP page ✨')">RSVP</button>
+    <div class="note">Everything here is placeholder — your real photos, dates and words drop straight in.</div>
+  </section>
+
+<script>
+  // scroll-triggered reveals
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('show'); });
+  },{threshold:.25});
+  document.querySelectorAll('.chapter').forEach(c=>io.observe(c));
+
+  // date ticker + progress bar
+  const ticker = document.getElementById('ticker');
+  const yearEl = ticker.querySelector('.year');
+  const labelEl = ticker.querySelector('.label');
+  const bar = document.getElementById('bar');
+  const marks = [...document.querySelectorAll('[data-year]')];
+
+  function onScroll(){
+    const h = document.documentElement;
+    const pct = h.scrollTop/(h.scrollHeight-h.clientHeight);
+    bar.style.width = (pct*100)+'%';
+
+    // find the marker nearest the viewport middle
+    const mid = window.scrollY + window.innerHeight/2;
+    let current = marks[0];
+    marks.forEach(m=>{ if(m.offsetTop <= mid) current = m; });
+    if(current){
+      const y = current.dataset.year, l = current.dataset.label;
+      if(yearEl.textContent !== y){ yearEl.textContent = y; labelEl.textContent = l; }
+    }
+    // hide ticker on hero
+    ticker.style.opacity = window.scrollY < window.innerHeight*0.6 ? 0 : 1;
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+</script>
+</body>
+</html>

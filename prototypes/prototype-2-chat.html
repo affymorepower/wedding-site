@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Affy &amp; Sam — Ask Us Anything (Chat Prototype)</title>
+<style>
+  :root{
+    --ink:#1d1b1a;
+    --bg:#ece5db;
+    --bubble-them:#ffffff;
+    --bubble-you:#c08a3e;
+    --you-text:#fff;
+    --accent:#c08a3e;
+    --sage:#9bae9b;
+    --sans:"Helvetica Neue",-apple-system,Arial,sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:var(--sans);background:var(--bg);color:var(--ink);
+    height:100vh;display:flex;flex-direction:column;overflow:hidden}
+
+  .proto-tag{background:#1d1b1a;color:#fff;font-size:10.5px;letter-spacing:.12em;
+    text-transform:uppercase;text-align:center;padding:6px}
+
+  /* header */
+  .topbar{
+    display:flex;align-items:center;gap:12px;padding:14px 18px;
+    background:#fffdf9;border-bottom:1px solid #e3d9cc;
+  }
+  .avatar{width:42px;height:42px;border-radius:50%;
+    background:radial-gradient(circle at 35% 30%,#e9c9c2,#c08a3e);
+    display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:15px}
+  .topbar .name{font-weight:600;font-size:16px}
+  .topbar .status{font-size:12px;color:var(--sage)}
+  .topbar .status::before{content:"●";color:#5fbf72;margin-right:5px;font-size:9px;vertical-align:1px}
+
+  /* messages */
+  .feed{flex:1;overflow-y:auto;padding:22px 16px 8px;display:flex;flex-direction:column;gap:10px}
+  .row{display:flex;max-width:78%}
+  .row.them{align-self:flex-start}
+  .row.you{align-self:flex-end;justify-content:flex-end}
+  .bubble{
+    padding:11px 15px;border-radius:20px;font-size:15px;line-height:1.45;
+    box-shadow:0 1px 1px rgba(0,0,0,.06);animation:pop .25s ease;
+  }
+  .them .bubble{background:var(--bubble-them);border-bottom-left-radius:6px}
+  .you .bubble{background:var(--bubble-you);color:var(--you-text);border-bottom-right-radius:6px}
+  @keyframes pop{from{opacity:0;transform:translateY(8px) scale(.97)}to{opacity:1;transform:none}}
+
+  .bubble.photo{padding:0;overflow:hidden;width:230px;height:150px;
+    display:flex;align-items:flex-end;color:#fff;font-size:12px;letter-spacing:.04em}
+  .bubble.photo span{padding:10px;background:linear-gradient(transparent,rgba(0,0,0,.45));width:100%}
+  .pa{background:linear-gradient(135deg,#c7b8a1,#8d7a63)}
+  .pb{background:linear-gradient(135deg,#9bae9b,#6f8a72)}
+  .pc{background:linear-gradient(135deg,#d8b56b,#b07d2e)}
+
+  /* typing indicator */
+  .typing{display:flex;gap:4px;padding:14px 16px;background:#fff;border-radius:20px;
+    border-bottom-left-radius:6px;width:54px}
+  .typing i{width:7px;height:7px;border-radius:50%;background:#b9b0a4;animation:blink 1.3s infinite}
+  .typing i:nth-child(2){animation-delay:.2s}.typing i:nth-child(3){animation-delay:.4s}
+  @keyframes blink{0%,60%,100%{opacity:.3;transform:translateY(0)}30%{opacity:1;transform:translateY(-3px)}}
+
+  /* quick replies + input */
+  .dock{background:#fffdf9;border-top:1px solid #e3d9cc;padding:12px 14px}
+  .chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:10px}
+  .chips::-webkit-scrollbar{display:none}
+  .chip{flex:0 0 auto;border:1.5px solid var(--accent);color:var(--accent);
+    background:transparent;border-radius:30px;padding:9px 16px;font-size:13.5px;
+    font-family:var(--sans);cursor:pointer;white-space:nowrap;transition:.15s}
+  .chip:hover{background:var(--accent);color:#fff}
+  .inputrow{display:flex;gap:9px;align-items:center}
+  .inputrow input{flex:1;border:1px solid #ddd2c2;border-radius:30px;padding:12px 16px;
+    font-size:15px;font-family:var(--sans);outline:none;background:#fff}
+  .inputrow button{border:none;background:var(--accent);color:#fff;width:44px;height:44px;
+    border-radius:50%;font-size:18px;cursor:pointer;flex:0 0 auto}
+</style>
+</head>
+<body>
+  <div class="proto-tag">Prototype · "The whole site is a chat" · replies are scripted placeholders</div>
+
+  <div class="topbar">
+    <div class="avatar">A&amp;S</div>
+    <div>
+      <div class="name">Affy &amp; Sam</div>
+      <div class="status">getting married · ask us anything</div>
+    </div>
+  </div>
+
+  <div class="feed" id="feed"></div>
+
+  <div class="dock">
+    <div class="chips" id="chips"></div>
+    <div class="inputrow">
+      <input id="input" placeholder="Type a question…" autocomplete="off">
+      <button id="send">↑</button>
+    </div>
+  </div>
+
+<script>
+  const feed = document.getElementById('feed');
+  const chipsBox = document.getElementById('chips');
+  const input = document.getElementById('input');
+
+  // ---- scripted knowledge base ----
+  const replies = {
+    story:[
+      "We met in 2018 over a spilled flat white ☕ — Affy reached for Sam's coffee by accident.",
+      {photo:'pa',cap:'The coffee shop where it all began'},
+      "Eight years, one dog, and a lot of road trips later… here we are 💍"
+    ],
+    met:[
+      "Honestly? A coffee mix-up. Sam apologised about five times, Affy laughed, and we ended up talking for two hours.",
+      "Neither of us planned to fall for a stranger that morning. Highly recommend it though."
+    ],
+    proposal:[
+      "Same coffee shop. Same order. Sam got down on one knee 🥹",
+      {photo:'pc',cap:'October 2024 — she said yes'},
+      "The barista filmed the whole thing. We owe her a thank-you card."
+    ],
+    when:[
+      "📅 Saturday, 12 September 2026.",
+      "Ceremony at 3:00pm, dinner & dancing to follow. Arrive by 2:30 so you don't miss the good bit!"
+    ],
+    where:[
+      "🌿 The Old Mill, Cotswolds — about 90 minutes from London.",
+      {photo:'pb',cap:'The Old Mill — our venue'},
+      "Full directions and parking info will be on the details page."
+    ],
+    dress:[
+      "Garden formal ✨ Think suits and summer dresses.",
+      "It's mostly outdoors on grass, so maybe skip the stiletto heels 😄"
+    ],
+    stay:[
+      "We've blocked rooms at two nearby hotels and there's a campsite for the brave.",
+      "Want me to send the booking links? (In the real version, this would.)"
+    ],
+    rsvp:[
+      "Yes please! 🙏 RSVP by 1 August.",
+      "In the real site this button would take you straight to the RSVP form."
+    ],
+    gift:[
+      "Your presence is the present 🤍 But if you insist, we have a small honeymoon fund.",
+      "No gifts necessary — seriously."
+    ],
+    food:[
+      "Three-course dinner with veggie, vegan and gluten-free options 🍽️",
+      "You'll pick your meal on the RSVP form, and tell us about allergies there too."
+    ],
+    fallback:[
+      "Great question! In the real version, this is where a smart assistant (or our pre-written answers) would reply 💬",
+      "Try one of the suggested questions below 👇"
+    ]
+  };
+
+  const chipDefs = [
+    {label:"Tell me your story",key:"story"},
+    {label:"How did you meet?",key:"met"},
+    {label:"The proposal?",key:"proposal"},
+    {label:"When & where?",key:"when2"},
+    {label:"Dress code?",key:"dress"},
+    {label:"Where do I stay?",key:"stay"},
+    {label:"Gifts?",key:"gift"},
+    {label:"RSVP",key:"rsvp"}
+  ];
+
+  function renderChips(){
+    chipsBox.innerHTML='';
+    chipDefs.forEach(c=>{
+      const b=document.createElement('button');
+      b.className='chip';b.textContent=c.label;
+      b.onclick=()=>{ pushYou(c.label); answer(c.key); };
+      chipsBox.appendChild(b);
+    });
+  }
+
+  function pushYou(text){
+    const row=document.createElement('div');row.className='row you';
+    row.innerHTML=`<div class="bubble">${text}</div>`;
+    feed.appendChild(row);scrollDown();
+  }
+
+  function pushThem(item){
+    const row=document.createElement('div');row.className='row them';
+    if(typeof item==='string'){
+      row.innerHTML=`<div class="bubble">${item}</div>`;
+    }else if(item.photo){
+      row.innerHTML=`<div class="bubble photo ${item.photo}"><span>${item.cap}</span></div>`;
+    }
+    feed.appendChild(row);scrollDown();
+  }
+
+  function typing(){
+    const row=document.createElement('div');row.className='row them';row.id='typing';
+    row.innerHTML=`<div class="typing"><i></i><i></i><i></i></div>`;
+    feed.appendChild(row);scrollDown();
+  }
+  function stopTyping(){const t=document.getElementById('typing');if(t)t.remove();}
+
+  function scrollDown(){feed.scrollTop=feed.scrollHeight;}
+
+  // play a sequence of "them" messages with realistic delays
+  async function playSequence(items){
+    for(const item of items){
+      typing();
+      await wait(700 + Math.random()*600);
+      stopTyping();
+      pushThem(item);
+      await wait(350);
+    }
+  }
+  const wait = ms => new Promise(r=>setTimeout(r,ms));
+
+  function resolveKey(key){
+    if(key==='when2'){ return [...replies.when, ...replies.where]; }
+    return replies[key] || replies.fallback;
+  }
+  async function answer(key){
+    await playSequence(resolveKey(key));
+  }
+
+  // free-text → keyword matching
+  function matchFree(text){
+    const t=text.toLowerCase();
+    if(/(meet|met|how.*start|begin)/.test(t)) return 'met';
+    if(/(propos|engag|ring|knee)/.test(t)) return 'proposal';
+    if(/(when|date|time|day)/.test(t)) return 'when';
+    if(/(where|venue|location|place|address)/.test(t)) return 'where';
+    if(/(dress|wear|attire|outfit)/.test(t)) return 'dress';
+    if(/(stay|hotel|sleep|accom)/.test(t)) return 'stay';
+    if(/(gift|present|registry)/.test(t)) return 'gift';
+    if(/(food|eat|meal|dinner|menu|veg|allerg)/.test(t)) return 'food';
+    if(/(rsvp|coming|attend)/.test(t)) return 'rsvp';
+    if(/(story|about you|love)/.test(t)) return 'story';
+    return 'fallback';
+  }
+
+  function sendFree(){
+    const text=input.value.trim();if(!text)return;
+    pushYou(text);input.value='';
+    answer(matchFree(text));
+  }
+  document.getElementById('send').onclick=sendFree;
+  input.addEventListener('keydown',e=>{if(e.key==='Enter')sendFree();});
+
+  // ---- auto-play intro so it feels alive on load ----
+  renderChips();
+  (async()=>{
+    await playSequence([
+      "Hi, lovely to see you here 👋",
+      "We're Affy & Sam — and we're getting married 🎉",
+      "Ask us anything, or tap a question below to start."
+    ]);
+  })();
+</script>
+</body>
+</html>

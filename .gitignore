@@ -6,3 +6,10 @@ node_modules/
 *.log
 .env
 .env.local
+.vercel
+
+# Planning docs — kept locally, not site content
+*.xlsx
+*.docx
+*.doc
+.~lock.*#
