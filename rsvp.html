@@ -40,19 +40,17 @@
 }
 
 :root {
-  --bg:#faf8f5; --surface:#fffdfa; --fg:#23201c; --muted:#6b645c;
-  --line:#e0d9cf; --accent:#8a6f4e; --accent-fg:#fff; --error:#a8342a;
-  --cta:#4a6b47; --cta-fg:#ffffff;
+  /* Base palette: "Editorial Warmth" — keep in sync with index.html.
+     Light only; there is no dark variant. */
+  --bg:#f4efe6; --surface:#fbf8f2; --fg:#3a2e24; --muted:#6e6055;
+  --line:#e2d8c9; --accent:#b0802c; --accent-fg:#fff; --error:#6e1f27;
+  --cta:#46603f; --cta-fg:#ffffff;
   --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
   --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --measure: 34rem; --gutter: 1.25rem; --radius: 4px;
 }
-@media (prefers-color-scheme: dark) {
-  :root { --bg:#17150f; --surface:#201d16; --fg:#f0ebe3; --muted:#a49b8e;
-          --line:#37322a; --accent:#c9a97a; --accent-fg:#17150f; --error:#e88b80;
-          --cta:#9dc199; --cta-fg:#17150f; }
-}
 *, *::before, *::after { box-sizing: border-box; }
+html { color-scheme: light; }   /* light in every OS setting */
 body {
   margin:0; background:var(--bg); color:var(--fg);
   font:1rem/1.6 var(--font-body); font-optical-sizing:auto;
