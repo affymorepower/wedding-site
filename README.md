@@ -1,8 +1,14 @@
 # Affy &amp; Gabby — Wedding Site
 
-**18–20 March 2027.** Oudtshoorn, Little Karoo. Venue TBC.
+**14–20 March 2027.** Cape Town and the Little Karoo.
 
-Three events: welcome picnic (Thu), holud (Fri), wedding (Sat).
+Three events, spread over a week and split across two cities:
+
+| Date | Event | Where |
+|---|---|---|
+| Sun 14 Mar | Welcome picnic | Kirstenbosch Botanical Gardens, Cape Town |
+| Tue 16 Mar | Holud | Norval Foundation gardens, Cape Town |
+| Sat 20 Mar | Wedding | Buffelsdrift Game Lodge, Oudtshoorn |
 
 The plan, the reasoning and the open questions live in [website-plan.md](website-plan.md). Read that first.
 
