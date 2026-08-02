@@ -147,7 +147,9 @@ header.hero {
 .hero__eyebrow {
   margin: 0 0 1.5rem; font-size: clamp(.625rem, 1.4vw, .75rem);
   letter-spacing: .3em; text-transform: uppercase; color: rgba(255,255,255,.9);
-  text-wrap: balance; max-width: 26ch; margin-inline: auto;
+  /* .3em of tracking eats roughly a third of the line, so the ch budget has to
+     be generous or this breaks into three stacked fragments. */
+  text-wrap: balance; max-width: 52ch; margin-inline: auto;
 }
 .hero__names {
   margin: 0; font-size: clamp(2.25rem, 8vw, 4.5rem);
@@ -238,6 +240,13 @@ header.hero {
 @media (max-width: 44rem) {
   .track { grid-template-columns: 1fr; gap: 2.75rem; }
   .bloom { width: 5.5rem; height: 5.5rem; }
+}
+@media (max-width: 40rem) {
+  /* Six links will not sit on one row at 390px, so give the wrap less to wrap,
+     and keep the framed hero card clear of the two-row bar. */
+  nav > ul.wide { gap: .45rem 1.25rem; padding: 1rem var(--gutter); font-size: .6875rem; letter-spacing: .12em; }
+  .hero__copy { padding-top: 6rem; }
+  .card--hero { outline-offset: 4px; }
 }
 
 /* ---- the plate: how one photograph is supposed to be used ----

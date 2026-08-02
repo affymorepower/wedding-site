@@ -128,16 +128,19 @@ header.hero {
   background:
     image-set(url('../images/hero.jpg') 1x) var(--hero-focus) / cover no-repeat,
     linear-gradient(#3d4a52 0%, #55605c 42%, #3f4a3c 52%, #262e2a 100%);
-  filter: saturate(.82) brightness(.72) contrast(1.06);
+  /* The source photo is first light: cool, flat, blue. Desaturating it just
+     made it overcast, so instead push warmth in (sepia) and hold saturation
+     while dropping the exposure. That is what turns dawn into dusk. */
+  filter: sepia(.28) saturate(1.15) brightness(.70) contrast(1.08) hue-rotate(-6deg);
 }
 /* Two scrims and a warm one: the top holds the nav, the bottom hands off to the
    dusk ground below, and the warm wash pulls the whole photo towards sundown. */
 .hero__scrim {
   position: absolute; inset: 0; z-index: -1; pointer-events: none;
   background:
-    linear-gradient(to bottom, rgba(8,10,7,.55), rgba(8,10,7,.15) 34%, rgba(8,10,7,0) 55%),
+    linear-gradient(to bottom, rgba(8,10,7,.50), rgba(8,10,7,.10) 32%, rgba(8,10,7,0) 52%),
     linear-gradient(to top,    var(--dusk) 2%, rgba(28,33,23,.55) 22%, rgba(28,33,23,0) 55%),
-    radial-gradient(120% 70% at 50% 18%, rgba(201,154,63,.16), transparent 60%);
+    radial-gradient(130% 80% at 50% 30%, rgba(224,150,58,.26), transparent 62%);
 }
 .hero__copy {
   position: absolute; inset-inline: 0; top: 0; height: 100svh;
@@ -149,7 +152,10 @@ header.hero {
 .hero__eyebrow {
   margin: 0 0 2rem; font-size: clamp(.6875rem, 1.4vw, .8125rem);
   letter-spacing: .3em; text-transform: uppercase;
-  color: var(--gold); text-wrap: balance; max-width: 30ch;
+  /* Pale gold rather than the flat brand gold: at this size, over a photo,
+     the darker value stops being legible before it stops being pretty. */
+  color: #f0d9a6; text-shadow: 0 1px 14px rgba(0,0,0,.55);
+  text-wrap: balance; max-width: 52ch;
 }
 /* Names stacked with a gold ampersand doing the work, rather than one long
    italic line. Upright Fraunces, wide-tracked — reads as engraved. */
@@ -230,9 +236,12 @@ header.hero {
   background: var(--stem) center / contain no-repeat;
   filter: drop-shadow(0 0 18px color-mix(in srgb, var(--event) 55%, transparent));
 }
-.stop--picnic  { --stem: url('../images/flowers/picnic.webp');  --event: var(--ev-picnic); }
-.stop--holud   { --stem: url('../images/flowers/holud.webp');   --event: var(--ev-holud); }
-.stop--wedding { --stem: url('../images/flowers/wedding.webp'); --event: var(--ev-wedding); }
+/* Flower set two: head-only cut-outs, no stems. On a dark ground a trailing
+   stem reads as a smudge, and the glow has nothing to sit behind. --event here
+   is the glow colour, so it tracks the bloom rather than the old register. */
+.stop--picnic  { --stem: url('../images/flowers/pincushion-yellow.webp'); --event: #d8a52a; }
+.stop--holud   { --stem: url('../images/flowers/marigold.webp');          --event: var(--ev-holud); }
+.stop--wedding { --stem: url('../images/flowers/protea-crimson.webp');    --event: #b3225a; }
 .stop .place {
   margin: 0; font-size: .6875rem; letter-spacing: .18em; text-transform: uppercase;
   color: var(--gold); font-weight: 600;
@@ -268,6 +277,12 @@ header.hero {
 @media (max-width: 52rem) {
   .story__grid { grid-template-columns: 1fr; gap: 2.5rem; }
   .strip { grid-template-rows: repeat(8, 4.2rem); }
+}
+@media (max-width: 40rem) {
+  /* Six links will not sit on one row at 390px, so give the wrap less to wrap,
+     and keep the centred hero copy clear of the two-row bar. */
+  nav > ul.wide { gap: .45rem 1.25rem; padding: 1rem var(--gutter); font-size: .75rem; letter-spacing: .08em; }
+  .hero__copy { padding-top: 6rem; }
 }
 
 /* ---- sections on linen: the practical half of the page ---- */

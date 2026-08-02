@@ -139,7 +139,10 @@ header.hero {
 .hero__copy {
   position: absolute; inset-inline: 0; top: 0; height: 100svh;
   display: flex; flex-direction: column; align-items: center;
-  padding: 10svh var(--gutter) 6svh;
+  /* 10svh is the look; the max() is the floor. On a phone the nav wraps to two
+     rows (~112px) and 10svh of an 844px screen is only 84 — the eyebrow lands
+     underneath the links. Never start the copy above the bar. */
+  padding: max(10svh, 8rem) var(--gutter) 6svh;
   text-shadow: 0 2px 24px rgba(0,0,0,.42);
   opacity: clamp(0, calc(1 - var(--sail) * 2.4), 1);
   will-change: opacity;
@@ -147,7 +150,9 @@ header.hero {
 .hero__eyebrow {
   margin: 0; font-size: clamp(.75rem, 1.5vw, .9375rem);
   letter-spacing: .22em; text-transform: uppercase; color: #fff;
-  text-wrap: balance; max-width: 28ch;
+  /* Wide enough to stay on one line at desktop, per the mockup; balance takes
+     over and splits it evenly once the viewport can't hold it. */
+  text-wrap: balance; max-width: 46ch;
 }
 /* Fraunces ships upright only in this repo, so italic is the browser's
    synthetic oblique. At this size it reads as intentional; SOFT/WONK are left
@@ -170,7 +175,9 @@ header.hero {
 
 @media (max-width: 40rem) {
   .hero__meta { flex-direction: column; align-items: center; gap: .4rem; letter-spacing: .1em; }
-  .hero__names { margin-top: 5svh; }
+  .hero__names { margin-top: 4svh; }
+  /* Six links will not sit on one row at 390px, so give the wrap less to wrap. */
+  nav > ul.wide { gap: .45rem 1.25rem; padding: 1rem var(--gutter); font-size: .75rem; letter-spacing: .08em; }
 }
 
 /* ---- the boat ---- */
@@ -222,32 +229,47 @@ header.hero {
   left: 0; right: 0; top: 2.25rem; height: 1px; background: var(--line);
 }
 .stop { text-align: center; position: relative; z-index: 1; }
+/* The plate: same colour as the section, so it is invisible except that the
+   hairline disappears behind it.
+
+   It hangs off .stop, NOT off .bloom. .bloom carries a drop-shadow filter,
+   which makes it a stacking context — and inside a stacking context the
+   element's own background paints before its negative-z-index children, so a
+   .bloom::before plate lands on top of the flower and hides it. */
+.stop::before {
+  content: ''; position: absolute; z-index: 0;
+  top: 0; height: 4.5rem; left: 50%; translate: -50% 0;
+  width: calc(4.5rem + 1.4rem);
+  background: var(--surface);
+}
 .bloom {
-  position: relative; display: block;
+  position: relative; z-index: 1; display: block;
   width: 4.5rem; height: 4.5rem; margin: 0 auto 1rem;
   background: var(--stem) center / contain no-repeat;
   filter: drop-shadow(0 6px 10px rgba(58,46,36,.16));
 }
-/* The plate. Same colour as the section, so it is invisible except that the
-   hairline disappears underneath it. */
-.bloom::before {
-  content: ''; position: absolute; inset: 0 -.7rem; z-index: -1;
-  background: var(--surface);
-}
-.stop--picnic  { --stem: url('../images/flowers/picnic.webp');  --event: var(--ev-picnic); }
-.stop--holud   { --stem: url('../images/flowers/holud.webp');   --event: var(--ev-holud); }
-.stop--wedding { --stem: url('../images/flowers/wedding.webp'); --event: var(--ev-wedding); }
+/* Flower set TWO, not the set the live site loads. These are the head-only
+   cut-outs in images/flowers — pincushion, marigold, crimson king protea —
+   and they give a clean yellow → orange → crimson arc across the three stops.
+   Set one (picnic/holud/wedding.webp) has stems and leaves, which read as
+   three unrelated illustrations at this size rather than one sequence. */
+.stop--picnic  { --stem: url('../images/flowers/pincushion-yellow.webp'); --event: var(--ev-picnic); }
+.stop--holud   { --stem: url('../images/flowers/marigold.webp');          --event: var(--ev-holud); }
+.stop--wedding { --stem: url('../images/flowers/protea-crimson.webp');    --event: var(--ev-wedding); }
 
-/* place → event → date, per the mockup */
+/* place → event → date, per the mockup. The place label stays a single muted
+   brown across all three: the flowers already carry the colour arc, and
+   tinting the labels as well made the row look like three separate widgets. */
 .stop .place {
   font-size: .6875rem; letter-spacing: .16em; text-transform: uppercase;
-  color: var(--event, var(--muted)); font-weight: 600; margin: 0;
+  color: var(--muted); font-weight: 600; margin: 0;
 }
 .stop .name { font-family: var(--font-display); font-size: 1.4rem; font-weight: 600; margin: .3rem 0 .25rem; }
 .stop .day  { font-size: .8125rem; color: var(--muted); margin: 0; }
 
 @media (max-width: 40rem) {
   .bloom { width: 3.25rem; height: 3.25rem; }
+  .stop::before { height: 3.25rem; width: calc(3.25rem + 1rem); }
   .track::before { top: 1.625rem; }
   .stop .name { font-size: 1.0625rem; }
   .stop .place { font-size: .625rem; letter-spacing: .1em; }

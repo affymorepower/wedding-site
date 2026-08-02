@@ -382,6 +382,37 @@ dl.facts dd { margin: 0; }
 .card h3 { margin: 0 0 .5rem; font-size: 1.125rem; }
 .card p:last-child { margin-bottom: 0; }
 
+/* ---- places to stay ----
+   Whole card is the link, so the photo and the name are one target rather than
+   three small ones. Photos and prices come straight off Booking.com's CDN,
+   which means they can rotate the URL and the image goes with it: if one of
+   these ever shows blank, that is why, and the fix is a local copy. */
+.stays {
+  display: grid; gap: 1rem; margin-top: 1.25rem;
+  /* 10.5rem so all three sit in one row inside the 38rem reading column:
+     any wider and the third wraps on its own, which reads as a mistake
+     rather than as three options. Drops to a single column on a phone. */
+  grid-template-columns: repeat(auto-fit, minmax(10.5rem, 1fr));
+}
+.stay {
+  display: flex; flex-direction: column; text-decoration: none; overflow: hidden;
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+  transition: border-color .2s ease;
+}
+.stay:hover, .stay:focus-visible { border-color: var(--event, var(--accent)); }
+.stay img {
+  display: block; width: 100%; aspect-ratio: 4 / 3;
+  object-fit: cover; background: var(--bg);
+}
+.stay__body { display: flex; flex-direction: column; gap: .3rem; padding: 1rem; flex: 1; }
+.stay h4 {
+  margin: 0; font-family: var(--font-display); font-weight: 400;
+  font-size: 1.0625rem; line-height: 1.25;
+}
+.stay .meta { margin: 0; font-size: .8125rem; color: var(--muted); }
+.stay .price { margin: auto 0 0; padding-top: .5rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+.stay .price span { font-weight: 400; font-size: .8125rem; color: var(--muted); }
+
 details { border-bottom: 1px solid var(--line); padding: .9rem 0; }
 details summary { cursor: pointer; font-weight: 600; }
 details p { margin: .75rem 0 0; color: var(--muted); }
@@ -589,10 +620,6 @@ footer { text-align: center; padding: 2.5rem var(--gutter) 4rem; color: var(--mu
     <p>The holud is a traditional ceremony that dates back to Affy's forefathers' times,
       where marriages were typically arranged and the bride and groom would be meeting
       for the first time.</p>
-    <p>People come to the holud (which actually means yellow but also means turmeric)
-      wearing really colourful clothes. If you're boring and bland don't worry we've got
-      you covered for this fun event only. We'll have colourful clothes for the lot of
-      you. It'll be shades of pink for the girls, shades of green for the boys.</p>
     <p>The traditions include &ldquo;looking through the mirror&rdquo; which involves the
       bride and groom seeing each other for the first time - but looking through the gaze
       of a mirror.</p>
@@ -634,13 +661,10 @@ footer { text-align: center; padding: 2.5rem var(--gutter) 4rem; color: var(--mu
     <p class="kicker">Logistics</p>
     <h2>Getting there &amp; staying</h2>
     <p class="lede">The week happens in two places. The picnic and the Holud are both in
-      Cape Town; the wedding is in Oudtshoorn, about four to five hours inland. There are
-      two good ways to make that drive and one of them is free.</p>
-
-    <p><span class="todo">Content needed</span>. The gap between the Holud on the
-      16th and the wedding on the 20th needs a plain answer: whether people stay in Cape
-      Town and travel over on the Friday or Saturday, or head to the Karoo earlier and
-      make a few days of it.</p>
+      Cape Town; the wedding is at a place called Oudtshoorn, about four to five hours
+      drive away. To help guests get to the wedding, we'll be chartering coaches from
+      Cape Town on Friday morning which will come at no cost to you, but if you'd like to
+      rent a car and make your own journey there, you're also more than welcome.</p>
 
     <div class="cards">
       <div class="card">
@@ -658,11 +682,50 @@ footer { text-align: center; padding: 2.5rem var(--gutter) 4rem; color: var(--mu
     </div>
 
     <h3 style="margin-top:2.5rem">Where to stay</h3>
-    <p><span class="todo">Content needed</span>. The RSVP asks people to pick from
-      named options with prices rather than asking what they're willing to spend. That
-      needs two or three actual options here first: somewhere on-site, somewhere mid,
-      somewhere cheap. List them with a per-night rate and people will self-select
-      without anyone feeling awkward.</p>
+    <p>Oudtshoorn is a small town and the wedding weekend will fill it, so book early.
+      Three we'd point you at, cheapest first.</p>
+
+    <div class="stays">
+      <a class="stay" target="_blank" rel="noopener"
+         href="https://www.booking.com/hotel/za/old-mill-lodge-a-la-carte-restaurant.en-gb.html">
+        <img loading="lazy" alt="Poplars and a still dam below the mountain at Old Mill Lodge"
+             src="https://cf.bstatic.com/xdata/images/hotel/square600/198889117.webp?k=19f69644a24c999d954853656caf35c422f13b9f40ddb8f109ebaac831f67a58&amp;o=">
+        <div class="stay__body">
+          <h4>Old Mill Lodge</h4>
+          <p class="meta">A working ostrich farm, 14 km out of town.
+            Scored 8.5 across 2,989 reviews.</p>
+          <p class="price">R1 762 <span>for the two nights</span></p>
+        </div>
+      </a>
+
+      <a class="stay" target="_blank" rel="noopener"
+         href="https://www.booking.com/hotel/za/de-zeekoe-guest-farm.en-gb.html">
+        <img loading="lazy" alt="A windmill and palms at sunset on De Zeekoe Guest Farm"
+             src="https://cf.bstatic.com/xdata/images/hotel/square600/225418475.webp?k=11b2804ca2a93e16acf6a8327c82f0e795242df94a0437239d714a8c8eaf6ca9&amp;o=">
+        <div class="stay__body">
+          <h4>De Zeekoe Guest Farm</h4>
+          <p class="meta">A guest farm 7 km out, breakfast included.
+            Scored 8.9 across 738 reviews.</p>
+          <p class="price">R4 068 <span>for the two nights</span></p>
+        </div>
+      </a>
+
+      <a class="stay" target="_blank" rel="noopener"
+         href="https://www.booking.com/hotel/za/la-pension-guest-house.en-gb.html">
+        <img loading="lazy" alt="Pool and shaded terrace at La Pension Guest House"
+             src="https://cf.bstatic.com/xdata/images/hotel/square600/411756616.webp?k=3468da1580ca40cabd99632909ceb5d24f584da4351db9eafb702a07d38df8a4&amp;o=">
+        <div class="stay__body">
+          <h4>La Pension Guest House</h4>
+          <p class="meta">In town, a ten minute walk from the centre, breakfast included.
+            Scored 9.8 across 755 reviews.</p>
+          <p class="price">R4 800 <span>for the two nights</span></p>
+        </div>
+      </a>
+    </div>
+
+    <p class="fineprint">Prices are what Booking.com showed for a double room for two
+      adults over the wedding weekend, Friday 19 to Sunday 21 March 2027, and they move.
+      Book it yourself, and book it early.</p>
   </div>
 </section>
 
