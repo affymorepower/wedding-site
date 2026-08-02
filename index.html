@@ -63,6 +63,13 @@
   --accent:    var(--gold);
   --accent-fg: #ffffff;
 
+  /* Printed-matter pair. --paper is one step darker than linen and alternates
+     down the page so neighbouring sections separate without a tint or a box;
+     --rule is a hairline with enough weight to hold a specimen table together,
+     which --line does not have. */
+  --paper:     #efe8db;
+  --rule:      #cbbfab;
+
   /* Event registers: quiet → loud → deep. Each event section and timeline
      stop sets --event from these, so one arc runs through the whole page. */
   --ev-picnic:  #b3737e;   /* wildflower meadow: chalky pink protea */
@@ -74,20 +81,29 @@
   --cta:       #46603f;
   --cta-fg:    #ffffff;
 
+  /* ---- the dark band ----
+     One section — Our story — runs on this instead of linen. Green-black
+     rather than neutral black so it belongs to the Karoo scrub in the hero.
+     The gold is lifted off --gold, which goes muddy at this contrast. */
+  --forest:      #1c2117;
+  --forest-2:    #232a1d;
+  --forest-fg:   #e9e3d5;
+  --forest-mute: #a8a08d;
+  --forest-gold: #c99a3f;
+
   --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
   --font-body:    'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
 
   --measure: 38rem;   /* readable line length */
   --gutter:  1.25rem;
-  --radius:  4px;
+  --radius:  2px;   /* printed matter, not a UI card */
 
   /* ---- hero ----
-     --hero-h is deliberately over 100vh: the last chunk of the photo sits below
-     the fold, which is what gives you something to scroll into. --boat-top is
-     where the illustration floats, as a share of the viewport. Nudge it until
-     the hull sits on the waterline of whatever photo you end up using. */
-  --hero-h:    134svh;
-  --boat-top:  75svh;
+     Over 100svh on purpose: the last strip of water sits below the fold, and
+     that is what gives you something to scroll into. It used to be 134svh to
+     make room for the rowing boat below the waterline; with the boat gone
+     there is no reason to hold that much empty water. */
+  --hero-h:    118svh;
   --hero-focus: 50% 42%;   /* background-position: keep the water low in frame */
 }
 
@@ -191,14 +207,16 @@ nav.nav--over .menu__panel a:hover { color: var(--fg); }
 }
 
 /* ---- hero ----
-   One tall block: the photo fills it edge to edge, the words sit centred in the
-   first viewport, and the boat waits just under the fold. Script writes --sail
-   (0 at the top of the page, 1 once the hero has fully scrolled past) and
-   everything below reads off it. */
+   One tall block: the photo fills it edge to edge. Inside the first viewport
+   the copy is a flex column — eyebrow parked near the top, names in the upper
+   third, and margin-top:auto on the meta row shoves it to the bottom edge, so
+   place / Bengali / date sit spread across the waterline.
+   Script writes --sail (0 at the top of the page, 1 once the hero has fully
+   scrolled past); the copy fades on it and the nav flips to solid. */
 header.hero {
   --sail: 0;
   position: relative; overflow: hidden; isolation: isolate;
-  height: 134vh; height: var(--hero-h);
+  height: 118vh; height: var(--hero-h);
   color: #fff; text-align: center;
 }
 
@@ -210,95 +228,62 @@ header.hero {
     image-set(url('images/hero.jpg') 1x) var(--hero-focus) / cover no-repeat,
     linear-gradient(#a9c4d4 0%, #cdd8d5 42%, #8fa08a 52%, #7d8f92 100%);
 }
-/* Top scrim for the nav, bottom one so the white linework never lands on glare. */
+/* Top scrim holds the nav; the bottom one keeps the meta row off the glare
+   coming up from the water. */
 .hero__scrim {
   position: absolute; inset: 0; z-index: -1; pointer-events: none;
   background:
-    linear-gradient(to bottom, rgba(20,26,30,.34), rgba(20,26,30,.12) 26%, rgba(20,26,30,0) 46%),
-    linear-gradient(to top,    rgba(20,26,30,.30), rgba(20,26,30,0) 40%);
+    linear-gradient(to bottom, rgba(20,26,30,.34), rgba(20,26,30,.10) 30%, rgba(20,26,30,0) 50%),
+    /* Reaches further up and lands harder than it used to. The meta row sits
+       at roughly 94svh, and the current hero is a bright, busy photo — pale
+       water and sunlit scrub — so white type there needs real help. */
+    linear-gradient(to top,    rgba(20,26,30,.46), rgba(20,26,30,.20) 22%, rgba(20,26,30,0) 52%);
 }
 
 .hero__copy {
   position: absolute; inset-inline: 0; top: 0;
   height: 100vh; height: 100svh;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  padding: 0 var(--gutter);
-  text-shadow: 0 2px 24px rgba(0,0,0,.4);
-  /* Fades out as you scroll into the water, so the drawing gets the stage. */
+  display: flex; flex-direction: column; align-items: center;
+  /* 10svh is the look; the max() is the floor. On a phone the nav wraps to two
+     rows and 10svh of a short screen puts the eyebrow underneath the links. */
+  padding: max(10svh, 8rem) var(--gutter) 6svh;
+  text-shadow: 0 2px 24px rgba(0,0,0,.42);
+  /* Fades out as you scroll down into the water. */
   opacity: clamp(0, calc(1 - var(--sail) * 2.4), 1);
   will-change: opacity;
 }
-/* Order is eyebrow → names → place → date → button. All of it stays #fff:
-   hierarchy comes from size and letter-spacing, not from fading anything out,
-   because the photo behind is already low-contrast at the horizon. */
+/* All of it stays #fff: hierarchy comes from size and letter-spacing, not from
+   fading anything out, because the photo behind is already low-contrast at the
+   horizon. */
 .hero__eyebrow {
-  font-size: clamp(.8125rem, 2.2vw, 1rem); margin: 0 0 1rem;
-  letter-spacing: .18em; text-transform: uppercase; color: #fff;
-  /* Stops "yet" stranding on its own line on narrow screens. */
-  text-wrap: balance; max-width: 24ch;
+  font-size: clamp(.75rem, 1.5vw, .9375rem); margin: 0;
+  letter-spacing: .22em; text-transform: uppercase; color: #fff;
+  /* Wide enough to hold one line on a desktop; balance splits it evenly once
+     the viewport can't. .22em of tracking is why this needs ~60ch and not ~40. */
+  text-wrap: balance; max-width: 62ch;
 }
-.hero__copy h1 { font-size: clamp(2.75rem, 11vw, 6rem); margin: 0 0 1.25rem; letter-spacing: -.01em; color: #fff; }
-.hero__copy .where { font-size: 1.125rem; margin: 0; letter-spacing: .04em; color: #fff; }
-.hero__copy .when  { font-size: 1.125rem; margin: .35rem 0 2rem; letter-spacing: .04em; color: #fff; }
-.hero__copy .btn { background: color-mix(in srgb, var(--cta) 92%, #000); box-shadow: 0 6px 28px rgba(0,0,0,.28); }
-
-/* Scroll cue, gone the moment you take the hint. */
-.hero__cue {
-  position: absolute; inset-inline: 0; top: calc(100svh - 3.25rem); z-index: 1;
-  font-size: .6875rem; letter-spacing: .18em; text-transform: uppercase;
-  opacity: clamp(0, calc(1 - var(--sail) * 6), .8);
-  text-shadow: 0 2px 16px rgba(0,0,0,.5);
+/* Fraunces ships upright only in fonts/, so this italic is the browser's
+   synthetic oblique. At this size it reads as intentional. If we ever want the
+   real thing, it's a second woff2 and one more @font-face. */
+.hero__names {
+  font-style: italic;
+  font-size: clamp(2.5rem, 8.6vw, 5.75rem);
+  letter-spacing: -.015em; margin: 7svh 0 0; color: #fff;
+  text-wrap: balance;
 }
-.hero__cue span { display: block; font-size: 1rem; letter-spacing: 0; animation: nudge 2.4s ease-in-out infinite; }
-@keyframes nudge { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(5px); } }
-
-/* ---- the boat ---- */
-.hero__scene {
-  --sail-span: 36vw;   /* how far it travels, left edge of the trip to right */
-  --sail-rise: 20svh;  /* how far below --boat-top it waits before you scroll */
-  position: absolute; inset-inline: 0; top: var(--boat-top);
-  display: flex; justify-content: center;
-  /* Sails left to right and rises into place: parked below the fold at rest,
-     settled on --boat-top by the time the hero has scrolled past. */
-  transform: translate3d(
-    calc(var(--sail) * var(--sail-span) - var(--sail-span) / 2),
-    calc((1 - var(--sail)) * var(--sail-rise)), 0);
-  will-change: transform;
+/* Edge to edge along the bottom of the first screen. Bengali falls back to the
+   OS Bengali face — Fraunces and Inter are both subset to Latin here. */
+.hero__meta {
+  margin-top: auto; width: 100%; max-width: 62rem;
+  display: flex; justify-content: space-between; align-items: baseline;
+  gap: 1rem; font-size: clamp(.875rem, 2vw, 1.125rem);
+  letter-spacing: .12em; color: #fff;
 }
-/* Every path inherits these: the drawing is nothing but white outline. */
-.hero__scene svg {
-  /* Big enough that the faces read: hoops, curls and a beard all live at about
-     4 user units, which needs roughly 1.1 screen px per unit to survive. */
-  width: min(41rem, 74vw); height: auto; overflow: visible;
-  fill: none; stroke: #fff; stroke-width: 2.9;
-  stroke-linecap: round; stroke-linejoin: round;
-  filter: drop-shadow(0 2px 10px rgba(0,0,0,.35));
-}
+.hero__meta [lang="bn"] { letter-spacing: 0; font-size: 1.05em; }
 
-#hull      { animation: bob 5s ease-in-out infinite; transform-origin: 300px 210px; }
-#oar       { animation: row 5s ease-in-out infinite; transform-origin: 428px 190px; }
-#wake path { animation: drift 6s linear infinite; }
-#wake path:nth-child(2) { animation-duration: 8s;   animation-delay: -2s; }
-#wake path:nth-child(3) { animation-duration: 7s;   animation-delay: -4s; }
-#birds     { animation: bob 7s ease-in-out infinite; transform-origin: 300px 40px; }
-
-@keyframes bob   { 0%, 100% { transform: translateY(0) rotate(-1.6deg); }
-                   50%      { transform: translateY(-7px) rotate(1.6deg); } }
-@keyframes row   { 0%, 100% { transform: rotate(-9deg); }
-                   50%      { transform: rotate(7deg); } }
-@keyframes drift { from { transform: translateX(0); opacity: .75; }
-                   50%  { opacity: .35; }
-                   to   { transform: translateX(-46px); opacity: .75; } }
-
-/* On a phone there is no room to sail: bigger boat, shorter crossing. */
 @media (max-width: 40rem) {
-  .hero__scene { --sail-span: 16vw; }
-  .hero__scene svg { width: 82vw; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  #hull, #oar, #wake path, #birds, .hero__cue span { animation: none; }
-  .hero__scene { transform: translate3d(0, 0, 0); }
+  .hero__meta { flex-direction: column; align-items: center; gap: .4rem; letter-spacing: .1em; }
+  .hero__names { margin-top: 4svh; }
 }
 
 .btn {
@@ -308,61 +293,130 @@ header.hero {
 }
 .btn:hover { opacity: .88; }
 
-/* ---- timeline ----
-   The three protea/marigold stand in for the old dots, and carry the
-   quiet → loud → deep arc on their own: chalky pink, then marigold, then the
-   deep crimson king protea. No connecting rule any more: the flowers are the
-   markers, and a hairline through them showed in the gaps between petals. */
-.timeline { border-block: 1px solid var(--line); padding: 3.25rem 0; background: var(--surface); }
-.track { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; position: relative; }
-.stop { text-align: center; position: relative; }
-.stop::before {
-  content: ''; display: block; width: 4.5rem; height: 4.5rem; margin: 0 auto 1rem;
-  background: var(--stem) center / contain no-repeat;
-  /* Lifts the cut-outs off the linen without a hard edge. */
-  filter: drop-shadow(0 6px 10px rgba(58,46,36,.16));
-}
-.stop--picnic  { --stem: url('images/flowers/picnic.webp');  --event: var(--ev-picnic); }
-.stop--holud   { --stem: url('images/flowers/holud.webp');   --event: var(--ev-holud); }
-.stop--wedding { --stem: url('images/flowers/wedding.webp'); --event: var(--ev-wedding); }
+/* ---- the week, in three parts ----
+   A contents page rather than a timeline: a full-length bloom over a roman
+   numeral, then the event name ruled off from its date and place.
 
-.stop .day {
-  font-size: .75rem; letter-spacing: .1em; text-transform: uppercase;
-  color: var(--event, var(--muted)); font-weight: 600;
+   The blooms are *-full.webp, recut from the 1024×1536 originals that sit
+   loose in images/. The old 256×256 squares cropped the stalk off at the first
+   leaf; these keep the whole thing, so the box is portrait (~15:32) and the
+   flower head lands smaller for the same overall height. Anchored to `bottom`
+   so the three stems all finish on the same line even though the blooms differ
+   in height. */
+.timeline { border-block: 1px solid var(--line); padding: 4rem 0 3.5rem; background: var(--surface); }
+.timeline__head {
+  text-align: center; margin: 0 0 2.75rem;
+  font-size: .6875rem; letter-spacing: .3em; text-transform: uppercase; color: var(--muted);
 }
-.stop .name { font-family: var(--font-display); font-size: 1.35rem; margin: .2rem 0; }
-.stop .sub { font-size: .8125rem; color: var(--muted); }
+.track { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+.stop { text-align: center; }
+.bloom {
+  display: block; width: 3.75rem; height: 8rem; margin: 0 auto 1.15rem;
+  background: var(--stem) center bottom / contain no-repeat;
+  filter: drop-shadow(0 8px 14px rgba(58,46,36,.14));
+}
+.stop--picnic  { --stem: url('images/flowers/picnic-full.webp');  --event: var(--ev-picnic); }
+.stop--holud   { --stem: url('images/flowers/holud-full.webp');   --event: var(--ev-holud); }
+.stop--wedding { --stem: url('images/flowers/wedding-full.webp'); --event: var(--ev-wedding); }
 
-@media (max-width: 40rem) {
-  .stop::before { width: 3.25rem; height: 3.25rem; }
-  .stop .name { font-size: 1.125rem; }
+.numeral {
+  display: block; font-family: var(--font-display);
+  font-size: .8125rem; letter-spacing: .3em; color: var(--event); margin-bottom: .55rem;
+}
+.stop .name {
+  font-family: var(--font-display); font-size: 1.4rem;
+  margin: 0 0 .55rem; padding-bottom: .6rem;
+  border-bottom: 1px solid var(--rule); display: inline-block;
+}
+.stop .day { margin: 0; font-size: .8125rem; }
+.stop .sub { margin: .15rem 0 0; font-size: .8125rem; color: var(--muted); }
+
+@media (max-width: 44rem) {
+  .track { grid-template-columns: 1fr; gap: 2.5rem; }
+  .bloom { width: 3.25rem; height: 6.5rem; }
+  .stop .name { font-size: 1.25rem; }
 }
 
-/* ---- sections ---- */
-section { padding: 4rem 0; border-bottom: 1px solid var(--line); }
-section h2 {
-  font-size: clamp(1.75rem, 5vw, 2.25rem); margin: 0 0 .35rem;
+/* ---- our story: the one dark band ----
+   Everything a guest has to absorb — times, places, what to pack — stays on
+   linen at full contrast. This section only has to land, so it gets the dark
+   ground and the photographs glow out of it. */
+#story {
+  background: var(--forest); color: var(--forest-fg);
+  border-bottom: 0; padding: 5rem 0;
 }
+#story .story__grid {
+  max-width: 66rem; margin: 0 auto; padding: 0 var(--gutter);
+  display: grid; gap: 3rem; grid-template-columns: 1fr 1fr; align-items: center;
+}
+#story h2 { color: #fff; font-size: clamp(2rem, 5vw, 3rem); margin: 0 0 1rem; }
+#story .kicker { color: var(--forest-gold); }
+#story p { color: color-mix(in srgb, var(--forest-fg) 84%, transparent); }
+#story code { color: var(--forest-fg); }
+
+/* Interlocking collage: two columns, four tiles, no two the same height. On a
+   dark ground a photo wants a thin warm edge, like a slide in a projector tray. */
+.collage {
+  display: grid; grid-template-columns: 1fr 1fr; gap: .85rem;
+  grid-template-rows: repeat(8, 3.1rem);
+}
+.collage figure {
+  margin: 0; overflow: hidden; border-radius: 2px;
+  border: 1px solid color-mix(in srgb, var(--forest-gold) 30%, transparent);
+  box-shadow: 0 12px 40px rgba(0,0,0,.45);
+}
+.collage img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.collage .t1 { grid-column: 1; grid-row: 1 / 5; }
+.collage .t2 { grid-column: 2; grid-row: 1 / 4; }
+.collage .t3 { grid-column: 2; grid-row: 4 / 9; }
+.collage .t4 { grid-column: 1; grid-row: 5 / 9; }
+/* Placeholders, so the shape reads before the photos exist. Delete the class
+   and drop an <img> in when Gabby sends them. */
+.collage .empty {
+  display: grid; place-items: center; text-align: center; padding: .5rem;
+  border-style: dashed; box-shadow: none; background: rgba(255,255,255,.03);
+  font-size: .625rem; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--forest-mute);
+}
+@media (max-width: 52rem) {
+  #story .story__grid { grid-template-columns: 1fr; gap: 2.5rem; }
+  .collage { grid-template-rows: repeat(8, 4.2rem); }
+}
+
+/* ---- sections: the field-guide treatment ----
+   Each section is a specimen plate. Its bloom, then a roman numeral and the
+   line of description, then the name in the event's colour, then the facts as
+   a ruled table the way a field guide lists a specimen.
+
+   Two things it deliberately does NOT do. It doesn't tint the section in the
+   event colour — the alternating linen/paper does the separating, and a tint
+   on top of that turned the page into stripes. And it doesn't italicise these
+   headings: the italic belongs to the hero, and repeating it here flattens the
+   difference between the two registers instead of tying them together. */
+section { padding: 4.75rem 0; border-bottom: 1px solid var(--rule); }
+/* Every other one steps to --paper. #story is nth-of-type 1 and carries an id,
+   so its dark ground wins regardless of where it lands in the count. */
+section:nth-of-type(even) { background: var(--paper); }
+section h2 { font-size: clamp(1.875rem, 5vw, 2.5rem); margin: 0 0 .4rem; }
 section .kicker {
-  font-size: .75rem; letter-spacing: .12em; text-transform: uppercase;
-  color: var(--event, var(--accent)); margin: 0 0 .5rem;
+  font-size: .6875rem; letter-spacing: .22em; text-transform: uppercase;
+  color: var(--event, var(--accent)); margin: 0 0 .6rem;
 }
+/* Sub-headings stay small and upright. Comes before .card h3 in the file so
+   the cards keep their own size on equal specificity. */
+section h3 { font-size: 1.1875rem; margin: 2.75rem 0 .75rem; }
 
-/* Each event runs in its own register: quiet, then loud, then deep. The tint
-   is deliberately faint: the arc should be felt rather than announced, and the
-   Linen ground has to stay the constant underneath all three. */
-#picnic  { --event: var(--ev-picnic); }
-#holud   { --event: var(--ev-holud); }
-#wedding { --event: var(--ev-wedding); }
-#picnic, #holud, #wedding {
-  background: color-mix(in srgb, var(--event) 4.5%, var(--bg));
+/* The section's bloom, small. Portrait box because these are the full-stem
+   cut-outs; anchored bottom so the stalk sits on the kicker's baseline. */
+.mark {
+  display: block; width: 2.6rem; height: 5.5rem; margin: 0 0 1.2rem;
+  background: var(--stem) center bottom / contain no-repeat;
+  filter: drop-shadow(0 4px 8px rgba(58,46,36,.12));
 }
+#picnic  { --event: var(--ev-picnic);  --stem: url('images/flowers/picnic-full.webp'); }
+#holud   { --event: var(--ev-holud);   --stem: url('images/flowers/holud-full.webp'); }
+#wedding { --event: var(--ev-wedding); --stem: url('images/flowers/wedding-full.webp'); }
 #picnic h2, #holud h2, #wedding h2 { color: var(--event); }
-/* A hairline in the event colour, sitting under the section heading. */
-#picnic .facts, #holud .facts, #wedding .facts {
-  border-top: 2px solid color-mix(in srgb, var(--event) 45%, transparent);
-  padding-top: 1.25rem;
-}
 section p { margin: 0 0 1rem; }
 .lede { font-size: 1.0625rem; color: var(--muted); margin-bottom: 2rem; }
 .note {
@@ -370,16 +424,31 @@ section p { margin: 0 0 1rem; }
   border-left: 2px solid var(--event, var(--accent)); padding-left: .9rem; margin-top: 1.5rem;
 }
 
-dl.facts { display: grid; grid-template-columns: auto 1fr; gap: .5rem 1.25rem; margin: 0 0 1.5rem; }
-dl.facts dt { color: var(--muted); font-size: .875rem; }
-dl.facts dd { margin: 0; }
-
-.cards { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); }
-.card {
-  background: var(--surface); border: 1px solid var(--line);
-  border-radius: var(--radius); padding: 1.25rem;
+/* Facts as a ruled specimen table: each row is a <div> wrapping its dt/dd so
+   the pair can share a grid row and carry its own hairline. */
+dl.facts { margin: 0 0 1.75rem; border-top: 1px solid var(--rule); }
+dl.facts div {
+  display: grid; grid-template-columns: 7rem 1fr; gap: 1rem;
+  padding: .7rem 0; border-bottom: 1px solid var(--rule);
 }
-.card h3 { margin: 0 0 .5rem; font-size: 1.125rem; }
+dl.facts dt {
+  margin: 0; color: var(--muted); padding-top: .18rem;
+  font-size: .6875rem; letter-spacing: .16em; text-transform: uppercase;
+}
+dl.facts dd { margin: 0; }
+/* Under about 30rem the 7rem label column starves the value, so stack them. */
+@media (max-width: 30rem) {
+  dl.facts div { grid-template-columns: 1fr; gap: .15rem; }
+}
+
+/* Columns under a rule rather than boxes. On an alternating linen/paper ground
+   a bordered card reads as a third surface fighting the other two. */
+/* 11rem, not 14: at the 38rem measure a 14rem track only fits two, so the
+   third what-to-wear card wrapped onto its own row and left a bare rule
+   hanging beside nothing. A box could carry that; a rule can't. */
+.cards { display: grid; gap: 1.25rem; grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr)); }
+.card { border-top: 2px solid var(--rule); padding-top: 1rem; }
+.card h3 { margin: 0 0 .5rem; font-size: 1.0625rem; }
 .card p:last-child { margin-bottom: 0; }
 
 /* ---- places to stay ----
@@ -396,7 +465,7 @@ dl.facts dd { margin: 0; }
 }
 .stay {
   display: flex; flex-direction: column; text-decoration: none; overflow: hidden;
-  background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+  background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius);
   transition: border-color .2s ease;
 }
 .stay:hover, .stay:focus-visible { border-color: var(--event, var(--accent)); }
@@ -413,7 +482,7 @@ dl.facts dd { margin: 0; }
 .stay .price { margin: auto 0 0; padding-top: .5rem; font-weight: 600; font-variant-numeric: tabular-nums; }
 .stay .price span { font-weight: 400; font-size: .8125rem; color: var(--muted); }
 
-details { border-bottom: 1px solid var(--line); padding: .9rem 0; }
+details { border-bottom: 1px solid var(--rule); padding: .9rem 0; }
 details summary { cursor: pointer; font-weight: 600; }
 details p { margin: .75rem 0 0; color: var(--muted); }
 details strong { color: var(--fg); }
@@ -423,7 +492,7 @@ details strong { color: var(--fg); }
    document scroll sideways on a phone. */
 .table-scroll { overflow-x: auto; margin: 1rem 0 0; }
 table.rates { border-collapse: collapse; width: 100%; min-width: 21rem; font-size: .9375rem; }
-table.rates th, table.rates td { text-align: left; padding: .5rem .75rem .5rem 0; border-bottom: 1px solid var(--line); }
+table.rates th, table.rates td { text-align: left; padding: .5rem .75rem .5rem 0; border-bottom: 1px solid var(--rule); }
 table.rates th {
   font-size: .6875rem; letter-spacing: .1em; text-transform: uppercase;
   color: var(--muted); font-weight: 600;
@@ -440,7 +509,7 @@ table.rates .hint { display: block; font-size: .8125rem; color: var(--muted); }
   padding: .1rem .4rem; vertical-align: middle;
 }
 
-section.rsvp { text-align: center; border-bottom: none; padding: 5rem 0; }
+section.rsvp { text-align: center; border-bottom: none; padding: 5.75rem 0; }
 footer { text-align: center; padding: 2.5rem var(--gutter) 4rem; color: var(--muted); font-size: .875rem; }
 </style>
 </head>
@@ -471,102 +540,39 @@ footer { text-align: center; padding: 2.5rem var(--gutter) 4rem; color: var(--mu
 
   <div class="hero__copy">
     <p class="hero__eyebrow">Join us for our biggest adventure yet</p>
-    <h1>Gabby &amp; Affy</h1>
-    <p class="where">South Africa</p>
-    <p class="when">March 2027</p>
-    <a class="btn" href="/rsvp">RSVP</a>
+    <h1 class="hero__names">Gabby &amp; Affy's Wedding</h1>
+    <div class="hero__meta">
+      <span>South Africa</span>
+      <span lang="bn">আমাদের বিয়ে</span>
+      <span>March 2027</span>
+    </div>
   </div>
 
-  <p class="hero__cue">Scroll<span aria-hidden="true">&darr;</span></p>
-
-  <!-- The two of us, out on the water. Pure outline, no fills: the photo shows
-       through it. Stroke colour and weight are set once in .hero__scene svg. -->
-  <div class="hero__scene" aria-hidden="true">
-    <svg viewBox="0 0 600 320" xmlns="http://www.w3.org/2000/svg" role="img"
-         aria-label="Line drawing of Affy and Gabby in a rowing boat">
-
-      <g id="birds">
-        <path d="M96 54q10-10 20 0q10-10 20 0"/>
-        <path d="M160 30q7-7 14 0q7-7 14 0"/>
-      </g>
-
-      <g id="wake">
-        <path d="M20 254q22-10 44 0t44 0t44 0t44 0t44 0t44 0t44 0t44 0t44 0t44 0t44 0t44 0"/>
-        <path d="M-10 274q22-10 44 0t44 0t44 0t44 0t44 0t44 0t44 0t44 0t44 0t44 0t44 0t44 0"/>
-        <path d="M40 292q22-10 44 0t44 0t44 0t44 0t44 0t44 0t44 0t44 0t44 0t44 0t44 0t44 0"/>
-      </g>
-
-      <g id="hull">
-        <!-- boat -->
-        <path d="M168 196h264q-28 48-132 48T168 196z"/>
-        <path d="M184 208q116 20 232 0"/>
-        <path d="M118 240q16-8 32 0"/>
-        <path d="M450 240q16-8 32 0"/>
-
-        <!-- Gabby: centre part, the long wavy hair, hoops, near arm up waving -->
-        <g id="gabby">
-          <circle cx="256" cy="118" r="20"/>
-          <path d="M241 106q6-11 15-11t15 11"/>
-          <path d="M256 98v8"/>
-          <path d="M247 115q3-4 6 0"/>
-          <path d="M259 115q3-4 6 0"/>
-          <path d="M248 126q8 8 16 0"/>
-          <circle cx="241" cy="134" r="3.5"/>
-          <!-- hair: out past the shoulders, two waves, tucked in at the ends -->
-          <path d="M253 99q-21 3-23 25q-1 14-7 26q-5 11 1 21q3 6 10 7"/>
-          <path d="M259 99q21 3 23 25q2 15 9 28q5 11-1 22q-3 6-10 7"/>
-          <path d="M256 138v10"/>
-          <path d="M230 196q2-32 12-40q14-10 28 0q10 8 12 40"/>
-          <path d="M240 154l-22-24"/>
-          <path d="M218 130l-2-8"/>
-          <path d="M218 130l-7-4"/>
-          <path d="M218 130l-8 3"/>
-        </g>
-
-        <!-- Affy: cap over the curls, beard and moustache, doing all the rowing -->
-        <g id="affy">
-          <circle cx="354" cy="120" r="20"/>
-          <path d="M334 112q4-24 20-24t20 24"/>
-          <path d="M334 112q-16 1-20 7q9 6 18 3"/>
-          <!-- curls escaping at the temples and the nape -->
-          <path d="M336 118q-6 4-2 9"/>
-          <path d="M374 116q8 2 6 10q-2 6-8 5"/>
-          <path d="M373 129q7 3 4 10"/>
-          <path d="M344 122q3-4 6 0"/>
-          <path d="M358 122q3-4 6 0"/>
-          <path d="M345 132q9 5 18 0"/>
-          <path d="M336 124q2 26 18 28q16-2 18-28"/>
-          <path d="M354 152v6"/>
-          <path d="M328 196q2-32 12-40q14-10 28 0q10 8 12 40"/>
-          <path d="M374 164q12 4 18 14"/>
-        </g>
-
-        <!-- One oar, out over the water on his side -->
-        <g id="oar">
-          <path d="M392 178l104 28"/>
-          <path d="M496 206q22-9 37 3q-13 15-37 5z"/>
-        </g>
-      </g>
-    </svg>
-  </div>
 </header>
 
 <div class="timeline" id="timeline">
   <div class="wide">
+    <p class="timeline__head">The week, in three parts</p>
     <div class="track">
       <div class="stop stop--picnic">
-        <p class="day">Sun 14 March</p>
+        <span class="bloom" aria-hidden="true"></span>
+        <span class="numeral" aria-hidden="true">I</span>
         <p class="name">Welcome picnic</p>
+        <p class="day">Sunday, 14 March 2027</p>
         <p class="sub">Kirstenbosch, Cape Town</p>
       </div>
       <div class="stop stop--holud">
-        <p class="day">Tue 16 March</p>
-        <p class="name">Holud</p>
+        <span class="bloom" aria-hidden="true"></span>
+        <span class="numeral" aria-hidden="true">II</span>
+        <p class="name">The Holud</p>
+        <p class="day">Tuesday, 16 March 2027</p>
         <p class="sub">Norval Foundation, Cape Town</p>
       </div>
       <div class="stop stop--wedding">
-        <p class="day">Sat 20 March</p>
-        <p class="name">Wedding</p>
+        <span class="bloom" aria-hidden="true"></span>
+        <span class="numeral" aria-hidden="true">III</span>
+        <p class="name">The Wedding</p>
+        <p class="day">Saturday, 20 March 2027</p>
         <p class="sub">Buffelsdrift, Oudtshoorn</p>
       </div>
     </div>
@@ -576,25 +582,39 @@ footer { text-align: center; padding: 2.5rem var(--gutter) 4rem; color: var(--mu
 <main>
 
 <section id="story">
-  <div class="wrap">
-    <p class="kicker">How we got here</p>
-    <h2>Our story</h2>
-    <p class="lede">The short version, for people who are about to fly a long way for us.</p>
-    <p><span class="todo">Content needed</span>. There's a working draft of this in
-      <code>prototypes/prototype-1-timeline.html</code>: the accidental meeting, the first
-      real date, the years in between, the question. Worth lifting across once you've
-      settled the wording.</p>
+  <div class="story__grid">
+    <div>
+      <p class="kicker">How we got here</p>
+      <h2>Our story</h2>
+      <p>The short version, for people who are about to fly a long way for us:
+        an accidental meeting, a first real date that ran long, some years of
+        going places together, and then a question with an obvious answer.</p>
+      <p><span class="todo">Wording needed</span>. There's a working draft in
+        <code>prototypes/prototype-1-timeline.html</code> worth lifting across once
+        you've settled it.</p>
+    </div>
+    <!-- One real photo so far. Each placeholder becomes an <img> the moment
+         there's something to put in it; drop the "empty" class when you do. -->
+    <div class="collage">
+      <figure class="t1">
+        <img src="images/photos/orangerie.jpg" alt="Affy and Gabby at the Mus&eacute;e de l'Orangerie in Paris">
+      </figure>
+      <figure class="t2 empty">Photo 2<br>needed</figure>
+      <figure class="t3 empty">Photo 3<br>needed</figure>
+      <figure class="t4 empty">Photo 4<br>needed</figure>
+    </div>
   </div>
 </section>
 
 <section id="picnic">
   <div class="wrap">
-    <p class="kicker">Sunday &middot; An adda under the mountain</p>
+    <span class="mark" aria-hidden="true"></span>
+    <p class="kicker">I &nbsp;&middot;&nbsp; An adda under the mountain</p>
     <h2>Welcome picnic</h2>
     <dl class="facts">
-      <dt>When</dt><dd>Sun 14 March, 15h00 &ndash; 19h00</dd>
-      <dt>Where</dt><dd>Kirstenbosch Botanical Gardens, Cape Town</dd>
-      <dt>Dress</dt><dd>Picnic florals. <a href="#wear">See what to wear</a></dd>
+      <div><dt>When</dt><dd>Sun 14 March, 15h00 &ndash; 19h00</dd></div>
+      <div><dt>Where</dt><dd>Kirstenbosch Botanical Gardens, Cape Town</dd></div>
+      <div><dt>Dress</dt><dd>Picnic florals. <a href="#wear">See what to wear</a></dd></div>
     </dl>
     <p>An <em>adda</em> is a Bengali tradition, essentially the art of hanging out.
       Think long, easy, unstructured conversation with good people, unhurried chats that go
@@ -608,12 +628,13 @@ footer { text-align: center; padding: 2.5rem var(--gutter) 4rem; color: var(--mu
 
 <section id="holud">
   <div class="wrap">
-    <p class="kicker">Tuesday &middot; Gilded and ungovernable</p>
+    <span class="mark" aria-hidden="true"></span>
+    <p class="kicker">II &nbsp;&middot;&nbsp; Gilded and ungovernable</p>
     <h2>Holud</h2>
     <dl class="facts">
-      <dt>When</dt><dd>Tue 16 March, 15h00 &ndash; 21h00</dd>
-      <dt>Where</dt><dd>Norval Foundation gardens, Cape Town</dd>
-      <dt>Dress</dt><dd>We're providing your outfit. <a href="/rsvp">Give us your size</a></dd>
+      <div><dt>When</dt><dd>Tue 16 March, 15h00 &ndash; 21h00</dd></div>
+      <div><dt>Where</dt><dd>Norval Foundation gardens, Cape Town</dd></div>
+      <div><dt>Dress</dt><dd>We're providing your outfit. <a href="/rsvp">Give us your size</a></dd></div>
     </dl>
 
     <h3>What actually happens</h3>
@@ -635,12 +656,13 @@ footer { text-align: center; padding: 2.5rem var(--gutter) 4rem; color: var(--mu
 
 <section id="wedding">
   <div class="wrap">
-    <p class="kicker">Saturday &middot; A wild dream at the edge of the world</p>
+    <span class="mark" aria-hidden="true"></span>
+    <p class="kicker">III &nbsp;&middot;&nbsp; A wild dream at the edge of the world</p>
     <h2>The wedding</h2>
     <dl class="facts">
-      <dt>When</dt><dd>Sat 20 March 2027, from 15h00</dd>
-      <dt>Where</dt><dd>Buffelsdrift Game Lodge, Oudtshoorn</dd>
-      <dt>Dress</dt><dd>Earthy and natural. <a href="#wear">See what to wear</a></dd>
+      <div><dt>When</dt><dd>Sat 20 March 2027, from 15h00</dd></div>
+      <div><dt>Where</dt><dd>Buffelsdrift Game Lodge, Oudtshoorn</dd></div>
+      <div><dt>Dress</dt><dd>Earthy and natural. <a href="#wear">See what to wear</a></dd></div>
     </dl>
     <p>Following the beautiful Route 62, there will be coaches picking us up from Cape
       Town, and all guests will travel about five hours into the wilderness of the Karoo.
@@ -829,7 +851,7 @@ footer { text-align: center; padding: 2.5rem var(--gutter) 4rem; color: var(--mu
 <script>
 // ---- hero ----
 // One number does all of it: --sail runs 0 → 1 over the stretch of hero that
-// sits below the fold. The boat sails, the words fade, the nav goes solid.
+// sits below the fold. The words fade on it and the nav goes solid.
 (() => {
   const hero = document.getElementById('hero');
   const nav  = document.querySelector('nav');
