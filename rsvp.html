@@ -191,6 +191,9 @@ a.back { color:var(--muted); font-size:.875rem; }
 // Spots are limited, so these need to match what can actually be booked.
 const SAFARI_OPTIONS = ['Morning game drive — [TBC]', 'Sunset game drive — [TBC]', 'Not interested'];
 const SIZES = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'Not sure — measure me'];
+// We're ordering these, so ask for the garment and colour directly. That's what the
+// order actually needs, and nobody has to declare a gender to answer a clothing question.
+const OUTFITS = ['Sari, shades of pink', 'Kurta, shades of green', 'Either, surprise me'];
 
 const form   = document.getElementById('rsvp');
 const coming = document.getElementById('coming');
@@ -219,7 +222,10 @@ function guestBlock(i) {
         <label><input type="checkbox" data-field="wedding" checked> Wedding — Sat 20, Oudtshoorn</label>
       </div>
 
-      <label for="g${i}size">Holud outfit size <span class="hint">— we're providing these, handed out at the picnic</span></label>
+      <label for="g${i}outfit">Holud outfit <span class="hint">— we're providing these, handed out at the picnic</span></label>
+      <select id="g${i}outfit" data-field="outfit"><option value="">Choose…</option>${opts(OUTFITS)}</select>
+
+      <label for="g${i}size">Outfit size</label>
       <select id="g${i}size" data-field="size"><option value="">Choose…</option>${opts(SIZES)}</select>
 
       <label for="g${i}diet">Dietary requirements <span class="hint">— allergies too</span></label>

@@ -66,6 +66,7 @@ export default async function handler(req, res) {
         'Welcome picnic': !!g.picnic,
         Holud: !!g.holud,
         Wedding: !!g.wedding,
+        'Holud outfit': text(g.outfit),
         'Holud outfit size': text(g.size),
         'Dietary requirements': text(g.dietary),
         'Coach seat': !!g.coach,

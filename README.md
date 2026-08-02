@@ -96,6 +96,7 @@ to Holud attendees, and read off sizes without touching linked records.
    | Welcome picnic | Checkbox | per guest |
    | Holud | Checkbox | per guest |
    | Wedding | Checkbox | per guest |
+   | Holud outfit | Single select — `Sari, shades of pink` / `Kurta, shades of green` / `Either, surprise me` | per guest |
    | Holud outfit size | Single select — `XS` `S` `M` `L` `XL` `XXL` `Not sure — measure me` | per guest |
    | Dietary requirements | Long text | per guest |
    | Coach seat | Checkbox | per guest |
