@@ -3,14 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Affy &amp; Gabby — 20 March 2027</title>
+<title>Affy &amp; Gabby &middot; 20 March 2027</title>
 <meta name="description" content="Affy &amp; Gabby are getting married in the Little Karoo, 14–20 March 2027.">
 <meta name="robots" content="noindex">
 
 <!--
   SKELETON. Structure is real, styling is not.
 
-  Everything visual is a token in :root below — colours, fonts, spacing rhythm,
+  Everything visual is a token in :root below: colours, fonts, spacing rhythm,
   corner radius. Theming this later should mean editing that block, not hunting
   through rules. Resist adding hard-coded colours further down.
 
@@ -46,7 +46,7 @@
 :root {
   /* ---- base palette: "Editorial Warmth" from the brand guide ----
      Linen ground, Bark for text and structure, Gold as the warm turmeric-
-     adjacent accent, Oxblood for weight. Light only — there is no dark mode
+     adjacent accent, Oxblood for weight. Light only. There is no dark mode
      and color-scheme below stops the browser inventing one for form controls. */
   --linen:     #f4efe6;
   --linen-lit: #fbf8f2;
@@ -63,7 +63,7 @@
   --accent:    var(--gold);
   --accent-fg: #ffffff;
 
-  /* Event registers — quiet → loud → deep. Each event section and timeline
+  /* Event registers: quiet → loud → deep. Each event section and timeline
      stop sets --event from these, so one arc runs through the whole page. */
   --ev-picnic:  #b3737e;   /* wildflower meadow: chalky pink protea */
   --ev-holud:   #d2621a;   /* gilded and ungovernable: marigold */
@@ -84,7 +84,7 @@
   /* ---- hero ----
      --hero-h is deliberately over 100vh: the last chunk of the photo sits below
      the fold, which is what gives you something to scroll into. --boat-top is
-     where the illustration floats, as a share of the viewport — nudge it until
+     where the illustration floats, as a share of the viewport. Nudge it until
      the hull sits on the waterline of whatever photo you end up using. */
   --hero-h:    134svh;
   --boat-top:  84svh;
@@ -94,7 +94,7 @@
 *, *::before, *::after { box-sizing: border-box; }
 html {
   scroll-behavior: smooth; scroll-padding-top: 6.5rem;
-  color-scheme: light;   /* light in every OS setting — no dark variant exists */
+  color-scheme: light;   /* light in every OS setting; no dark variant exists */
 }
 body {
   margin: 0; background: var(--bg); color: var(--fg);
@@ -164,7 +164,7 @@ nav .cta { color: var(--cta); font-weight: 600; }
   opacity: 0; visibility: hidden; translate: -50% .35rem;
   transition: opacity .18s ease, translate .18s ease, visibility .18s;
 }
-/* :has(:focus-visible) rather than :focus-within — a mouse click leaves focus
+/* :has(:focus-visible) rather than :focus-within, because a mouse click leaves focus
    on the button, and :focus-within would pin the panel open while you scroll.
    Keyboard tabbing still opens it. */
 .has-menu:hover .menu__panel,
@@ -265,7 +265,7 @@ header.hero {
     calc((1 - var(--sail)) * var(--sail-rise)), 0);
   will-change: transform;
 }
-/* Every path inherits these — the drawing is nothing but white outline. */
+/* Every path inherits these: the drawing is nothing but white outline. */
 .hero__scene svg {
   /* Big enough that the faces read: hoops, curls and a beard all live at about
      4 user units, which needs roughly 1.1 screen px per unit to survive. */
@@ -311,7 +311,7 @@ header.hero {
 /* ---- timeline ----
    The three protea/marigold stand in for the old dots, and carry the
    quiet → loud → deep arc on their own: chalky pink, then marigold, then the
-   deep crimson king protea. No connecting rule any more — the flowers are the
+   deep crimson king protea. No connecting rule any more: the flowers are the
    markers, and a hairline through them showed in the gaps between petals. */
 .timeline { border-block: 1px solid var(--line); padding: 3.25rem 0; background: var(--surface); }
 .track { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; position: relative; }
@@ -348,7 +348,7 @@ section .kicker {
   color: var(--event, var(--accent)); margin: 0 0 .5rem;
 }
 
-/* Each event runs in its own register — quiet, then loud, then deep. The tint
+/* Each event runs in its own register: quiet, then loud, then deep. The tint
    is deliberately faint: the arc should be felt rather than announced, and the
    Linen ground has to stay the constant underneath all three. */
 #picnic  { --event: var(--ev-picnic); }
@@ -533,7 +533,7 @@ footer { text-align: center; padding: 2.5rem var(--gutter) 4rem; color: var(--mu
     <p class="kicker">How we got here</p>
     <h2>Our story</h2>
     <p class="lede">The short version, for people who are about to fly a long way for us.</p>
-    <p><span class="todo">Content needed</span> — there's a working draft of this in
+    <p><span class="todo">Content needed</span>. There's a working draft of this in
       <code>prototypes/prototype-1-timeline.html</code>: the accidental meeting, the first
       real date, the years in between, the question. Worth lifting across once you've
       settled the wording.</p>
@@ -547,9 +547,9 @@ footer { text-align: center; padding: 2.5rem var(--gutter) 4rem; color: var(--mu
     <dl class="facts">
       <dt>When</dt><dd>Sun 14 March, 15h00 &ndash; 19h00</dd>
       <dt>Where</dt><dd>Kirstenbosch Botanical Gardens, Cape Town</dd>
-      <dt>Dress</dt><dd>Picnic florals &mdash; <a href="#wear">see what to wear</a></dd>
+      <dt>Dress</dt><dd>Picnic florals. <a href="#wear">See what to wear</a></dd>
     </dl>
-    <p>An <em>adda</em> is a Bengali tradition &mdash; essentially the art of hanging out.
+    <p>An <em>adda</em> is a Bengali tradition, essentially the art of hanging out.
       Think long, easy, unstructured conversation with good people, unhurried chats that go
       wherever they go.</p>
     <p>That's exactly the spirit we want to start the week with. Join us for a mountain-side
@@ -566,7 +566,7 @@ footer { text-align: center; padding: 2.5rem var(--gutter) 4rem; color: var(--mu
     <dl class="facts">
       <dt>When</dt><dd>Tue 16 March, 15h00 &ndash; 21h00</dd>
       <dt>Where</dt><dd>Norval Foundation gardens, Cape Town</dd>
-      <dt>Dress</dt><dd>We're providing your outfit &mdash; <a href="/rsvp">give us your size</a></dd>
+      <dt>Dress</dt><dd>We're providing your outfit. <a href="/rsvp">Give us your size</a></dd>
     </dl>
 
     <h3>What actually happens</h3>
@@ -584,7 +584,7 @@ footer { text-align: center; padding: 2.5rem var(--gutter) 4rem; color: var(--mu
       act out her past so we can get a sneak peek into who Affy's really getting tied up
       with. And vice versa where Affy's mates will no doubt do a massive disservice to his
       spotless past.</p>
-    <p>We're providing traditional Bengali wear for everyone &mdash; kurtas and saris.
+    <p>We're providing traditional Bengali wear for everyone: kurtas and saris.
       Accessories should be gold and bright. We'll hand the outfits out at the welcome
       picnic on the 14th, so the RSVP asks for a size per person.</p>
   </div>
@@ -597,9 +597,19 @@ footer { text-align: center; padding: 2.5rem var(--gutter) 4rem; color: var(--mu
     <dl class="facts">
       <dt>When</dt><dd>Sat 20 March 2027, from 15h00</dd>
       <dt>Where</dt><dd>Buffelsdrift Game Lodge, Oudtshoorn</dd>
-      <dt>Dress</dt><dd>Earthy and natural &mdash; <a href="#wear">see what to wear</a></dd>
+      <dt>Dress</dt><dd>Earthy and natural. <a href="#wear">See what to wear</a></dd>
     </dl>
-    <p><span class="todo">Content needed</span> &mdash; ceremony, dinner, dancing, carriages at.</p>
+    <p>Following the beautiful Route 62, there will be coaches picking us up from Cape
+      Town, and all guests will travel about five hours into the wilderness of the Karoo.
+      The coaches arrive the night before the wedding, with accommodation scattered
+      around the venue and in the quaint little town of Oudtshoorn.</p>
+    <p>The Karoo is a sight to see. During the day you'll spot majestic giraffes, zebras
+      and South African wildlife, and you'll have the opportunity to go on a local game
+      drive at Buffelsdrift too.</p>
+    <p>On the day of the wedding, those staying out of town get coached in around midday.
+      We'll have a toast, speeches, and one last celebration to tie out the adventure,
+      dancing into the night under the stars in the vast expanse of the Karoo. A place
+      like no other.</p>
   </div>
 </section>
 
@@ -611,7 +621,7 @@ footer { text-align: center; padding: 2.5rem var(--gutter) 4rem; color: var(--mu
       Cape Town; the wedding is in Oudtshoorn, about four to five hours inland. There are
       two good ways to make that drive and one of them is free.</p>
 
-    <p><span class="todo">Content needed</span> &mdash; the gap between the Holud on the
+    <p><span class="todo">Content needed</span>. The gap between the Holud on the
       16th and the wedding on the 20th needs a plain answer: whether people stay in Cape
       Town and travel over on the Friday or Saturday, or head to the Karoo earlier and
       make a few days of it.</p>
@@ -625,14 +635,14 @@ footer { text-align: center; padding: 2.5rem var(--gutter) 4rem; color: var(--mu
       </div>
       <div class="card">
         <h3>Drive Route 62</h3>
-        <p>The inland route through the Little Karoo &mdash; wine, mountain passes, farm
+        <p>The inland route through the Little Karoo: wine, mountain passes, farm
           stalls. Worth stretching over two days if you can.</p>
         <p><span class="todo">TBC</span> suggested stops and where to break the journey.</p>
       </div>
     </div>
 
     <h3 style="margin-top:2.5rem">Where to stay</h3>
-    <p><span class="todo">Content needed</span> &mdash; the RSVP asks people to pick from
+    <p><span class="todo">Content needed</span>. The RSVP asks people to pick from
       named options with prices rather than asking what they're willing to spend. That
       needs two or three actual options here first: somewhere on-site, somewhere mid,
       somewhere cheap. List them with a per-night rate and people will self-select
@@ -655,15 +665,15 @@ footer { text-align: center; padding: 2.5rem var(--gutter) 4rem; color: var(--mu
       </div>
       <div class="card">
         <h3>Holud</h3>
-        <p><strong>Gold and bright.</strong> We're providing the outfit &mdash; a kurta or
-          a sari &mdash; and handing them out at the picnic. Bring accessories in gold and
-          bright colours. <span class="todo">TBC</span> &mdash; warn them the turmeric stains.</p>
+        <p><strong>Gold and bright.</strong> We're providing the outfit, a kurta or
+          a sari, and handing them out at the picnic. Bring accessories in gold and
+          bright colours. <span class="todo">TBC</span>: warn them the turmeric stains.</p>
       </div>
       <div class="card">
         <h3>Wedding</h3>
         <p><strong>Earthy, natural, elemental.</strong> Please avoid bright colours where
-          you can. It's a game lodge, so some of the evening will be on grass and gravel
-          &mdash; worth thinking about heels.</p>
+          you can. It's a game lodge, so some of the evening will be on grass and gravel.
+          Worth thinking about heels.</p>
       </div>
     </div>
   </div>
@@ -673,26 +683,26 @@ footer { text-align: center; padding: 2.5rem var(--gutter) 4rem; color: var(--mu
   <div class="wrap">
     <p class="kicker">Everything else</p>
     <h2>Questions</h2>
-    <p class="lede">All of these need real answers &mdash; each one you leave blank is a
+    <p class="lede">All of these need real answers. Each one you leave blank is a
       WhatsApp you'll get instead.</p>
 
     <details><summary>Can we bring our kids?</summary>
       <p><span class="todo">Answer needed.</span> People book flights around this one, so
         it should be near the top and unambiguous.</p></details>
     <details><summary>What about the safari?</summary>
-      <p><span class="todo">Answer needed</span> &mdash; which options, what they cost,
+      <p><span class="todo">Answer needed</span>. Which options, what they cost,
         and that spots are limited so the RSVP is how you claim one.</p></details>
     <details><summary>Are you doing gifts or a registry?</summary>
       <p><span class="todo">Answer needed.</span> Saying nothing reads as awkward rather
         than as "no gifts, honestly".</p></details>
     <details><summary>What's the weather like in March?</summary>
-      <p><span class="todo">Answer needed</span> &mdash; hot days, cold nights, and
+      <p><span class="todo">Answer needed</span>. Hot days, cold nights, and
         whatever the rain situation actually is.</p></details>
     <details><summary>Do we need a car once we're there?</summary>
-      <p><span class="todo">Answer needed</span> &mdash; matters a lot to anyone taking
+      <p><span class="todo">Answer needed</span>. Matters a lot to anyone taking
         the coach.</p></details>
     <details><summary>Who do we ask if something goes wrong?</summary>
-      <p><span class="todo">Answer needed</span> &mdash; a name and a number for the
+      <p><span class="todo">Answer needed</span>. A name and a number for the
         week itself.</p></details>
   </div>
 </section>
@@ -700,7 +710,7 @@ footer { text-align: center; padding: 2.5rem var(--gutter) 4rem; color: var(--mu
 <section class="rsvp">
   <div class="wrap">
     <h2>Will you come?</h2>
-    <p class="lede">Let us know by <span class="todo">date TBC</span> so we can count
+    <p class="lede">Let us know by <strong>31 August 2026</strong> so we can count
       heads, seats and outfits.</p>
     <a class="btn" href="/rsvp">RSVP</a>
   </div>

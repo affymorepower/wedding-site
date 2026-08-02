@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>RSVP — Affy &amp; Gabby</title>
+<title>RSVP &middot; Affy &amp; Gabby</title>
 <meta name="robots" content="noindex">
 
 <!--
-  SKELETON. Shares the token block with index.html — keep the two in sync, or
+  SKELETON. Shares the token block with index.html. Keep the two in sync, or
   pull :root into a shared stylesheet once the theme lands.
 
   Writes ONE AIRTABLE ROW PER GUEST, not per party. Holud outfit sizes and
@@ -40,7 +40,7 @@
 }
 
 :root {
-  /* Base palette: "Editorial Warmth" — keep in sync with index.html.
+  /* Base palette: "Editorial Warmth". Keep in sync with index.html.
      Light only; there is no dark variant. */
   --bg:#f4efe6; --surface:#fbf8f2; --fg:#3a2e24; --muted:#6e6055;
   --line:#e2d8c9; --accent:#b0802c; --accent-fg:#fff; --error:#6e1f27;
@@ -115,11 +115,11 @@ a.back { color:var(--muted); font-size:.875rem; }
 
   <form id="rsvp">
     <h1>RSVP</h1>
-    <p class="lede">Three events over a week &mdash; two in Cape Town, one in the Karoo.
-      Tell us which ones you're up for. Please reply by <span class="todo">date TBC</span>.</p>
+    <p class="lede">Three events over a week: two in Cape Town, one in the Karoo.
+      Tell us which ones you're up for. Please reply by <strong>31 August 2026</strong>.</p>
 
     <h2>Who's replying</h2>
-    <label for="partyName">Your name <span class="hint">— or family name, if you're answering for everyone</span></label>
+    <label for="partyName">Your name <span class="hint">(or family name, if you're answering for everyone)</span></label>
     <input id="partyName" name="partyName" required autocomplete="name">
 
     <div class="row">
@@ -128,7 +128,7 @@ a.back { color:var(--muted); font-size:.875rem; }
         <input id="email" name="email" type="email" required autocomplete="email">
       </div>
       <div>
-        <label for="phone">Phone <span class="hint">— for the group</span></label>
+        <label for="phone">Phone <span class="hint">(for the group)</span></label>
         <input id="phone" name="phone" type="tel" autocomplete="tel">
       </div>
     </div>
@@ -148,7 +148,7 @@ a.back { color:var(--muted); font-size:.875rem; }
 
       <h2>Each of you</h2>
       <p class="note">Outfit sizes and safari spots are per person, so we need everyone
-        separately. Sorry — it saves a lot of chasing later.</p>
+        separately. Sorry. It saves a lot of chasing later.</p>
       <div id="guests"></div>
 
       <h2>Getting there</h2>
@@ -161,8 +161,8 @@ a.back { color:var(--muted); font-size:.875rem; }
         <option value="">Choose…</option>
         <!-- TODO: replace with real options and per-night prices. Named choices with
              prices beat asking people what they're willing to spend. -->
-        <option>On-site at the venue — [TBC per night]</option>
-        <option>Nearby guesthouse — [TBC per night]</option>
+        <option>On-site at the venue (price TBC)</option>
+        <option>Nearby guesthouse (price TBC)</option>
         <option>Something cheaper, please suggest</option>
         <option>We'll sort our own</option>
         <option>Not staying over</option>
@@ -173,7 +173,7 @@ a.back { color:var(--muted); font-size:.875rem; }
       <input id="song" name="song">
     </div>
 
-    <label for="message">A message for us <span class="hint">— optional</span></label>
+    <label for="message">A message for us <span class="hint">(optional)</span></label>
     <textarea id="message" name="message"></textarea>
 
     <div class="hp" aria-hidden="true">
@@ -189,11 +189,12 @@ a.back { color:var(--muted); font-size:.875rem; }
 <script>
 // TODO: replace with the real safari options once confirmed with the operator.
 // Spots are limited, so these need to match what can actually be booked.
-const SAFARI_OPTIONS = ['Morning game drive — [TBC]', 'Sunset game drive — [TBC]', 'Not interested'];
-const SIZES = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'Not sure — measure me'];
-// We're ordering these, so ask for the garment and colour directly. That's what the
-// order actually needs, and nobody has to declare a gender to answer a clothing question.
-const OUTFITS = ['Sari, shades of pink', 'Kurta, shades of green', 'Either, surprise me'];
+const SAFARI_OPTIONS = ['Morning game drive (price TBC)', 'Sunset game drive (price TBC)', 'Not interested'];
+const SIZES = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'Not sure, measure me'];
+// Pink for the girls, green for the boys, as the Holud section on the site says.
+// These strings are the Airtable "Holud outfit" select options: change them here and
+// the base picks up a new option rather than erroring, so keep README.md in step.
+const OUTFITS = ['Sari, shades of pink (girls)', 'Kurta, shades of green (boys)', 'Either, surprise me'];
 
 const form   = document.getElementById('rsvp');
 const coming = document.getElementById('coming');
@@ -217,21 +218,21 @@ function guestBlock(i) {
 
       <label>Which events?</label>
       <div class="checks">
-        <label><input type="checkbox" data-field="picnic" checked> Welcome picnic — Sun 14, Cape Town</label>
-        <label><input type="checkbox" data-field="holud"  checked> Holud — Tue 16, Cape Town</label>
-        <label><input type="checkbox" data-field="wedding" checked> Wedding — Sat 20, Oudtshoorn</label>
+        <label><input type="checkbox" data-field="picnic" checked> Welcome picnic &middot; Sun 14, Cape Town</label>
+        <label><input type="checkbox" data-field="holud"  checked> Holud &middot; Tue 16, Cape Town</label>
+        <label><input type="checkbox" data-field="wedding" checked> Wedding &middot; Sat 20, Oudtshoorn</label>
       </div>
 
-      <label for="g${i}outfit">Holud outfit <span class="hint">— we're providing these, handed out at the picnic</span></label>
+      <label for="g${i}outfit">Holud outfit <span class="hint">(we're providing these, handed out at the picnic)</span></label>
       <select id="g${i}outfit" data-field="outfit"><option value="">Choose…</option>${opts(OUTFITS)}</select>
 
       <label for="g${i}size">Outfit size</label>
       <select id="g${i}size" data-field="size"><option value="">Choose…</option>${opts(SIZES)}</select>
 
-      <label for="g${i}diet">Dietary requirements <span class="hint">— allergies too</span></label>
+      <label for="g${i}diet">Dietary requirements <span class="hint">(allergies too)</span></label>
       <input id="g${i}diet" data-field="dietary">
 
-      <label for="g${i}safari">Safari <span class="hint">— you'd book and pay your own; spots are limited</span></label>
+      <label for="g${i}safari">Safari <span class="hint">(you'd book and pay your own; spots are limited)</span></label>
       <select id="g${i}safari" data-field="safari"><option value="">Choose…</option>${opts(SAFARI_OPTIONS)}</select>
     </fieldset>`;
 }
@@ -317,7 +318,7 @@ form.addEventListener('submit', async (e) => {
     document.getElementById('thanks').hidden = false;
     document.getElementById('thanksMsg').textContent = attending
       ? 'That is all of it. See you in the Karoo.'
-      : 'Thank you for letting us know — we will miss you.';
+      : 'Thank you for letting us know. We will miss you.';
     window.scrollTo(0, 0);
   } catch (err) {
     status.className = 'error';

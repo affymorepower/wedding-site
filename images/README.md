@@ -1,7 +1,7 @@
 Drop the hero photo in here as hero.jpg.
 
 It is loaded by index.html as images/hero.jpg. Landscape, wide, with the water
-low in the frame — the boat illustration floats just above the waterline.
+low in the frame. The boat illustration floats just above the waterline.
 Aim for roughly 2400px wide and under ~600KB once compressed.
 Until it exists the hero falls back to a gradient, so nothing looks broken.
 
@@ -9,7 +9,7 @@ Until it exists the hero falls back to a gradient, so nothing looks broken.
 
 ```
 hero.jpg          the dam at first light, behind the hero
-flowers/          web-ready cut-outs, 256px webp, transparent — what the page loads
+flowers/          web-ready cut-outs, 256px webp, transparent, what the page loads
 source/           full-resolution transparent PNGs of the same flowers
 photos/           photographs of the two of us
 *.png (loose)     the original flower renders, on their baked-in dark backgrounds
@@ -17,7 +17,7 @@ photos/           photographs of the two of us
 
 **flowers/** is what the site actually uses. `picnic`, `holud` and `wedding` are
 wired to the timeline stops in `index.html` through the `--stem` custom
-property. The other three — `protea-crimson`, `marigold`, `pincushion-yellow` —
+property. The other three (`protea-crimson`, `marigold`, `pincushion-yellow`)
 are a newer set and are not used anywhere yet; swapping one in is a one-line
 change per stop.
 
