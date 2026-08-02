@@ -53,6 +53,11 @@
   --accent:    #8a6f4e;
   --accent-fg: #ffffff;
 
+  /* The RSVP call to action, deliberately not --accent: that one also drives
+     kickers, timeline dots and TBC markers, which shouldn't move with it. */
+  --cta:       #4a6b47;
+  --cta-fg:    #ffffff;
+
   --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
   --font-body:    'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
 
@@ -65,6 +70,7 @@
   :root {
     --bg: #17150f; --surface: #201d16; --fg: #f0ebe3;
     --muted: #a49b8e; --line: #37322a; --accent: #c9a97a; --accent-fg: #17150f;
+    --cta: #9dc199; --cta-fg: #17150f;
   }
 }
 
@@ -97,7 +103,7 @@ nav ul {
 nav ul::-webkit-scrollbar { display: none; }
 nav a { text-decoration: none; color: var(--muted); white-space: nowrap; }
 nav a:hover, nav a.here { color: var(--fg); }
-nav .cta { color: var(--accent); font-weight: 600; }
+nav .cta { color: var(--cta); font-weight: 600; }
 
 /* ---- hero ---- */
 header.hero { text-align: center; padding: 5rem var(--gutter) 3.5rem; }
@@ -107,7 +113,7 @@ header.hero .where { color: var(--muted); margin: .35rem 0 2rem; }
 
 .btn {
   display: inline-block; padding: .8rem 2rem; border-radius: var(--radius);
-  background: var(--accent); color: var(--accent-fg);
+  background: var(--cta); color: var(--cta-fg);
   text-decoration: none; font-weight: 600; letter-spacing: .02em;
 }
 .btn:hover { opacity: .88; }
