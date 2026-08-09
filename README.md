@@ -23,8 +23,10 @@ rsvp.html           the RSVP form, served at /rsvp
 js/gate.js          the three-group gate — READ ITS HEADER before trusting it
 api/rsvp.js         serverless function: form → Airtable, one row per guest
 api/access-request.js  "I don't have a password" → Airtable row, and email if configured
+api/song.js         serverless function: song won in Bibi's Revenge → Airtable
 vercel.json         cleanUrls, so /rsvp and /login work without the .html
 game/index.html     the save-the-date platformer, unchanged
+bibi/index.html     Bibi's Revenge — the 30-second runner, served at /bibi
 prototypes/         early explorations, reference only
 # website-plan.md is deliberately not in this repo (budget figures)
 ```
@@ -138,12 +140,17 @@ to Holud attendees, and read off sizes without touching linked records.
    | Phone | Phone | party |
    | Song request | Single line text | party |
    | Message | Long text | party |
-   | Group | Single select: `Family` / `Friends` / `Other` | party |
+   | Group | Single select: `Family` / `Game Reserve Friends` / `In Town` | party |
 
    **`Group` records which password the guest signed in with.** It is what lets you tell
    who is being billed for a room and who isn't. It comes from the browser, so treat it as
    a convenience for reconciling the base rather than proof of anything — the gate is not
    security and anyone can post whatever they like to the endpoint.
+
+   Those three strings are duplicated in `GROUP_LABEL` at the top of the script block in
+   `rsvp.html` and **must match the base exactly**. `typecast: true` creates a missing
+   option rather than erroring, so a mismatch quietly grows a duplicate choice instead of
+   failing where you'd notice.
 
    **The single-select fields were created with no options on purpose.** `typecast: true`
    makes Airtable add a missing option on first write, so the choice lists fill themselves
@@ -185,6 +192,62 @@ per group, so a human decides which group someone belongs to and sends it on.
 
 **The token never goes in this repo.** It lives only in Vercel. Anything in the repo is readable by anyone with access to it, and a leaked token lets someone read or delete the whole guest list.
 
-## The game
+## The games
 
-`game/index.html`: a retro platformer where Sultan Affy rescues Queen Gabby from Bibi the Ostrich. Arrow keys to fly, X to drop bombs, three arenas. Entirely self-contained: canvas engine, Web Audio chiptune, no dependencies. Linked from the site footer.
+**`game/index.html`** — the save-the-date platformer. Sultan Affy rescues Queen Gabby
+from Bibi the Ostrich. Arrow keys to fly, X to drop bombs, three arenas. Self-contained:
+canvas engine, Web Audio chiptune, no dependencies.
+
+**`bibi/index.html`** — *Bibi's Revenge*, the sequel, at `/bibi`. About twenty seconds:
+hop seven charging ostriches, then jump into Bibi three times to shove him into a
+crocodile pit. Finishing it earns the guest one song on the dancefloor, which is the
+actual point of it.
+
+Space or a tap jumps; the arrows move him within a band roughly a third of the screen
+wide. Jump is the whole game and you can win without ever touching left or right —
+movement buys reaction time on an ostrich and closes on Bibi faster, worth about a second
+and a half over a run. Timed end to end: **19s** using the arrows, **20.6s** without.
+
+Four things worth knowing before editing it:
+
+- **The backdrop is the site's own hero photograph**, `images/hero-swartberg.webp`,
+  drawn into a 240×150 offscreen canvas and blown back up with smoothing off. That
+  downsample is what stops the photo and the sprites looking like two different media,
+  so don't "fix" it by drawing the image straight to the canvas. Alternate tiles are
+  mirrored so the ridge meets itself at every seam.
+- **Nothing can hurt you after the stampede.** Bibi lays eggs during the chase and they
+  are scenery. An earlier version made them lethal and it cost three hearts in testing,
+  one jump away from the reward — a guest who gets that far should always see the
+  crocodiles.
+- **He cannot walk into the pit.** `clampPlayerX()` swaps his right-hand bound for the
+  pit's lip once it is on screen, and it runs *twice* per frame — once after he moves and
+  again after `updatePit()` shifts the pit, or he stands a few pixels out over the edge
+  while it is still scrolling in.
+- **It is embedded on the front page**, in a section just above the RSVP, as a plain
+  lazy-loaded iframe sitting inline at 8:5. It shows its own title screen, so the section
+  previews itself, and it plays in place. The page hands the frame focus on pointerdown,
+  because otherwise Space and the arrows scroll the page instead of reaching the game.
+  It stays a standalone page because that is the link people paste into WhatsApp.
+
+### The song it wins
+
+`api/song.js` writes to a **separate `Songs` table**, not to the RSVP row — a guest can
+beat the game before they RSVP, or instead of it, and matching a free-typed name back to
+a guest row is guesswork. The RSVP's own `Song request` field still exists; reconciling
+the two lists is a human job for the playlist evening.
+
+**The table does not exist yet.** Create it in the same base, called `Songs`:
+
+| Field | Type | Notes |
+|---|---|---|
+| Song | Single line text | make this the primary field |
+| Artist | Single line text | |
+| Requested by | Single line text | |
+| Source | Single select | leave it with no options — `typecast` fills it in |
+
+No new environment variables: it reuses `AIRTABLE_TOKEN` and `AIRTABLE_BASE_ID`. Only set
+`AIRTABLE_SONGS_TABLE` if you call the table something other than `Songs`.
+
+Until the table exists the endpoint returns 502 and the game says *"That didn't save. Put
+it in your RSVP instead and we'll still play it."* — so it fails politely rather than
+losing someone's song silently, but nothing is being recorded.

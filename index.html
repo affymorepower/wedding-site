@@ -411,8 +411,13 @@ h2 em { font-style: italic; font-weight: 600; }
   color: var(--pane-mute); transition: transform .2s ease;
 }
 .faq details[open] summary::after { content: '\2013'; }
-.faq details > *:not(summary) { margin: 0 0 1.1rem; max-width: var(--measure); color: var(--pane-mute); }
-.faq details > *:last-child { margin-bottom: 1.6rem; }
+/* Descendant, not child: the safari answer wraps its two halves in group
+   containers, so the paragraphs are a level deeper than in the other entries.
+   The open-only padding replaces a :last-child margin, which stopped being
+   reliable once the last child could be a wrapper. */
+.faq details p,
+.faq details .table-scroll { margin: 0 0 1.1rem; max-width: var(--measure); color: var(--pane-mute); }
+.faq details[open] { padding-bottom: .6rem; }
 .faq strong { color: var(--pane-fg); }
 
 /* Buffelsdrift's published rates. Wide table, narrow phone: it scrolls inside
@@ -483,11 +488,19 @@ body.scrolled nav a.cta { color: var(--gold); }
 }
 
 /* =========================================================================
-   THE ARCADE — the game opens over the page rather than navigating away.
-   It is still its own page at /bibi, because that is the link that gets
-   pasted into WhatsApp; here the same page is loaded into an iframe that is
-   built on click and thrown away on close. Throwing it away is what stops
-   the chiptune — you cannot reach into a frame from outside and pause it.
+   THE ARCADE — the game plays inside the page, not over it and not away from
+   it. The frame sits here showing its own title screen, so the section
+   previews itself: you can see the Swartberg and the ostrich before deciding
+   whether to press anything.
+
+   It is an iframe of /bibi rather than the game inlined here, because /bibi
+   has to stay a real page — that is the link that gets pasted into WhatsApp,
+   and one copy of a thousand lines of canvas code is enough. `loading=lazy`
+   keeps all of it off the page for anyone who never scrolls this far.
+
+   8:5 because the game letterboxes itself to that ratio internally; matching
+   it here means no black bars around the frame.
+
    It sits BEFORE the RSVP on purpose: the gold pane has to stay last.
    ========================================================================= */
 .arcade {
@@ -497,34 +510,18 @@ body.scrolled nav a.cta { color: var(--gold); }
 .arcade .kicker { color: #cfb99d; }
 .arcade h2 { color: var(--sand); }
 .arcade .lede { margin: 1.4rem auto 0; color: #d8c3a6; }
-.arcade .btn { margin-top: 2.2rem; background: var(--gold); color: #3a1608; }
-.arcade .btn:hover { background: #e8b46a; }
-.arcade .aside { margin: 1.2rem 0 0; font-size: 13px; color: var(--tan); }
+.arcade .aside { margin: 1.1rem 0 0; font-size: 13px; color: var(--tan); }
 .arcade .aside a { color: var(--sand); text-decoration: underline; text-underline-offset: 3px; }
 
-.arcade-modal {
-  position: fixed; inset: 0; z-index: 90;
-  display: flex; flex-direction: column;
+.arcade__screen {
+  max-width: 44rem; margin: 2.2rem auto 0;
+  aspect-ratio: 8 / 5;
   background: #1a0a05;
+  border: 1px solid rgba(240, 223, 192, .25);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, .45);
+  overflow: hidden;
 }
-.arcade-modal[hidden] { display: none; }
-.arcade-modal__bar {
-  flex: 0 0 auto;
-  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
-  padding: .55rem 1rem;
-  background: var(--maroon); color: var(--sand);
-  font: 600 11px/1 var(--font-body); letter-spacing: 2px; text-transform: uppercase;
-}
-.arcade-modal__bar button {
-  border: 1px solid rgba(240, 223, 192, .4); border-radius: 2px;
-  background: transparent; color: var(--sand);
-  font: inherit; padding: .55rem .9rem; cursor: pointer;
-}
-.arcade-modal__bar button:hover { background: rgba(240, 223, 192, .14); }
-/* min-height:0 or the flex child refuses to shrink and the frame overflows. */
-.arcade-modal__frame { flex: 1 1 auto; min-height: 0; }
-.arcade-modal__frame iframe { display: block; width: 100%; height: 100%; border: 0; }
-body.arcade-open { overflow: hidden; }
+.arcade__screen iframe { display: block; width: 100%; height: 100%; border: 0; }
 
 /* =========================================================================
    RSVP FOOT — gold, so the last thing on the page is the brightest.
@@ -798,23 +795,80 @@ footer a:hover { color: #fff3db; }
         them across several days because everyone can&rsquo;t go at once, so we&rsquo;ll
         tell you your slot nearer the time rather than asking you to pick now.</p>
 
-      <!-- Rooms, rates and photographs are coming from Affy. Until then this is
-           deliberately an obvious hole rather than an invented number. -->
-      <div class="locked">
-        <h3>Rooms and rates</h3>
-        <p><span class="todo">TBC</span> room types, what each one sleeps, and
-          photographs. Coming from Affy.</p>
+      <!-- Group B only, and it sits ABOVE the cards: someone who is paying should
+           know that before they read three prices, not after. -->
+      <p class="lede" data-group="friends"><strong>Rooms are booked through us, and
+        you&rsquo;ll settle up for yours.</strong> The prices below are per person for both
+        nights, Friday and Saturday, and cover the bed, both breakfasts and the game drive.</p>
+
+      <!-- The three tent types, cheapest per person first, same order logic as the
+           town cards below. Photographs are the lodge's own, taken from
+           buffelsdrift.com/luxury-tents and served locally so they don't vanish if
+           that site is redesigned.
+
+           Only the prices carry data-group="friends". Family see exactly the same
+           three rooms with no number attached, because they are not paying for one —
+           which is also why the price is a separate element rather than part of
+           .meta. -->
+      <div class="stays">
+        <a class="stay" target="_blank" rel="noopener"
+           href="https://www.buffelsdrift.com/luxury-tents">
+          <img loading="lazy" src="images/tent-family.webp"
+               alt="A family on the wooden deck of a family tent, lawn and hills beyond">
+          <div class="stay__body">
+            <h4>Luxury Family Tent</h4>
+            <p class="meta">Two interleading bedrooms sharing a bathroom, and a deck
+              looking out over the reserve to the Swartberg. Sleeps four.</p>
+            <p class="price" data-group="friends">R4 887 <span>per person, both nights</span></p>
+          </div>
+        </a>
+
+        <a class="stay" target="_blank" rel="noopener"
+           href="https://www.buffelsdrift.com/luxury-tents">
+          <img loading="lazy" src="images/tent-horizon.webp"
+               alt="A Horizon View tent at dusk, pink sky above the aloes and a footpath">
+          <div class="stay__body">
+            <h4>Luxury Horizon View</h4>
+            <p class="meta">Set back from the waterhole and raised up, with a long view
+              across the reserve. Sleeps two.</p>
+            <p class="price" data-group="friends">R5 562 <span>per person, both nights</span></p>
+          </div>
+        </a>
+
+        <a class="stay" target="_blank" rel="noopener"
+           href="https://www.buffelsdrift.com/luxury-tents">
+          <img loading="lazy" src="images/tent-waterhole.webp"
+               alt="The view from bed in a waterhole tent: two chairs on a deck at the water&rsquo;s edge">
+          <div class="stay__body">
+            <h4>Luxury Waterhole Tent</h4>
+            <p class="meta">A private sundeck right at the edge of the main waterhole.
+              You wake up looking at it. Sleeps two.</p>
+            <p class="price" data-group="friends">R6 615 <span>per person, both nights</span></p>
+          </div>
+        </a>
       </div>
 
-      <!-- The only line that differs between family and friends. -->
+      <!-- The lines that differ between family and friends. -->
       <p class="lede" data-group="family"><strong>Yours is covered.</strong> We&rsquo;re
         taking care of the room and the game drive &mdash; you just need to get yourself
-        to Cape Town. The RSVP won&rsquo;t ask you anything about paying for it.</p>
+        to Cape Town. The RSVP won&rsquo;t ask you anything about paying for it. We&rsquo;ll
+        match you to a tent ourselves and tell you which one nearer the time.</p>
 
-      <p class="lede" data-group="friends">Rooms on the reserve are booked through us
-        rather than directly with the lodge, and you&rsquo;ll settle up for yours &mdash;
-        the RSVP asks which room you&rsquo;d like. <span class="todo">TBC</span> rates per
-        room per night.</p>
+      <p class="lede" data-group="friends">We&rsquo;ll match you to a tent rather than ask
+        you to choose one. There are 76 guest beds on the reserve and close to that many
+        people staying, so the four-sleepers have to go four-up for everyone to fit &mdash;
+        the RSVP just asks whether you&rsquo;d be happy in a family tent with another
+        couple, and we&rsquo;ll do the matchmaking. Once everyone is placed, Buffelsdrift
+        will email you a payment link with your exact amount.</p>
+
+      <p class="lede" data-group="friends"><strong>You can stay on for the Sunday.</strong>
+        The safari runs again on the Sunday morning and plenty of people will want a slower
+        exit. Say so on the RSVP and we&rsquo;ll come back to you with the rate for the
+        extra night.</p>
+
+      <p class="fineprint" data-group="friends">Children under 3 stay free, 4 to 12 are
+        half price. These are the lodge&rsquo;s confirmed rates for our dates, including
+        the discount they gave us on the Friday night.</p>
     </div>
 
     <!-- ---------- everyone else: Oudtshoorn ---------- -->
@@ -922,18 +976,30 @@ footer a:hover { color: #fff3db; }
     <p class="lede">Each one left blank is a WhatsApp you&rsquo;ll get instead.</p>
 
     <details><summary>Can we bring our kids?</summary>
-      <p><span class="todo">Answer needed.</span> People book flights around this one, so
-        it should be near the top and unambiguous.</p></details>
+      <p><strong>Yes &mdash; kids are more than welcome.</strong> Bring them to all three
+        events. There&rsquo;s plenty of room to run around at the picnic, and the game
+        lodge is about as good a place as a child could hope to spend a weekend.</p>
+      <p>Just add them as guests on the <a href="/rsvp">RSVP</a> like everyone else, so we
+        count them for food and seats on the coach.</p></details>
 
+    <!-- Two answers. data-stay-narrow trims to the visitor's group once they've
+         signed in; signed out, both halves stay so the FAQ still answers the
+         question for anyone without a password. -->
     <details><summary>What about the safari?</summary>
-      <p><strong>Staying on the reserve?</strong> A game drive is included with your stay
-        &mdash; a bush safari or the elephant experience, your pick. We&rsquo;ll be running
-        them across several days because everyone can&rsquo;t go at once, so we&rsquo;ll
-        tell you your slot nearer the time rather than asking you to choose now.</p>
-      <p><strong>Staying in town?</strong> We&rsquo;ve arranged a reduced rate of around
-        <strong>$50</strong> a ticket for our guests, and details on how to book will
-        follow. You can also do any of these as a day visit at the lodge&rsquo;s own
-        prices:</p>
+      <div data-stay-narrow="reserve">
+        <p><strong>You&rsquo;re staying on the reserve</strong>, so a game drive is included
+          with your stay &mdash; a bush safari or the elephant experience, your pick.
+          We&rsquo;ll be running them across several days because everyone can&rsquo;t go at
+          once, so we&rsquo;ll tell you your slot nearer the time rather than asking you to
+          choose now.</p>
+      </div>
+
+      <div data-stay-narrow="town">
+        <p><strong>A game drive isn&rsquo;t included with a room in town</strong>, but
+          Buffelsdrift is open to day visitors and we&rsquo;ve arranged a reduced rate for
+          our guests &mdash; around <strong>$50</strong> a ticket rather than the
+          lodge&rsquo;s usual price. We&rsquo;ll share the details and how to book closer to
+          the time. You can also do any of these at the lodge&rsquo;s own prices:</p>
       <div class="table-scroll">
         <table class="rates">
           <thead><tr><th>Activity</th><th>Adult</th><th>Child 4&ndash;12</th></tr></thead>
@@ -948,13 +1014,18 @@ footer a:hover { color: #fff3db; }
           </tbody>
         </table>
       </div>
-      <p class="fineprint">Under 3s go free. Prices exclude Buffelsdrift&rsquo;s mandatory
-        conservation fee and can change without notice &mdash; these are their published
-        rates for October 2026 to September 2027.</p></details>
+        <p class="fineprint">Under 3s go free. Prices exclude Buffelsdrift&rsquo;s mandatory
+          conservation fee and can change without notice &mdash; these are their published
+          rates for October 2026 to September 2027.</p>
+      </div>
+    </details>
 
     <details><summary>Are you doing gifts or a registry?</summary>
-      <p><span class="todo">Answer needed.</span> Saying nothing reads as awkward rather
-        than as &ldquo;no gifts, honestly&rdquo;.</p></details>
+      <p>You&rsquo;ve probably flown half way around the world to be at the wedding. That&rsquo;s
+        our gift, and we don&rsquo;t expect anything else from you.</p>
+      <p>That said, we know some people are adamant &mdash; and we genuinely can&rsquo;t
+        carry anything physical back. So if you&rsquo;d really like to contribute, you can
+        pay into <a href="#"><span class="todo">Revolut link needed</span></a>.</p></details>
 
     <details><summary>What&rsquo;s the weather like in March?</summary>
       <p><span class="todo">Answer needed</span>. Hot days, cold nights, and whatever the
@@ -964,9 +1035,6 @@ footer a:hover { color: #fff3db; }
       <p><span class="todo">Answer needed</span>. Matters a lot to anyone taking the
         coach.</p></details>
 
-    <details><summary>Who do we ask if something goes wrong?</summary>
-      <p><span class="todo">Answer needed</span>. A name and a number for the week
-        itself.</p></details>
   </div>
 </section>
 
@@ -974,14 +1042,20 @@ footer a:hover { color: #fff3db; }
   <div class="wrap narrow">
     <p class="kicker">One last thing</p>
     <h2>Bibi wants a <em>rematch</em></h2>
-    <p class="lede">He took Gabby once, and we got her back. Now he&rsquo;s waiting on the
-      road into Oudtshoorn with the whole flock behind him &mdash; and there is a crocodile
-      pit at the end of it.</p>
-    <p class="lede">Thirty seconds. One button. Finish him and you get to name a song
-      we&rsquo;ll actually play at Buffelsdrift.</p>
-    <button class="btn" type="button" id="arcade-play">Play &mdash; 30 seconds</button>
-    <p class="aside">Rather have it to yourself? <a href="/bibi">Open it in its own
-      window.</a></p>
+    <p class="lede">He <a href="/game/">took Gabby once, and we got her back</a>. Now
+      he&rsquo;s waiting on the road into Oudtshoorn with the whole flock behind him
+      &mdash; and there is a crocodile pit at the end of it.</p>
+    <p class="lede">Twenty seconds. Jump the flock, shove Bibi into the pit, and you get
+      to name a song we&rsquo;ll actually play at Buffelsdrift.</p>
+  </div>
+
+  <div class="wrap">
+    <div class="arcade__screen">
+      <iframe src="/bibi/" title="Bibi&rsquo;s Revenge" loading="lazy"
+              allow="autoplay; fullscreen"></iframe>
+    </div>
+    <p class="aside">Press <strong>Run</strong> to play here, or
+      <a href="/bibi">open it full size</a> &mdash; better on a phone.</p>
   </div>
 </section>
 
@@ -995,18 +1069,10 @@ footer a:hover { color: #fff3db; }
 
 </main>
 
-<div class="arcade-modal" id="arcade-modal" hidden>
-  <div class="arcade-modal__bar">
-    <span>Bibi&rsquo;s Revenge</span>
-    <button type="button" id="arcade-close">Close &times;</button>
-  </div>
-  <div class="arcade-modal__frame" id="arcade-frame"></div>
-</div>
-
 <footer>
   <p>Affy &amp; Gabby &middot; 20 March 2027</p>
-  <p>Waiting? <a href="/game/">Rescue Gabby from an ostrich</a>, or
-    <a href="/bibi">feed that ostrich to a crocodile</a>.</p>
+  <p>Waiting? <a href="/game/">Rescue Gabby from Bibi</a>, or
+    <a href="/bibi">feed Bibi to a crocodile</a>.</p>
 </footer>
 
 
@@ -1064,41 +1130,18 @@ if ('IntersectionObserver' in window) {
   document.querySelectorAll('.reveal').forEach(el => el.classList.add('in'));
 }
 
-// The arcade. The iframe is built on open and destroyed on close: building it
-// late keeps the game's assets and audio context off the page for everyone who
-// never plays, and destroying it is the only reliable way to stop the music.
+// The arcade needs no script: the frame is in the markup and lazy-loads itself.
+// It does need the page to stop stealing its keys. Space and the arrows scroll
+// the page, and the game's own preventDefault only fires once the frame has
+// focus — so hand it focus the moment a pointer goes down on it, and take the
+// focus back as soon as one goes down anywhere else.
 (() => {
-  const modal = document.getElementById('arcade-modal');
-  const frame = document.getElementById('arcade-frame');
-  const playBtn = document.getElementById('arcade-play');
-  const closeBtn = document.getElementById('arcade-close');
-  if (!modal || !frame || !playBtn || !closeBtn) return;
-
-  function open() {
-    if (!frame.firstChild) {
-      const f = document.createElement('iframe');
-      f.src = '/bibi/';
-      f.title = "Bibi's Revenge";
-      f.allow = 'autoplay; fullscreen';
-      frame.appendChild(f);
-    }
-    modal.hidden = false;
-    document.body.classList.add('arcade-open');
-    closeBtn.focus();
-  }
-
-  function close() {
-    modal.hidden = true;
-    document.body.classList.remove('arcade-open');
-    frame.replaceChildren();
-    playBtn.focus();
-  }
-
-  playBtn.addEventListener('click', open);
-  closeBtn.addEventListener('click', close);
-  addEventListener('keydown', (e) => {
-    // The game itself swallows Space and the arrows; Escape is left alone.
-    if (e.key === 'Escape' && !modal.hidden) close();
+  const screen = document.querySelector('.arcade__screen');
+  const frame = screen && screen.querySelector('iframe');
+  if (!frame) return;
+  screen.addEventListener('pointerdown', () => frame.focus());
+  document.addEventListener('pointerdown', (e) => {
+    if (!screen.contains(e.target) && document.activeElement === frame) frame.blur();
   });
 })();
 

@@ -168,31 +168,92 @@ a.back { color:var(--muted); font-size:.875rem; }
            can be reconciled against who is being billed for what.
            ================================================================= -->
 
-      <!-- ---------- family: nothing to ask ---------- -->
+      <!-- ---------- family: no money, but we still have to place them ----------
+           Neither reserve group picks a room. There are 76 guest beds for very
+           nearly 76 people and the four-sleepers have to go four-up for everyone
+           to fit, so a free choice could not be honoured.
+
+           We don't ask who they'd like to share with either: there are only five
+           four-sleepers, so the matchmaking is small enough to do by hand from the
+           "happy to share" ticks. What we ask for is what we can't infer — whether
+           they'll take both nights, who is small enough to share a bed, and who
+           wants the Sunday.
+
+           family and friends use the SAME four ids. gate.js deletes whichever
+           block doesn't apply, so only one of each ever reaches the DOM — the
+           same trick the accommodation select already relied on. -->
       <div data-group="family">
         <h2>Staying over</h2>
-        <p class="note">You&rsquo;re with us at Buffelsdrift on the reserve and
-          we&rsquo;re taking care of the room, so there&rsquo;s nothing to choose here.
-          A game drive is included too &mdash; we&rsquo;ll be in touch about slots.</p>
+        <p class="note">You&rsquo;re with us at Buffelsdrift on the reserve and we&rsquo;re
+          taking care of the room, so there&rsquo;s nothing to pay for here. A game drive
+          is included too &mdash; we&rsquo;ll be in touch about slots. We just need a few
+          things to work out who sleeps where.</p>
+
+        <label for="nights">Are you happy to stay on the game reserve for both the Friday
+          and Saturday nights?</label>
+        <select id="nights" name="nights">
+          <option value="">Choose…</option>
+          <option>Yes, both nights</option>
+          <option>No</option>
+        </select>
+
+        <label for="children">Any children with you?
+          <span class="hint">names and ages &mdash; under 3s share with you, 4 to 12 get
+          their own bed</span></label>
+        <textarea id="children" name="children"></textarea>
+
+        <div class="checks">
+          <label><input type="checkbox" id="shareFamily"> Happy to share a four-sleeper
+            family tent with another couple</label>
+        </div>
+
+        <label for="thirdNight">Would you like to stay an extra night, the Sunday?
+          <span class="hint">the safari runs again on the Sunday morning &mdash; we&rsquo;ll
+          confirm the rate once we know how many of you want it</span></label>
+        <select id="thirdNight" name="thirdNight">
+          <option value="">Choose…</option>
+          <option>Yes please</option>
+          <option>No</option>
+          <option>Maybe, tell us more</option>
+        </select>
       </div>
 
       <!-- ---------- friends: on the reserve, paying ---------- -->
       <div data-group="friends">
         <h2>Staying over</h2>
-        <p class="note">You&rsquo;re at Buffelsdrift on the reserve. Rooms are booked
-          through us rather than with the lodge, and a game drive is included with
-          your stay.</p>
-        <label for="accommodation">Which room would you like?</label>
-        <select id="accommodation" name="accommodation">
+        <p class="note">You&rsquo;re at Buffelsdrift on the reserve. Rooms are booked through
+          us and you&rsquo;ll settle up for yours &mdash; R4 887 to R6 615 per person for
+          both nights depending on the tent, with breakfasts and a game drive included.
+          Photographs and prices are on the <a href="/#stay">website</a>. We&rsquo;ll match
+          you to a tent, and the lodge emails you a payment link with the exact amount.</p>
+
+        <label for="nights">Are you happy to stay on the game reserve for both the Friday
+          and Saturday nights?</label>
+        <select id="nights" name="nights">
           <option value="">Choose…</option>
-          <!-- TODO: real room types and per-night rates, coming from Affy. These
-               strings become Airtable select options on first write, so change
-               them here and nowhere else. -->
-          <option>On the reserve &mdash; room type 1 [TBC]</option>
-          <option>On the reserve &mdash; room type 2 [TBC]</option>
-          <option>Tell us the options and we&rsquo;ll choose</option>
-          <option>We&rsquo;ll sort our own in town instead</option>
-          <option>Not staying over</option>
+          <option>Yes, both nights</option>
+          <option>No</option>
+        </select>
+
+        <label for="children">Any children with you?
+          <span class="hint">names and ages &mdash; under 3s stay free, 4 to 12 are half
+          price</span></label>
+        <textarea id="children" name="children"></textarea>
+
+        <div class="checks">
+          <label><input type="checkbox" id="shareFamily"> Happy to share a four-sleeper
+            family tent with another couple <span class="hint">&mdash; it works out
+            cheapest per person</span></label>
+        </div>
+
+        <label for="thirdNight">Would you like to stay an extra night, the Sunday?
+          <span class="hint">the safari runs again on the Sunday morning &mdash; we&rsquo;ll
+          confirm the rate once we know how many of you want it</span></label>
+        <select id="thirdNight" name="thirdNight">
+          <option value="">Choose…</option>
+          <option>Yes please</option>
+          <option>No</option>
+          <option>Maybe, tell us more</option>
         </select>
       </div>
 
@@ -244,8 +305,16 @@ if (GROUP) {
   AG.applyTo();
 }
 
-// Airtable wants a human label, not our internal key.
-const GROUP_LABEL = { family: 'Family', friends: 'Friends', town: 'Other' }[GROUP] || '';
+// Airtable wants a human label, not our internal key. These strings MUST match
+// the existing choices on the Group field exactly — `typecast: true` silently
+// creates a new option rather than erroring, so a mismatch shows up as a
+// duplicate choice in the base weeks later rather than as a failure now.
+// Current choices: Family / Game Reserve Friends / In Town.
+const GROUP_LABEL = {
+  family: 'Family',
+  friends: 'Game Reserve Friends',
+  town: 'In Town',
+}[GROUP] || '';
 
 // Buffelsdrift's activity list. Prices deliberately NOT baked into these strings —
 // they live once, in the rate table on the site, so a price change is a one-place edit
@@ -362,9 +431,17 @@ form.addEventListener('submit', async (e) => {
   const attending = coming.value === 'Yes';
   const seats = [...travel.querySelectorAll('[data-seat]')].map(el => el.checked);
 
-  // The family variant has no accommodation question at all, so the element is
-  // absent rather than empty — optional chaining, not a value read.
-  const accommodation = document.getElementById('accommodation')?.value || '';
+  // gate.js has already deleted the two staying-over blocks that don't apply, so
+  // every one of these is a read on an element that may legitimately be absent
+  // rather than empty. Optional chaining, not a value read.
+  //   accommodation  town only
+  //   the other four family + friends
+  const el = (id) => document.getElementById(id);
+  const accommodation = el('accommodation')?.value || '';
+  const nights        = el('nights')?.value || '';
+  const children      = el('children')?.value || '';
+  const thirdNight    = el('thirdNight')?.value || '';
+  const shareFamily   = !!el('shareFamily')?.checked;
 
   const payload = {
     website: document.getElementById('website').value,   // honeypot
@@ -375,6 +452,10 @@ form.addEventListener('submit', async (e) => {
       attending: coming.value,
       group: GROUP_LABEL,
       accommodation: attending ? accommodation : '',
+      nights: attending ? nights : '',
+      children: attending ? children : '',
+      thirdNight: attending ? thirdNight : '',
+      shareFamily: attending ? shareFamily : false,
       song: attending ? document.getElementById('song').value : '',
       message: document.getElementById('message').value,
     },

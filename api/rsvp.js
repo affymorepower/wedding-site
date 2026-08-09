@@ -53,6 +53,14 @@ export default async function handler(req, res) {
     Email: text(party.email),
     Phone: text(party.phone),
     Accommodation: text(party.accommodation),
+    // Reserve guests (family + friends) answer these instead of Accommodation;
+    // town guests answer Accommodation and none of these. Nights uses the same
+    // three strings as the Nights dropdown in the Buffelsdrift Rates sheet, so
+    // the column pastes straight into the room allocation table.
+    Nights: text(party.nights),
+    Children: text(party.children),
+    'Third night': text(party.thirdNight),
+    'Share family tent': !!party.shareFamily,
     'Song request': text(party.song),
     Message: text(party.message),
   };

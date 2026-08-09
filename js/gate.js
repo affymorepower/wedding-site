@@ -120,6 +120,19 @@
         const wanted = el.dataset.stay.split(/\s+/);
         if (!stay || !wanted.includes(stay)) el.remove();
       });
+
+      /* The soft variant. data-stay-narrow trims to the visitor's group once we
+         know it, but leaves everything in place for anyone signed out.
+
+         data-stay would be wrong here: it deletes on signed-out too, and this is
+         used in the FAQ, which is open to everyone. Someone without a password
+         should still get an answer about the safari — just the general one
+         covering both cases, rather than a blank where the answer was. */
+      root.querySelectorAll('[data-stay-narrow]').forEach((el) => {
+        if (!stay) return;
+        const wanted = el.dataset.stayNarrow.split(/\s+/);
+        if (!wanted.includes(stay)) el.remove();
+      });
       root.querySelectorAll('[data-locked]').forEach((el) => {
         if (group) el.remove();
       });
