@@ -510,6 +510,9 @@ body.scrolled nav a.cta { color: var(--gold); }
 .arcade .kicker { color: #cfb99d; }
 .arcade h2 { color: var(--sand); }
 .arcade .lede { margin: 1.4rem auto 0; color: #d8c3a6; }
+/* inherit, not a literal — the link should follow .lede's colour if that ever
+   changes, rather than quietly drifting out of step with the text around it. */
+.arcade .lede a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
 .arcade .aside { margin: 1.1rem 0 0; font-size: 13px; color: var(--tan); }
 .arcade .aside a { color: var(--sand); text-decoration: underline; text-underline-offset: 3px; }
 
@@ -796,20 +799,23 @@ footer a:hover { color: #fff3db; }
         tell you your slot nearer the time rather than asking you to pick now.</p>
 
       <!-- Group B only, and it sits ABOVE the cards: someone who is paying should
-           know that before they read three prices, not after. -->
+           know that before they look at the rooms, not after. -->
       <p class="lede" data-group="friends"><strong>Rooms are booked through us, and
-        you&rsquo;ll settle up for yours.</strong> The prices below are per person for both
-        nights, Friday and Saturday, and cover the bed, both breakfasts and the game drive.</p>
+        you&rsquo;ll settle up for yours.</strong> Two nights, Friday and Saturday, covering
+        the bed, both breakfasts and the game drive. These are the three tent types
+        &mdash; we&rsquo;ll confirm what yours costs once everyone is placed.</p>
 
-      <!-- The three tent types, cheapest per person first, same order logic as the
-           town cards below. Photographs are the lodge's own, taken from
-           buffelsdrift.com/luxury-tents and served locally so they don't vanish if
-           that site is redesigned.
+      <!-- The three tent types, cheapest per person first. Photographs are the
+           lodge's own, taken from buffelsdrift.com/luxury-tents and served locally
+           so they don't vanish if that site is redesigned.
 
-           Only the prices carry data-group="friends". Family see exactly the same
-           three rooms with no number attached, because they are not paying for one —
-           which is also why the price is a separate element rather than part of
-           .meta. -->
+           No prices on the cards, for either group. Allocation happens after the
+           RSVPs are in — there are 76 beds for very nearly 76 people, so what a
+           given guest ends up paying depends on the tent we can fit them in, and
+           quoting three numbers up front invites a choice we can't honour. The
+           confirmed per-person rates live in the Buffelsdrift Rates tab of the
+           Wedding Details sheet; the lodge bills each guest direct from the rooming
+           list. -->
       <div class="stays">
         <a class="stay" target="_blank" rel="noopener"
            href="https://www.buffelsdrift.com/luxury-tents">
@@ -819,7 +825,6 @@ footer a:hover { color: #fff3db; }
             <h4>Luxury Family Tent</h4>
             <p class="meta">Two interleading bedrooms sharing a bathroom, and a deck
               looking out over the reserve to the Swartberg. Sleeps four.</p>
-            <p class="price" data-group="friends">R4 887 <span>per person, both nights</span></p>
           </div>
         </a>
 
@@ -831,7 +836,6 @@ footer a:hover { color: #fff3db; }
             <h4>Luxury Horizon View</h4>
             <p class="meta">Set back from the waterhole and raised up, with a long view
               across the reserve. Sleeps two.</p>
-            <p class="price" data-group="friends">R5 562 <span>per person, both nights</span></p>
           </div>
         </a>
 
@@ -843,7 +847,6 @@ footer a:hover { color: #fff3db; }
             <h4>Luxury Waterhole Tent</h4>
             <p class="meta">A private sundeck right at the edge of the main waterhole.
               You wake up looking at it. Sleeps two.</p>
-            <p class="price" data-group="friends">R6 615 <span>per person, both nights</span></p>
           </div>
         </a>
       </div>
@@ -867,8 +870,9 @@ footer a:hover { color: #fff3db; }
         extra night.</p>
 
       <p class="fineprint" data-group="friends">Children under 3 stay free, 4 to 12 are
-        half price. These are the lodge&rsquo;s confirmed rates for our dates, including
-        the discount they gave us on the Friday night.</p>
+        half price. We&rsquo;ve already negotiated a discount off the lodge&rsquo;s rates
+        for the Friday night, so what you&rsquo;ll be quoted is better than their published
+        price.</p>
     </div>
 
     <!-- ---------- everyone else: Oudtshoorn ---------- -->

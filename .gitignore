@@ -21,3 +21,4 @@ website-plan.md
 # these are commercial figures, not site content, and a deploy from this folder
 # would otherwise serve them at a public URL.
 *.csv
+.env*
