@@ -282,10 +282,20 @@ h2 em { font-style: italic; font-weight: 600; }
 .stamp {
   flex: 0 0 auto; scroll-snap-align: center;
   width: clamp(230px, 62vw, 330px);
-  padding: var(--perf-gap);
-  background: var(--cream-2);
-  /* Four gradients bite semicircles out of each edge. transparent must sit at
-     the same stop as the colour or Safari renders a hard-edged sawtooth. */
+  transition: transform .4s ease;
+}
+.stamp:hover { transform: translateY(-6px) rotate(-.6deg); }
+
+/* The perforation moved off the figure and onto the image, and the cream matting
+   went with it. The photograph is now the stamp rather than something mounted on
+   one, so the frank bites the picture itself.
+
+   It has to be the <img> and not the <figure>: the mask chews semicircles out of
+   every edge, and with the caption inside the figure it was eating the caption
+   too. Four gradients, one per edge — transparent must sit at the same stop as
+   the colour or Safari renders a hard-edged sawtooth. */
+.stamp img {
+  width: 100%; aspect-ratio: 1; object-fit: cover;
   -webkit-mask:
     radial-gradient(var(--perf) at var(--perf-gap) 0, transparent 99%, #000 100%) 0 0 / var(--perf-gap) 100% repeat-x,
     radial-gradient(var(--perf) at var(--perf-gap) 100%, transparent 99%, #000 100%) 0 100% / var(--perf-gap) 100% repeat-x,
@@ -293,10 +303,7 @@ h2 em { font-style: italic; font-weight: 600; }
     radial-gradient(var(--perf) at 100% var(--perf-gap), transparent 99%, #000 100%) 100% 0 / 100% var(--perf-gap) repeat-y;
   -webkit-mask-composite: source-in;
           mask-composite: intersect;
-  transition: transform .4s ease;
 }
-.stamp:hover { transform: translateY(-6px) rotate(-.6deg); }
-.stamp img { width: 100%; aspect-ratio: 1; object-fit: cover; }
 .stamp figcaption {
   margin-top: .7rem; text-align: center;
   font: 600 10px/1.3 var(--font-body); letter-spacing: 1.4px;
@@ -522,24 +529,26 @@ h2 em { font-style: italic; font-weight: 600; }
 /* ---- nav ----
    Fixed, and it only gains a background once the hero is behind you — over the
    photograph the links float, which is the whole point of a full-bleed hero. */
+/* The nav does not exist until you are past the hero. Gabby's composition is a
+   finished piece with her own eyebrow line across the top of it, and a menu
+   floating over that was a second row of type competing with hers. It slides in
+   once the picture is behind you.
+
+   visibility (not just opacity) so the hidden bar is also out of the tab order —
+   a link nobody can see should not be focusable. */
 nav {
   position: fixed; inset: 0 0 auto; z-index: 15;
   display: flex; justify-content: center; flex-wrap: wrap;
   gap: clamp(.9rem, 3vw, 2rem); padding: 1.1rem var(--gutter);
   font: 600 12px/1 var(--font-body); letter-spacing: 1.6px; text-transform: uppercase;
-  background: rgba(55, 11, 10, 0); backdrop-filter: blur(0px);
-  transition: background .3s ease, backdrop-filter .3s ease;
+  background: rgba(55, 11, 10, .93); backdrop-filter: blur(8px);
+  opacity: 0; visibility: hidden; transform: translateY(-100%);
+  transition: opacity .3s ease, transform .35s ease, visibility .35s;
 }
-/* Over the hero the nav is dark on Gabby's pale sky, matching the maroon she
-   set her own eyebrow line in. Cream would vanish there — the old scrim that
-   used to make cream work went with the live type. Once the page scrolls onto
-   the solid bar it flips to cream. */
-nav a { color: var(--maroon); text-decoration: none; opacity: .85; }
+nav a { color: var(--chalk); text-decoration: none; opacity: .85; }
 nav a:hover { opacity: 1; }
-nav a.cta { color: var(--wine); font-weight: 700; }
-body.scrolled nav { background: rgba(55, 11, 10, .93); backdrop-filter: blur(8px); }
-body.scrolled nav a { color: var(--chalk); }
-body.scrolled nav a.cta { color: var(--gold); }
+nav a.cta { color: var(--gold); font-weight: 700; }
+body.scrolled nav { opacity: 1; visibility: visible; transform: none; }
 @media (max-width: 30rem) { nav { font-size: 11px; letter-spacing: 1.2px; } }
 
 
@@ -624,12 +633,13 @@ footer a:hover { color: #fff3db; }
 </head>
 <body>
 
+<!-- Five items, not seven. "Logistics" covers getting there, staying and what to
+     wear as one idea; those sections still exist and still have their own ids,
+     they just aren't all competing for a slot in the bar. -->
 <nav>
-  <a href="#timeline">The week</a>
   <a href="#story">Our story</a>
-  <a href="#travel">Getting there</a>
-  <a href="#stay">Staying</a>
-  <a href="#wear">What to wear</a>
+  <a href="#events">Events</a>
+  <a href="#travel">Logistics</a>
   <a href="#faq">Questions</a>
   <a class="cta" href="/rsvp">RSVP</a>
 </nav>
@@ -652,7 +662,7 @@ footer a:hover { color: #fff3db; }
   <h1 class="sr-only">Affy &amp; Gabby&rsquo;s Wedding &mdash; South Africa, March 2027</h1>
   <p class="hero__note">Note: this is a real image from the wedding venue. We can&rsquo;t
     guarantee your safety, but we can guarantee a wild adventure celebrating our special
-    day with amazing people on the edge of the round earth.</p>
+    day with amazing people.</p>
 </header>
 
 <main>
@@ -663,8 +673,7 @@ footer a:hover { color: #fff3db; }
   <ol class="stops">
     <li class="stop reveal">
       <img src="images/flowers/picnic.webp" alt="" aria-hidden="true">
-      <p class="numeral">I</p>
-      <h3>Welcome picnic</h3>
+      <h3>Welcome Picnic</h3>
       <p class="date">Sunday, 14 March 2027</p>
       <p class="where"><a class="maplink" target="_blank" rel="noopener"
         href="https://www.google.com/maps/search/?api=1&amp;query=Kirstenbosch%20National%20Botanical%20Garden%2C%20Cape%20Town">Kirstenbosch, Cape Town</a></p>
@@ -672,7 +681,6 @@ footer a:hover { color: #fff3db; }
 
     <li class="stop reveal">
       <img src="images/flowers/holud.webp" alt="" aria-hidden="true">
-      <p class="numeral">II</p>
       <h3>The Holud</h3>
       <p class="date">Tuesday, 16 March 2027</p>
       <p class="where"><a class="maplink" target="_blank" rel="noopener"
@@ -681,8 +689,7 @@ footer a:hover { color: #fff3db; }
 
     <li class="stop reveal">
       <img src="images/flowers/wedding.webp" alt="" aria-hidden="true">
-      <p class="numeral">III</p>
-      <h3>The wedding</h3>
+      <h3>The Wedding</h3>
       <p class="date">Saturday, 20 March 2027</p>
       <p class="where"><a class="maplink" target="_blank" rel="noopener"
         href="https://www.google.com/maps/search/?api=1&amp;query=Buffelsdrift%20Game%20Lodge%2C%20Oudtshoorn">Buffelsdrift, Oudtshoorn</a></p>
@@ -719,8 +726,8 @@ footer a:hover { color: #fff3db; }
        alt="Cape Town from the air at sunset: Table Mountain, Lion's Head and the stadium on the peninsula">
 </div>
 
-<section class="event event--picnic">
-  <div class="wrap narrow">
+<section class="event event--picnic" id="events">
+  <div class="wrap">
     <p class="kicker">Event 01</p>
     <h2>The welcome picnic</h2>
     <p class="theme">An &lsquo;adda&rsquo; under the mountain</p>
@@ -742,7 +749,7 @@ footer a:hover { color: #fff3db; }
 </section>
 
 <section class="event event--holud">
-  <div class="wrap narrow">
+  <div class="wrap">
     <p class="kicker">Event 02</p>
     <h2>The Holud</h2>
     <p class="theme">Golden and ungovernable</p>
@@ -782,7 +789,7 @@ footer a:hover { color: #fff3db; }
 </div>
 
 <section class="event event--wedding">
-  <div class="wrap narrow">
+  <div class="wrap">
     <p class="kicker">Event 03</p>
     <h2>The wedding</h2>
     <p class="theme">A wild dream at the edge of the world</p>
@@ -1031,7 +1038,7 @@ footer a:hover { color: #fff3db; }
 
     <div class="cards">
       <div class="card">
-        <h3>Welcome picnic</h3>
+        <h3>Welcome Picnic</h3>
         <p><strong>Casual and cool.</strong> It&rsquo;s a garden, on grass, in the
           afternoon &mdash; so bring shoes that agree with that.</p>
       </div>
@@ -1228,7 +1235,10 @@ document.querySelectorAll('a[href="/rsvp"]').forEach((a) => {
 (() => {
   const hero = document.querySelector('.hero');
   let trigger = 0;
-  const measure = () => { trigger = Math.max(80, hero.offsetHeight - 90); };
+  // Trigger at the foot of the hero, not 90px short of it: the bar is hidden
+  // over the picture now, so it should appear as the picture leaves rather than
+  // sliding in across the last of it.
+  const measure = () => { trigger = Math.max(80, hero.offsetHeight - 8); };
   const onScroll = () => document.body.classList.toggle('scrolled', window.scrollY > trigger);
   const update = () => { measure(); onScroll(); };
   addEventListener('scroll', onScroll, { passive: true });
