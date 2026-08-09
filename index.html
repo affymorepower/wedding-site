@@ -125,62 +125,24 @@ h2 em { font-style: italic; font-weight: 600; }
 
 /* =========================================================================
    HERO
-   The names sit at 38% opacity over the mountains rather than solid white.
-   It is the single most distinctive thing in the Framer draft: the type
-   belongs to the photograph instead of sitting on top of it. It only works
-   because the sky behind is pale and even — over a busy frame it would be
-   unreadable, so the scrim below guarantees a floor of contrast.
+   Gabby's artwork, whole. No type of ours over it and no scrim — the words are
+   already in the picture, so anything we add would sit on top of them.
+
+   The image runs at its natural aspect rather than filling the viewport: a
+   cover crop would cut the lettering off at the sides on a wide screen, which
+   is the one thing baked-in type cannot survive. On a laptop the 1.41:1
+   desktop file lands at roughly a full screen anyway.
    ========================================================================= */
-.hero {
-  position: relative; min-height: 100svh;
-  display: grid; grid-template-rows: auto 1fr auto;
-  /* Extra top padding clears the fixed nav; the eyebrow would otherwise sit
-     underneath it. Two lines of nav on a narrow phone, hence the generous min. */
-  padding: clamp(5.5rem, 11vw, 7rem) var(--gutter) clamp(2rem, 5vw, 3.5rem);
-  color: var(--chalk); text-align: center;
-  background: #cfe0e8 center 30%/cover no-repeat;
-  /* [framer] the snow on the Swartberg, with the elephant on the ridge */
-  background-image: url('images/hero-swartberg.webp');
-}
-/* Scrim: darkens top and bottom for the eyebrow and meta row, plus a soft
-   pool through the middle so the names have something to sit against. The
-   middle stop is an ellipse rather than a band — a straight gradient across
-   the snowline reads as a grey stripe on the mountain. */
-.hero::after {
-  content: ''; position: absolute; inset: 0; pointer-events: none;
-  background:
-    radial-gradient(ellipse 70% 32% at 50% 41%, rgba(24,18,12,.42), transparent 70%),
-    linear-gradient(to bottom, rgba(28,20,14,.38), transparent 22%),
-    linear-gradient(to top,    rgba(28,20,14,.34), transparent 26%);
-}
-.hero > * { position: relative; z-index: 1; }
-.hero__eyebrow {
-  margin: 0; font: 600 12px/1.4 var(--font-body);
-  letter-spacing: 2.4px; text-transform: uppercase; color: var(--chalk);
-}
-/* The Framer draft ghosts these to 38% and they disappear on a phone, where
-   the sky behind is paler. Solid warm cream at weight 500 instead: heavier
-   strokes, full opacity, and two shadows — a tight one to hold the edge
-   against snow, a wide one to lift the whole word off the mountain. */
-.hero__names {
-  /* Lifted off dead-centre so the elephant on the ridge stays clear of the
-     descenders — it is the reason this photograph was picked. */
-  align-self: center; transform: translateY(-9%);
-  margin: 0; font-family: var(--font-display); font-weight: 500; font-style: italic;
-  font-size: clamp(3rem, 11vw, 6.2rem); line-height: .96; letter-spacing: -2px;
-  color: #fff3db;
-  text-shadow: 0 1px 3px rgba(24, 18, 12, .45), 0 4px 34px rgba(24, 18, 12, .55);
-}
-.hero__meta {
-  display: flex; justify-content: space-between; align-items: end; gap: 1rem;
-  margin: 0; font-size: 15px; letter-spacing: 3px; text-transform: uppercase;
-}
-.hero__meta span:nth-child(2) {
-  font-family: 'Noto Serif Bengali', var(--font-display), serif;
-  letter-spacing: 1.6px; text-transform: none; font-size: 16px;
-}
-@media (max-width: 34rem) {
-  .hero__meta { flex-direction: column; align-items: center; gap: .5rem; letter-spacing: 2px; font-size: 13px; }
+.hero { position: relative; background: #cfe0e8; }
+.hero img { width: 100%; height: auto; }
+
+/* The names are pixels now, so the accessible name of the page has to come from
+   somewhere. Standard visually-hidden: present for screen readers and for
+   find-in-page, painted nowhere. Not display:none, which would hide it from
+   assistive tech too. */
+.sr-only {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+  overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
 }
 
 /* =========================================================================
@@ -299,39 +261,17 @@ h2 em { font-style: italic; font-weight: 600; }
 .rail__nav button:hover { background: rgba(240, 223, 192, .12); border-color: var(--sand); }
 
 /* =========================================================================
-   PLACE BAND — the photograph with the city name across it.
-   The name overhangs the top edge of the photo by design, so it reads as
-   applied to the page rather than captioned onto the image.
+   PLACE BAND — Gabby's artwork, whole.
    ========================================================================= */
-.band { position: relative; }
-.band > img { width: 100%; height: clamp(200px, 32vw, 340px); object-fit: cover; }
+   Both bands carry their own lettering, so they run whole rather than cropped
+   to a letterbox. Cropping would slice the watermark in half, and there is no
+   safe height at which it survives every screen width.
 
-/* ---- naming the place: the field label ----
-   Small, tracked out, sitting on a rule in the bottom corner, after a specimen
-   plate. It survives a busy photograph without needing a scrim behind it,
-   which the big ghosted alternative did not. */
-.band__label {
-  position: absolute; margin: 0; pointer-events: none;
-  left: var(--gutter); bottom: 1.6rem;
-}
-/* The rule sits under the name rather than around it, so the label anchors to
-   the photo's bottom edge without drawing a box on the landscape. */
-.band__name {
-  display: block; padding-bottom: .55rem; border-bottom: 1px solid rgba(255,243,219,.55);
-  font: 600 clamp(12px, 1.4vw, 14px)/1 var(--font-body);
-  letter-spacing: 3.2px; text-transform: uppercase; color: #fff3db;
-  text-shadow: 0 1px 8px rgba(20, 30, 50, .6);
-}
-
-/* The giraffes get a deeper band than Cape Town does. Table Mountain is a wide,
-   flat subject that suits a letterbox; giraffes are tall, and at the standard
-   band height the crop was showing heads and almost no animal. Taller frame,
-   with the focus still above centre so the heads stay in and the bodies come
-   with them. */
-.band--giraffes > img {
-  height: clamp(300px, 44vw, 560px);
-  object-position: 50% 34%;
-}
+   The consequence is that a band is now a picture rather than a divider: taller
+   on the page, and slower to scroll past. That is the trade that came with
+   choosing artwork over live type. */
+.band { position: relative; background: #cfe0e8; }
+.band > img { width: 100%; height: auto; }
 
 /* =========================================================================
    EVENT PANES
@@ -518,11 +458,16 @@ nav {
   background: rgba(55, 11, 10, 0); backdrop-filter: blur(0px);
   transition: background .3s ease, backdrop-filter .3s ease;
 }
-nav a { color: var(--chalk); text-decoration: none; opacity: .9; text-shadow: 0 1px 6px rgba(24,18,12,.5); }
+/* Over the hero the nav is dark on Gabby's pale sky, matching the maroon she
+   set her own eyebrow line in. Cream would vanish there — the old scrim that
+   used to make cream work went with the live type. Once the page scrolls onto
+   the solid bar it flips to cream. */
+nav a { color: var(--maroon); text-decoration: none; opacity: .85; }
 nav a:hover { opacity: 1; }
-nav a.cta { color: var(--gold); }
+nav a.cta { color: var(--wine); font-weight: 700; }
 body.scrolled nav { background: rgba(55, 11, 10, .93); backdrop-filter: blur(8px); }
-body.scrolled nav a { text-shadow: none; }
+body.scrolled nav a { color: var(--chalk); }
+body.scrolled nav a.cta { color: var(--gold); }
 @media (max-width: 30rem) { nav { font-size: 11px; letter-spacing: 1.2px; } }
 
 
@@ -536,6 +481,50 @@ body.scrolled nav a { text-shadow: none; }
   border-left: 2px solid var(--pane-rule);
   color: var(--pane-fg);
 }
+
+/* =========================================================================
+   THE ARCADE — the game opens over the page rather than navigating away.
+   It is still its own page at /bibi, because that is the link that gets
+   pasted into WhatsApp; here the same page is loaded into an iframe that is
+   built on click and thrown away on close. Throwing it away is what stops
+   the chiptune — you cannot reach into a frame from outside and pause it.
+   It sits BEFORE the RSVP on purpose: the gold pane has to stay last.
+   ========================================================================= */
+.arcade {
+  background: var(--maroon); color: var(--sand);
+  padding: var(--pane-y) 0; text-align: center;
+}
+.arcade .kicker { color: #cfb99d; }
+.arcade h2 { color: var(--sand); }
+.arcade .lede { margin: 1.4rem auto 0; color: #d8c3a6; }
+.arcade .btn { margin-top: 2.2rem; background: var(--gold); color: #3a1608; }
+.arcade .btn:hover { background: #e8b46a; }
+.arcade .aside { margin: 1.2rem 0 0; font-size: 13px; color: var(--tan); }
+.arcade .aside a { color: var(--sand); text-decoration: underline; text-underline-offset: 3px; }
+
+.arcade-modal {
+  position: fixed; inset: 0; z-index: 90;
+  display: flex; flex-direction: column;
+  background: #1a0a05;
+}
+.arcade-modal[hidden] { display: none; }
+.arcade-modal__bar {
+  flex: 0 0 auto;
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+  padding: .55rem 1rem;
+  background: var(--maroon); color: var(--sand);
+  font: 600 11px/1 var(--font-body); letter-spacing: 2px; text-transform: uppercase;
+}
+.arcade-modal__bar button {
+  border: 1px solid rgba(240, 223, 192, .4); border-radius: 2px;
+  background: transparent; color: var(--sand);
+  font: inherit; padding: .55rem .9rem; cursor: pointer;
+}
+.arcade-modal__bar button:hover { background: rgba(240, 223, 192, .14); }
+/* min-height:0 or the flex child refuses to shrink and the frame overflows. */
+.arcade-modal__frame { flex: 1 1 auto; min-height: 0; }
+.arcade-modal__frame iframe { display: block; width: 100%; height: 100%; border: 0; }
+body.arcade-open { overflow: hidden; }
 
 /* =========================================================================
    RSVP FOOT — gold, so the last thing on the page is the brightest.
@@ -579,13 +568,21 @@ footer a:hover { color: #fff3db; }
 </nav>
 
 <header class="hero">
-  <p class="hero__eyebrow">Join us for our biggest adventure yet</p>
-  <h1 class="hero__names">Affy &amp; Gabby&rsquo;s<br>Wedding</h1>
-  <p class="hero__meta">
-    <span>South Africa</span>
-    <span>&#2438;&#2478;&#2494;&#2470;&#2503;&#2480; &#2476;&#2495;&#2479;&#2492;&#2503;</span>
-    <span>March 2027</span>
-  </p>
+  <!-- Gabby's hero is a finished composition: the eyebrow, the names and the
+       meta row are part of the picture, not HTML over it. Two crops, swapped by
+       <picture> — the desktop file is 1.41:1 and would letterbox badly on a
+       phone, which is why she cut a portrait one.
+
+       Because the type is pixels, the page would otherwise have no <h1> and
+       nothing for a screen reader or a link preview to read. The visually
+       hidden heading below carries the same words. Don't delete it; it is the
+       only text on the page saying whose wedding this is. -->
+  <picture>
+    <source media="(max-width: 46rem)" srcset="images/hero-gabby-mobile.webp" width="1080" height="1920">
+    <img src="images/hero-gabby-desktop.webp" width="2000" height="1422" fetchpriority="high"
+         alt="Join us for our biggest adventure yet. Affy &amp; Gabby's Wedding. South Africa, March 2027. Snow on the Swartberg, with an elephant on the ridge.">
+  </picture>
+  <h1 class="sr-only">Affy &amp; Gabby&rsquo;s Wedding &mdash; South Africa, March 2027</h1>
 </header>
 
 <main>
@@ -623,36 +620,8 @@ footer a:hover { color: #fff3db; }
   </ol>
 </section>
 
-<!-- ===== our story ===== -->
-<section class="practical practical--pale" id="story">
-  <div class="wrap">
-    <div class="story__grid">
-      <div>
-        <p class="kicker">How we got here</p>
-        <h2>Our story</h2>
-        <p class="lede">The short version, for people who are about to fly a long way for
-          us: an accidental meeting, a first real date that ran long, some years of going
-          places together, and then a question with an obvious answer.</p>
-        <p class="lede"><span class="todo">Wording needed</span>. There&rsquo;s a working
-          draft in <code>prototypes/prototype-1-timeline.html</code> worth lifting across
-          once you&rsquo;ve settled it.</p>
-      </div>
-
-      <!-- One real photo so far. Each placeholder becomes an <img> the moment there is
-           something to put in it; drop the "empty" class when you do. -->
-      <div class="collage">
-        <figure><img loading="lazy" src="images/photos/orangerie.jpg"
-          alt="Affy and Gabby at the Mus&eacute;e de l'Orangerie in Paris"></figure>
-        <figure class="empty">Photo 2<br>needed</figure>
-        <figure class="empty">Photo 3<br>needed</figure>
-        <figure class="empty">Photo 4<br>needed</figure>
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- ===== the stamps ===== -->
-<section class="stamps">
+<section class="stamps" id="story">
   <p class="kicker">Places we&rsquo;ve been</p>
 
   <!-- [framer] nine photos, already cropped square. Pull local before shipping. -->
@@ -676,9 +645,8 @@ footer a:hover { color: #fff3db; }
 
 <!-- ===== Cape Town ===== -->
 <div class="band">
-  <!-- [framer] Table Mountain at last light -->
-  <img loading="lazy" src="images/capetown.webp" alt="Table Mountain above Cape Town at sunset">
-  <p class="band__label"><span class="band__name">Cape Town</span></p>
+  <img loading="lazy" src="images/capetown-gabby.webp" width="1600" height="1138"
+       alt="Cape Town from the air at sunset: Table Mountain, Lion's Head and the stadium on the peninsula">
 </div>
 
 <section class="event event--picnic">
@@ -729,9 +697,9 @@ footer a:hover { color: #fff3db; }
 </section>
 
 <!-- ===== Oudtshoorn ===== -->
-<div class="band band--giraffes">
-  <img loading="lazy" src="images/giraffes.webp" alt="A tower of giraffes in the Karoo scrub below the mountains">
-  <p class="band__label"><span class="band__name">Oudtshoorn</span></p>
+<div class="band">
+  <img loading="lazy" src="images/giraffes-gabby.webp" width="1600" height="1138"
+       alt="A tower of giraffes in the Karoo scrub below the mountains, at Oudtshoorn">
 </div>
 
 <section class="event event--wedding">
@@ -758,7 +726,7 @@ footer a:hover { color: #fff3db; }
 </section>
 
 <!-- ===== getting there ===== -->
-<section class="practical practical--pale">
+<section class="practical practical--pale" id="travel">
   <div class="wrap">
     <p class="kicker">Logistics</p>
     <h2>Getting there</h2>
@@ -1002,6 +970,21 @@ footer a:hover { color: #fff3db; }
   </div>
 </section>
 
+<section class="arcade" id="arcade">
+  <div class="wrap narrow">
+    <p class="kicker">One last thing</p>
+    <h2>Bibi wants a <em>rematch</em></h2>
+    <p class="lede">He took Gabby once, and we got her back. Now he&rsquo;s waiting on the
+      road into Oudtshoorn with the whole flock behind him &mdash; and there is a crocodile
+      pit at the end of it.</p>
+    <p class="lede">Thirty seconds. One button. Finish him and you get to name a song
+      we&rsquo;ll actually play at Buffelsdrift.</p>
+    <button class="btn" type="button" id="arcade-play">Play &mdash; 30 seconds</button>
+    <p class="aside">Rather have it to yourself? <a href="/bibi">Open it in its own
+      window.</a></p>
+  </div>
+</section>
+
 <section class="rsvp">
   <div class="wrap">
     <h2>Will you come?</h2>
@@ -1012,9 +995,18 @@ footer a:hover { color: #fff3db; }
 
 </main>
 
+<div class="arcade-modal" id="arcade-modal" hidden>
+  <div class="arcade-modal__bar">
+    <span>Bibi&rsquo;s Revenge</span>
+    <button type="button" id="arcade-close">Close &times;</button>
+  </div>
+  <div class="arcade-modal__frame" id="arcade-frame"></div>
+</div>
+
 <footer>
   <p>Affy &amp; Gabby &middot; 20 March 2027</p>
-  <p>Waiting? <a href="/game/">Rescue Gabby from an ostrich.</a></p>
+  <p>Waiting? <a href="/game/">Rescue Gabby from an ostrich</a>, or
+    <a href="/bibi">feed that ostrich to a crocodile</a>.</p>
 </footer>
 
 
@@ -1046,10 +1038,20 @@ document.querySelectorAll('a[href="/rsvp"]').forEach((a) => {
 
 // ---- nav ----
 // Solid once the hero is behind you, transparent over it.
+// Measure the hero rather than assuming a viewport's worth of it: it now runs
+// at the image's natural aspect, which is shorter than the screen on a wide
+// monitor and taller on a phone. Re-measure on resize, since the <picture>
+// swaps to a portrait crop at 46rem and the height changes with it.
 (() => {
-  const onScroll = () => document.body.classList.toggle('scrolled', window.scrollY > window.innerHeight * 0.7);
+  const hero = document.querySelector('.hero');
+  let trigger = 0;
+  const measure = () => { trigger = Math.max(80, hero.offsetHeight - 90); };
+  const onScroll = () => document.body.classList.toggle('scrolled', window.scrollY > trigger);
+  const update = () => { measure(); onScroll(); };
   addEventListener('scroll', onScroll, { passive: true });
-  onScroll();
+  addEventListener('resize', update, { passive: true });
+  hero.querySelector('img')?.addEventListener('load', update);
+  update();
 })();
 
 // Reveal the timeline stops as they arrive. Guarded: no observer, no hiding.
@@ -1061,6 +1063,44 @@ if ('IntersectionObserver' in window) {
 } else {
   document.querySelectorAll('.reveal').forEach(el => el.classList.add('in'));
 }
+
+// The arcade. The iframe is built on open and destroyed on close: building it
+// late keeps the game's assets and audio context off the page for everyone who
+// never plays, and destroying it is the only reliable way to stop the music.
+(() => {
+  const modal = document.getElementById('arcade-modal');
+  const frame = document.getElementById('arcade-frame');
+  const playBtn = document.getElementById('arcade-play');
+  const closeBtn = document.getElementById('arcade-close');
+  if (!modal || !frame || !playBtn || !closeBtn) return;
+
+  function open() {
+    if (!frame.firstChild) {
+      const f = document.createElement('iframe');
+      f.src = '/bibi/';
+      f.title = "Bibi's Revenge";
+      f.allow = 'autoplay; fullscreen';
+      frame.appendChild(f);
+    }
+    modal.hidden = false;
+    document.body.classList.add('arcade-open');
+    closeBtn.focus();
+  }
+
+  function close() {
+    modal.hidden = true;
+    document.body.classList.remove('arcade-open');
+    frame.replaceChildren();
+    playBtn.focus();
+  }
+
+  playBtn.addEventListener('click', open);
+  closeBtn.addEventListener('click', close);
+  addEventListener('keydown', (e) => {
+    // The game itself swallows Space and the arrows; Escape is left alone.
+    if (e.key === 'Escape' && !modal.hidden) close();
+  });
+})();
 
 // Stamp rail. Scroll by one card plus its gap, so a click always lands a stamp
 // on a snap point rather than halfway between two.
