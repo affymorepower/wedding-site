@@ -353,19 +353,30 @@ const SAFARI_PRICES = {
   'Cheetah experience': 'R1 665',
 };
 
+/* What a reserve guest gets free with their stay. These two are the choice, so
+   for family and friends they must read "included" — putting R870 next to a bush
+   safari they are not being charged for would be worse than showing nothing. */
+const SAFARI_INCLUDED = new Set(['Bush safari', 'Elephant experience']);
+
 /* Town guests aren't staying at the lodge, so the reserve framing ("one is
    included") is not just irrelevant to them, it is wrong. */
 const SAFARI_HINT = GROUP === 'town'
   ? 'not included with a room in town. These are the lodge&rsquo;s published adult '
     + 'prices; children 4 to 12 are half, under 3s free. We&rsquo;ve arranged a reduced '
     + 'rate on the bush safari for our guests &mdash; details nearer the time'
-  : 'staying at Buffelsdrift? one is included, and it&rsquo;s bush safari or elephant '
-    + 'experience. Anything else is a paid extra, prices on the site';
+  : 'one is included with your stay &mdash; the bush safari or the elephant experience. '
+    + 'Anything else is a paid extra at the price shown, and children 4 to 12 are half';
 
 /* Price in the label, never in the value — see SAFARI_PRICES. */
 const safariOpts = () => SAFARI_OPTIONS.map((o) => {
-  const price = GROUP === 'town' ? SAFARI_PRICES[o] : null;
-  return `<option value="${o}">${price ? `${o} &mdash; ${price}` : o}</option>`;
+  const price = SAFARI_PRICES[o];
+  let suffix = '';
+  if (price) {
+    suffix = (GROUP !== 'town' && SAFARI_INCLUDED.has(o))
+      ? ' &mdash; included'
+      : ` &mdash; ${price}`;
+  }
+  return `<option value="${o}">${o}${suffix}</option>`;
 }).join('');
 const SIZES = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'Not sure, measure me'];
 // Pink for the girls, green for the boys, as the Holud section on the site says.
