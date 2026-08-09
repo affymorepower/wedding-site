@@ -3,55 +3,64 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Affy &amp; Gabby &middot; 20 March 2027</title>
-<meta name="description" content="Affy &amp; Gabby are getting married in the Little Karoo, 14–20 March 2027.">
+<title>Look D — Postcard · Affy &amp; Gabby</title>
 <meta name="robots" content="noindex">
 
 <!--
-  THE SITE. Design is "Postcard", adapted from Gabby's Framer draft; the words
-  are ours. The shape of it:
+  LOOK D — "POSTCARD". Lifted from the Framer draft at
+  orange-variation-873829.framer.app, rebuilt in the site's own idiom.
 
-  1. COLOUR PANES. Every event sits on its own full-bleed pane. Cream → gold →
-     wine, deepening as the week builds, with near-black maroon for photographs
-     and gold for the closing RSVP. The three event colours carry the story, so
-     the logistics sections stay quiet on purpose — a fourth and fifth colour
-     down there and the sequence stops meaning anything.
-  2. PLACE BANDS. A full-bleed photograph of the city marks each move: Cape Town
-     before the picnic, Oudtshoorn before the wedding. Once per PLACE, not once
-     per event, so it reads as travel rather than decoration.
-  3. POSTAGE STAMPS. Our photos franked, on the maroon pane. Perforations are
-     four radial gradients in a CSS mask, so they recolour with the pane and
-     cost nothing to load.
-  4. SPEC LISTS. Location / date / time / dress on ruled rows. Scannable while
-     packing, which is the only moment anyone reads them.
+  Four ideas taken across, in order of how much they change the page:
 
-  THE GATE. Where-to-stay and the RSVP differ by guest group; everything else is
-  open to anyone with the link. Guests sign in at /login with one of three
-  shared passwords and the group is derived from which one matched. Read the
-  header of js/gate.js before relying on this for anything — it is a polite
-  gate, not security, and every group's content is present in this page.
+  1. COLOUR PANES. Every event sits on its own full-bleed pane instead of
+     alternating two shades of linen. Cream → gold → wine, getting deeper as
+     the week builds. A fifth pane, near-black maroon, holds the photos.
+     This is the whole reason for the prototype; everything else supports it.
+  2. PLACE BANDS. A full-bleed photograph of the city, with its name set huge
+     and half-transparent across the top, marks each move: Cape Town before
+     the picnic, Oudtshoorn before the wedding. The band appears when the
+     place changes, not once per event — so it reads as travel, not decoration.
+  3. POSTAGE STAMPS. Our photos framed as stamps, perforations and postmark,
+     on the maroon pane. Fits two people who met each other travelling and
+     stops a photo grid looking like an estate agent's listing.
+  4. SPEC LISTS. Location / date / time / dress on hairline-ruled rows rather
+     than the current inline WHEN · WHERE · DRESS. Scannable while packing,
+     which is the only moment anyone reads it.
 
-  Styling is all tokens in the :root block below. Theming should mean editing
-  that block; if you find yourself hunting hard-coded colours further down,
-  something has gone wrong.
+  One section group here is NOT from the Framer draft: GETTING THERE / WHERE TO
+  STAY / WHAT TO WEAR. The draft stops after the three events, which leaves out
+  roughly half of what a guest needs. These carry the live site's real copy.
 
-  Search for [TBC] to find everything still needing real content.
+  Two things were tried and dropped, both recoverable from git if wanted:
+  a huge ghosted watermark for the place names (Gabby's reference — lovely, but
+  it needed a scrim on every photograph), and a cut-out that let the giraffes'
+  heads climb onto the pane above. The keyed image for that one still exists at
+  images/giraffes-breakout.webp.
+
+  The draft's own copy is placeholder — events 2 and 3 repeat the picnic's
+  paragraph and the wedding's details still say Kirstenbosch. The words here
+  are the real ones off the live site. Where the two disagree the live site wins.
+
+  THE REMAINING IMAGES ARE HOTLINKED FROM FRAMER'S CDN and are the one thing
+  that must change before this ships: they die the moment that draft is
+  deleted. Everything marked [framer] below wants pulling into images/. The
+  flowers and the giraffes are local already.
 -->
 
-<link rel="preload" href="fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
 
 <style>
 @font-face {
   font-family: 'Fraunces';
-  src: url('fonts/fraunces-var.woff2') format('woff2-variations'),
-       url('fonts/fraunces-var.woff2') format('woff2');
+  src: url('../fonts/fraunces-var.woff2') format('woff2-variations'),
+       url('../fonts/fraunces-var.woff2') format('woff2');
   font-weight: 100 900; font-style: normal; font-display: swap;
 }
 @font-face {
   font-family: 'Inter';
-  src: url('fonts/inter-var.woff2') format('woff2-variations'),
-       url('fonts/inter-var.woff2') format('woff2');
+  src: url('../fonts/inter-var.woff2') format('woff2-variations'),
+       url('../fonts/inter-var.woff2') format('woff2');
   font-weight: 100 900; font-style: normal; font-display: swap;
 }
 
@@ -87,11 +96,7 @@
 }
 
 *, *::before, *::after { box-sizing: border-box; }
-html {
-  scroll-behavior: smooth; color-scheme: light;
-  /* Anchor targets land below the fixed nav rather than under it. */
-  scroll-padding-top: 4.5rem;
-}
+html { scroll-behavior: smooth; color-scheme: light; }
 body {
   margin: 0; background: var(--cream); color: var(--ink);
   font: 17px/1.65 var(--font-body);
@@ -134,13 +139,11 @@ h2 em { font-style: italic; font-weight: 600; }
 .hero {
   position: relative; min-height: 100svh;
   display: grid; grid-template-rows: auto 1fr auto;
-  /* Extra top padding clears the fixed nav; the eyebrow would otherwise sit
-     underneath it. Two lines of nav on a narrow phone, hence the generous min. */
-  padding: clamp(5.5rem, 11vw, 7rem) var(--gutter) clamp(2rem, 5vw, 3.5rem);
+  padding: clamp(2rem, 5vw, 3.5rem) var(--gutter);
   color: var(--chalk); text-align: center;
   background: #cfe0e8 center 30%/cover no-repeat;
   /* [framer] the snow on the Swartberg, with the elephant on the ridge */
-  background-image: url('images/hero-swartberg.webp');
+  background-image: url('https://framerusercontent.com/images/CTWhPrcKib73VnPce3YJpXATM.jpg');
 }
 /* Scrim: darkens top and bottom for the eyebrow and meta row, plus a soft
    pool through the middle so the names have something to sit against. The
@@ -433,98 +436,6 @@ h2 em { font-style: italic; font-weight: 600; }
 }
 .stay .price span { font-family: var(--font-body); font-size: 13px; font-weight: 400; color: var(--pane-mute); }
 
-/* ---- the locked state ----
-   What a signed-out visitor sees where their accommodation would be. It has to
-   explain itself without naming the groups: "sign in to see yours", never
-   "sign in to see whether you're paying". */
-.locked {
-  margin-top: 2.4rem; padding: clamp(2rem, 5vw, 3rem);
-  border: 1px solid var(--pane-rule); text-align: center;
-}
-.locked h3 { margin: 0 0 .8rem; font-size: 1.4rem; }
-.locked p { max-width: 30rem; margin: 0 auto 1.8rem; color: var(--pane-mute); }
-.signout {
-  margin-top: 2rem; font-size: 13px; color: var(--pane-mute);
-}
-.signout button {
-  border: 0; background: none; padding: 0; cursor: pointer;
-  font: inherit; color: inherit; text-decoration: underline; text-underline-offset: 3px;
-}
-.signout button:hover { color: var(--pane-fg); }
-
-/* ---- FAQ ----
-   <details> rather than a JS accordion: it is searchable with cmd-F when
-   closed in most browsers, works with no script, and opens on print. */
-.faq details {
-  border-top: 1px solid var(--pane-rule);
-}
-.faq details:last-of-type { border-bottom: 1px solid var(--pane-rule); }
-.faq summary {
-  padding: 1.2rem 2.5rem 1.2rem 0; cursor: pointer; position: relative;
-  font-family: var(--font-display); font-size: clamp(1.05rem, 2.2vw, 1.2rem);
-  font-weight: 600; list-style: none;
-}
-.faq summary::-webkit-details-marker { display: none; }
-.faq summary::after {
-  content: '+'; position: absolute; right: .25rem; top: 50%;
-  transform: translateY(-50%); font-size: 1.4rem; font-weight: 400;
-  color: var(--pane-mute); transition: transform .2s ease;
-}
-.faq details[open] summary::after { content: '\2013'; }
-.faq details > *:not(summary) { margin: 0 0 1.1rem; max-width: var(--measure); color: var(--pane-mute); }
-.faq details > *:last-child { margin-bottom: 1.6rem; }
-.faq strong { color: var(--pane-fg); }
-
-/* Buffelsdrift's published rates. Wide table, narrow phone: it scrolls inside
-   its own box rather than pushing the page sideways. */
-.table-scroll { overflow-x: auto; margin-bottom: 1.2rem; }
-.rates { border-collapse: collapse; width: 100%; min-width: 26rem; font-size: 15px; }
-.rates th, .rates td { padding: .6rem .8rem; text-align: left; border-bottom: 1px solid var(--pane-rule); }
-.rates th {
-  font: 600 11px/1.4 var(--font-body); letter-spacing: 1.4px;
-  text-transform: uppercase; color: var(--pane-mute);
-}
-.rates td { color: var(--pane-fg); }
-.hint { display: block; font-size: 12px; color: var(--pane-mute); }
-.fineprint { margin-top: 1.4rem; font-size: 13px; line-height: 1.65; color: var(--pane-mute); }
-.todo {
-  font: 600 11px/1 var(--font-body); letter-spacing: 1.2px; text-transform: uppercase;
-  color: #b2452f; border-bottom: 1px dotted currentColor;
-}
-.practical--dark .todo { color: #e8926f; }
-
-/* ---- our story ----
-   Text and a photo collage side by side above 52rem, stacked below. */
-.story__grid { display: grid; gap: clamp(2rem, 5vw, 3.5rem); align-items: center; }
-@media (min-width: 52rem) { .story__grid { grid-template-columns: 1fr 1fr; } }
-.collage { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; }
-.collage figure { margin: 0; }
-.collage img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; }
-.collage .empty {
-  display: grid; place-items: center; aspect-ratio: 4 / 5;
-  border: 1px dashed var(--rule-soft); color: var(--tan);
-  font: 600 11px/1.5 var(--font-body); letter-spacing: 1.2px;
-  text-transform: uppercase; text-align: center;
-}
-
-/* ---- nav ----
-   Fixed, and it only gains a background once the hero is behind you — over the
-   photograph the links float, which is the whole point of a full-bleed hero. */
-nav {
-  position: fixed; inset: 0 0 auto; z-index: 15;
-  display: flex; justify-content: center; flex-wrap: wrap;
-  gap: clamp(.9rem, 3vw, 2rem); padding: 1.1rem var(--gutter);
-  font: 600 12px/1 var(--font-body); letter-spacing: 1.6px; text-transform: uppercase;
-  background: rgba(55, 11, 10, 0); backdrop-filter: blur(0px);
-  transition: background .3s ease, backdrop-filter .3s ease;
-}
-nav a { color: var(--chalk); text-decoration: none; opacity: .9; text-shadow: 0 1px 6px rgba(24,18,12,.5); }
-nav a:hover { opacity: 1; }
-nav a.cta { color: var(--gold); }
-body.scrolled nav { background: rgba(55, 11, 10, .93); backdrop-filter: blur(8px); }
-body.scrolled nav a { text-shadow: none; }
-@media (max-width: 30rem) { nav { font-size: 11px; letter-spacing: 1.2px; } }
-
 
 /* The "these are suggestions" note. Set in the pane's full foreground rather
    than the muted tone the ledes use, and hung off a rule, because a guest who
@@ -565,16 +476,6 @@ footer p { margin: 0; }
 </head>
 <body>
 
-<nav>
-  <a href="#timeline">The week</a>
-  <a href="#story">Our story</a>
-  <a href="#travel">Getting there</a>
-  <a href="#stay">Staying</a>
-  <a href="#wear">What to wear</a>
-  <a href="#faq">Questions</a>
-  <a class="cta" href="/rsvp">RSVP</a>
-</nav>
-
 <header class="hero">
   <p class="hero__eyebrow">Join us for our biggest adventure yet</p>
   <h1 class="hero__names">Affy &amp; Gabby&rsquo;s<br>Wedding</h1>
@@ -587,12 +488,12 @@ footer p { margin: 0; }
 
 <main>
 
-<section class="timeline wrap" id="timeline">
+<section class="timeline wrap">
   <p class="kicker">Our wedding timeline</p>
 
   <ol class="stops">
     <li class="stop reveal">
-      <img src="images/flowers/picnic.webp" alt="" aria-hidden="true">
+      <img src="../images/flowers/picnic.webp" alt="" aria-hidden="true">
       <p class="numeral">I</p>
       <h3>Welcome picnic</h3>
       <p class="date">Sunday, 14 March 2027</p>
@@ -601,7 +502,7 @@ footer p { margin: 0; }
     </li>
 
     <li class="stop reveal">
-      <img src="images/flowers/holud.webp" alt="" aria-hidden="true">
+      <img src="../images/flowers/holud.webp" alt="" aria-hidden="true">
       <p class="numeral">II</p>
       <h3>The Holud</h3>
       <p class="date">Tuesday, 16 March 2027</p>
@@ -610,7 +511,7 @@ footer p { margin: 0; }
     </li>
 
     <li class="stop reveal">
-      <img src="images/flowers/wedding.webp" alt="" aria-hidden="true">
+      <img src="../images/flowers/wedding.webp" alt="" aria-hidden="true">
       <p class="numeral">III</p>
       <h3>The wedding</h3>
       <p class="date">Saturday, 20 March 2027</p>
@@ -620,49 +521,21 @@ footer p { margin: 0; }
   </ol>
 </section>
 
-<!-- ===== our story ===== -->
-<section class="practical practical--pale" id="story">
-  <div class="wrap">
-    <div class="story__grid">
-      <div>
-        <p class="kicker">How we got here</p>
-        <h2>Our story</h2>
-        <p class="lede">The short version, for people who are about to fly a long way for
-          us: an accidental meeting, a first real date that ran long, some years of going
-          places together, and then a question with an obvious answer.</p>
-        <p class="lede"><span class="todo">Wording needed</span>. There&rsquo;s a working
-          draft in <code>prototypes/prototype-1-timeline.html</code> worth lifting across
-          once you&rsquo;ve settled it.</p>
-      </div>
-
-      <!-- One real photo so far. Each placeholder becomes an <img> the moment there is
-           something to put in it; drop the "empty" class when you do. -->
-      <div class="collage">
-        <figure><img loading="lazy" src="images/photos/orangerie.jpg"
-          alt="Affy and Gabby at the Mus&eacute;e de l'Orangerie in Paris"></figure>
-        <figure class="empty">Photo 2<br>needed</figure>
-        <figure class="empty">Photo 3<br>needed</figure>
-        <figure class="empty">Photo 4<br>needed</figure>
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- ===== the stamps ===== -->
 <section class="stamps">
   <p class="kicker">Places we&rsquo;ve been</p>
 
   <!-- [framer] nine photos, already cropped square. Pull local before shipping. -->
   <div class="rail" id="rail">
-    <figure class="stamp"><img loading="lazy" src="images/stamps/1.webp" alt="Affy and Gabby travelling"><figcaption>Sydney</figcaption></figure>
-    <figure class="stamp"><img loading="lazy" src="images/stamps/2.webp" alt="Affy and Gabby travelling"><figcaption>Caption needed</figcaption></figure>
-    <figure class="stamp"><img loading="lazy" src="images/stamps/3.webp" alt="Affy and Gabby travelling"><figcaption>Caption needed</figcaption></figure>
-    <figure class="stamp"><img loading="lazy" src="images/stamps/4.webp" alt="Affy and Gabby travelling"><figcaption>Caption needed</figcaption></figure>
-    <figure class="stamp"><img loading="lazy" src="images/stamps/5.webp" alt="Affy and Gabby travelling"><figcaption>Caption needed</figcaption></figure>
-    <figure class="stamp"><img loading="lazy" src="images/stamps/6.webp" alt="Affy and Gabby travelling"><figcaption>Caption needed</figcaption></figure>
-    <figure class="stamp"><img loading="lazy" src="images/stamps/7.webp" alt="Affy and Gabby travelling"><figcaption>Caption needed</figcaption></figure>
-    <figure class="stamp"><img loading="lazy" src="images/stamps/8.webp" alt="Affy and Gabby travelling"><figcaption>Caption needed</figcaption></figure>
-    <figure class="stamp"><img loading="lazy" src="images/stamps/9.webp" alt="Affy and Gabby travelling"><figcaption>Caption needed</figcaption></figure>
+    <figure class="stamp"><img loading="lazy" src="https://framerusercontent.com/images/A63vcq13y4ZmiMEJSF1ffP5PhA.png?width=813&height=813" alt="Affy and Gabby travelling"><figcaption>Sydney</figcaption></figure>
+    <figure class="stamp"><img loading="lazy" src="https://framerusercontent.com/images/OqICjlJtkzPTIKUUQq7EolzmV3M.png?width=813&height=813" alt="Affy and Gabby travelling"><figcaption>Caption needed</figcaption></figure>
+    <figure class="stamp"><img loading="lazy" src="https://framerusercontent.com/images/WEucFzgyum1WwSCL8uMzpdF5hY.png?width=813&height=813" alt="Affy and Gabby travelling"><figcaption>Caption needed</figcaption></figure>
+    <figure class="stamp"><img loading="lazy" src="https://framerusercontent.com/images/QIvE27vdP7Wk6HxnrWViKU3ad0.png?width=813&height=813" alt="Affy and Gabby travelling"><figcaption>Caption needed</figcaption></figure>
+    <figure class="stamp"><img loading="lazy" src="https://framerusercontent.com/images/OBBzjzb1HUygCq8ZUaRnhzt8w.png?width=813&height=813" alt="Affy and Gabby travelling"><figcaption>Caption needed</figcaption></figure>
+    <figure class="stamp"><img loading="lazy" src="https://framerusercontent.com/images/9ulnOekX9c9UBrAkp8mskF81GkU.png?width=813&height=813" alt="Affy and Gabby travelling"><figcaption>Caption needed</figcaption></figure>
+    <figure class="stamp"><img loading="lazy" src="https://framerusercontent.com/images/c3LkD9MYle76EWeMnn7G03ZXH7k.png?width=813&height=813" alt="Affy and Gabby travelling"><figcaption>Caption needed</figcaption></figure>
+    <figure class="stamp"><img loading="lazy" src="https://framerusercontent.com/images/sFqyc0pdSI0YGTotcdh7vPERHLo.png?width=813&height=813" alt="Affy and Gabby travelling"><figcaption>Caption needed</figcaption></figure>
+    <figure class="stamp"><img loading="lazy" src="https://framerusercontent.com/images/dU5vYA5IDNj0nFXXolgwLYyKg0.png?width=813&height=813" alt="Affy and Gabby travelling"><figcaption>Caption needed</figcaption></figure>
   </div>
 
   <div class="rail__nav">
@@ -674,7 +547,7 @@ footer p { margin: 0; }
 <!-- ===== Cape Town ===== -->
 <div class="band">
   <!-- [framer] Table Mountain at last light -->
-  <img loading="lazy" src="images/capetown.webp" alt="Table Mountain above Cape Town at sunset">
+  <img loading="lazy" src="https://framerusercontent.com/images/Dvw5QAod0qAXxX8c4fyExogjnDo.jpeg?width=768&height=449" alt="Table Mountain above Cape Town at sunset">
   <p class="band__label"><span class="band__name">Cape Town</span></p>
 </div>
 
@@ -727,7 +600,7 @@ footer p { margin: 0; }
 
 <!-- ===== Oudtshoorn ===== -->
 <div class="band band--giraffes">
-  <img loading="lazy" src="images/giraffes.webp" alt="A tower of giraffes in the Karoo scrub below the mountains">
+  <img loading="lazy" src="../images/giraffes.webp" alt="A tower of giraffes in the Karoo scrub below the mountains">
   <p class="band__label"><span class="band__name">Oudtshoorn</span></p>
 </div>
 
@@ -780,74 +653,11 @@ footer p { margin: 0; }
   </div>
 </section>
 
-<!-- =====================================================================
-     WHERE TO STAY — the gated section.
-
-     Two variants, chosen by js/gate.js from the group in localStorage:
-       data-stay="reserve"  family + friends, sleeping at Buffelsdrift
-       data-stay="town"     everyone else, booking in Oudtshoorn
-     plus data-locked for anyone not signed in.
-
-     gate.js REMOVES the blocks that don't apply rather than hiding them, so a
-     stray CSS override can't reveal the other one. It cannot stop someone
-     reading both in view-source — see the header of gate.js for why that was
-     an accepted trade.
-
-     Note the reserve variant says nothing about who is paying. That split runs
-     between family and friends, who share this section, so it lives in the
-     RSVP instead. The one exception is the cost line further down, which is
-     the only place the two differ here.
-     ===================================================================== -->
-<section class="practical practical--warm" id="stay">
+<!-- ===== where to stay ===== -->
+<section class="practical practical--warm">
   <div class="wrap">
     <p class="kicker">Logistics</p>
     <h2>Where to stay</h2>
-
-    <!-- ---------- signed out ---------- -->
-    <div data-locked>
-      <p class="lede">Beds are arranged differently depending on your invitation, so
-        this bit sits behind a password. Pop in the one we sent you and we&rsquo;ll show
-        you yours.</p>
-      <div class="locked">
-        <h3>Sign in to see your accommodation</h3>
-        <p>It&rsquo;s the same password we sent with your invitation. If you can&rsquo;t
-          find it, you can ask us for another on the next page.</p>
-        <a class="btn" href="/login?next=%2F%23stay">Sign in</a>
-      </div>
-    </div>
-
-    <!-- ---------- family + friends: on the reserve ---------- -->
-    <div data-stay="reserve">
-      <p class="lede">You&rsquo;re staying with us at Buffelsdrift, right on the game
-        reserve, so you don&rsquo;t have to think about getting anywhere on the day. The
-        giraffes wander past the waterhole at breakfast and nobody drives home afterwards.</p>
-
-      <p class="lede"><strong>A game drive is included with your stay.</strong> One safari
-        or elephant experience per person, on us to arrange &mdash; we&rsquo;ll be running
-        them across several days because everyone can&rsquo;t go at once, so we&rsquo;ll
-        tell you your slot nearer the time rather than asking you to pick now.</p>
-
-      <!-- Rooms, rates and photographs are coming from Affy. Until then this is
-           deliberately an obvious hole rather than an invented number. -->
-      <div class="locked">
-        <h3>Rooms and rates</h3>
-        <p><span class="todo">TBC</span> room types, what each one sleeps, and
-          photographs. Coming from Affy.</p>
-      </div>
-
-      <!-- The only line that differs between family and friends. -->
-      <p class="lede" data-group="family"><strong>Yours is covered.</strong> We&rsquo;re
-        taking care of the room and the game drive &mdash; you just need to get yourself
-        to Cape Town. The RSVP won&rsquo;t ask you anything about paying for it.</p>
-
-      <p class="lede" data-group="friends">Rooms on the reserve are booked through us
-        rather than directly with the lodge, and you&rsquo;ll settle up for yours &mdash;
-        the RSVP asks which room you&rsquo;d like. <span class="todo">TBC</span> rates per
-        room per night.</p>
-    </div>
-
-    <!-- ---------- everyone else: Oudtshoorn ---------- -->
-    <div data-stay="town">
     <p class="lede">Oudtshoorn is a small town and the wedding weekend will fill it, so
       book early. Three we&rsquo;d point you at, cheapest first.</p>
 
@@ -889,24 +699,11 @@ footer p { margin: 0; }
       </a>
     </div>
 
-      <p class="lede" style="margin-top:2.4rem"><strong>You can still do a game drive.</strong>
-        Buffelsdrift is open to day visitors, and we&rsquo;ve arranged a reduced rate for
-        our guests &mdash; around <strong>$50</strong> a ticket rather than the lodge&rsquo;s
-        usual price. We&rsquo;ll share the details and how to book closer to the time.</p>
-
-      <p class="fineprint">Prices are what Booking.com showed for a double room for two
-        adults over the wedding weekend, Friday 19 to Sunday 21 March 2027, and they move.
-        Book it yourself, and book it early.</p>
-    </div>
-
-    <p class="signout" data-group="family friends town">
-      Not your details? <button type="button" id="signout">Sign out</button>
-    </p>
   </div>
 </section>
 
 <!-- ===== what to wear ===== -->
-<section class="practical practical--dark" id="wear">
+<section class="practical practical--dark">
   <div class="wrap">
     <p class="kicker">Practical</p>
     <h2>What to wear</h2>
@@ -943,67 +740,11 @@ footer p { margin: 0; }
   </div>
 </section>
 
-<!-- ===== questions ===== -->
-<section class="practical practical--pale faq" id="faq">
-  <div class="wrap">
-    <p class="kicker">Everything else</p>
-    <h2>Questions</h2>
-    <p class="lede">Each one left blank is a WhatsApp you&rsquo;ll get instead.</p>
-
-    <details><summary>Can we bring our kids?</summary>
-      <p><span class="todo">Answer needed.</span> People book flights around this one, so
-        it should be near the top and unambiguous.</p></details>
-
-    <details><summary>What about the safari?</summary>
-      <p><strong>Staying on the reserve?</strong> A game drive is included with your stay
-        &mdash; a bush safari or the elephant experience, your pick. We&rsquo;ll be running
-        them across several days because everyone can&rsquo;t go at once, so we&rsquo;ll
-        tell you your slot nearer the time rather than asking you to choose now.</p>
-      <p><strong>Staying in town?</strong> We&rsquo;ve arranged a reduced rate of around
-        <strong>$50</strong> a ticket for our guests, and details on how to book will
-        follow. You can also do any of these as a day visit at the lodge&rsquo;s own
-        prices:</p>
-      <div class="table-scroll">
-        <table class="rates">
-          <thead><tr><th>Activity</th><th>Adult</th><th>Child 4&ndash;12</th></tr></thead>
-          <tbody>
-            <tr><td>Bush safari</td><td>R870</td><td>R435</td></tr>
-            <tr><td>Night drive</td><td>R870</td><td>R435</td></tr>
-            <tr><td>Lion feeding</td><td>R870</td><td>R435</td></tr>
-            <tr><td>Meerkat safari <span class="hint">8 yrs and up</span></td><td>R1 030</td><td>R515</td></tr>
-            <tr><td>Elephant experience</td><td>R590</td><td>R295</td></tr>
-            <tr><td>Elephant observation</td><td>R1 135</td><td>R565</td></tr>
-            <tr><td>Cheetah experience <span class="hint">12 yrs and up, min 2 people</span></td><td>R1 665</td><td>&mdash;</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <p class="fineprint">Under 3s go free. Prices exclude Buffelsdrift&rsquo;s mandatory
-        conservation fee and can change without notice &mdash; these are their published
-        rates for October 2026 to September 2027.</p></details>
-
-    <details><summary>Are you doing gifts or a registry?</summary>
-      <p><span class="todo">Answer needed.</span> Saying nothing reads as awkward rather
-        than as &ldquo;no gifts, honestly&rdquo;.</p></details>
-
-    <details><summary>What&rsquo;s the weather like in March?</summary>
-      <p><span class="todo">Answer needed</span>. Hot days, cold nights, and whatever the
-        rain situation actually is.</p></details>
-
-    <details><summary>Do we need a car once we&rsquo;re there?</summary>
-      <p><span class="todo">Answer needed</span>. Matters a lot to anyone taking the
-        coach.</p></details>
-
-    <details><summary>Who do we ask if something goes wrong?</summary>
-      <p><span class="todo">Answer needed</span>. A name and a number for the week
-        itself.</p></details>
-  </div>
-</section>
-
 <section class="rsvp">
   <div class="wrap">
     <h2>Will you come?</h2>
     <p>Please let us know by <strong>Sept 15th 2026</strong> so we can count heads.</p>
-    <a class="btn" href="/rsvp">RSVP</a>
+    <a class="btn" href="../rsvp.html">RSVP</a>
   </div>
 </section>
 
@@ -1014,39 +755,8 @@ footer p { margin: 0; }
 </footer>
 
 
-<script src="js/gate.js"></script>
 <script>
 document.documentElement.classList.add('js');
-
-// ---- the gate ----
-// Runs before anything else paints below the fold: applyTo() deletes the blocks
-// that don't belong to this visitor's group, so nothing flickers into view and
-// then vanishes.
-AG.applyTo();
-
-document.getElementById('signout')?.addEventListener('click', () => {
-  AG.forget();
-  location.reload();
-});
-
-// Send a signed-out visitor to the login page rather than a form that would
-// immediately bounce them back. The RSVP link exists in the nav and twice more
-// down the page, so this catches all of them in one place.
-document.querySelectorAll('a[href="/rsvp"]').forEach((a) => {
-  a.addEventListener('click', (e) => {
-    if (AG.group()) return;
-    e.preventDefault();
-    location.href = '/login?next=%2Frsvp';
-  });
-});
-
-// ---- nav ----
-// Solid once the hero is behind you, transparent over it.
-(() => {
-  const onScroll = () => document.body.classList.toggle('scrolled', window.scrollY > window.innerHeight * 0.7);
-  addEventListener('scroll', onScroll, { passive: true });
-  onScroll();
-})();
 
 // Reveal the timeline stops as they arrive. Guarded: no observer, no hiding.
 if ('IntersectionObserver' in window) {

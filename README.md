@@ -18,13 +18,45 @@ need it.
 
 ```
 index.html          single-scroll site: timeline, story, three events, travel, dress, FAQ
+login.html          the password page, served at /login
 rsvp.html           the RSVP form, served at /rsvp
+js/gate.js          the three-group gate — READ ITS HEADER before trusting it
 api/rsvp.js         serverless function: form → Airtable, one row per guest
-vercel.json         cleanUrls, so /rsvp works without the .html
+api/access-request.js  "I don't have a password" → Airtable row, and email if configured
+vercel.json         cleanUrls, so /rsvp and /login work without the .html
 game/index.html     the save-the-date platformer, unchanged
-prototypes/         early explorations (timeline, chat), reference only
+prototypes/         early explorations, reference only
 # website-plan.md is deliberately not in this repo (budget figures)
 ```
+
+## The three guest groups
+
+Two parts of the site differ by group: **where to stay** on the front page, and the
+**RSVP form**. Everything else is open to anyone with the link.
+
+| Password | Group | Sleeps | Pays |
+|---|---|---|---|
+| `weddinggame` | Family | On the reserve | We do |
+| `hippoproblems` | Friends | On the reserve | They do |
+| `marriedtothestars` | Other | Oudtshoorn | They do |
+
+Guests type one password at `/login`; which group they land in is derived from which
+password matched, so the three tiers are never named on screen. The choice is remembered
+in `localStorage` under `ag.group`.
+
+**This is a polite gate, not security.** The check runs in the browser, so every group's
+content is present in the page and readable in dev tools, and the passwords are recoverable
+from the hashes in `js/gate.js` by anyone with a wordlist. That was a deliberate call — the
+long version, and what a real gate would look like instead, is in the header of
+`js/gate.js`. Don't put anything behind it that would genuinely harm someone if it leaked.
+
+**Changing a password** means replacing a hash in `js/gate.js`:
+
+```bash
+printf '%s' 'yournewpassword' | shasum -a 256
+```
+
+Passwords are lowercased and trimmed before hashing, so guests can be sloppy about it.
 
 **Styling is a skeleton.** Every colour, font and spacing value is a token in the `:root`
 block at the top of each page. Theming should mean editing that block. If you find
@@ -106,6 +138,12 @@ to Holud attendees, and read off sizes without touching linked records.
    | Phone | Phone | party |
    | Song request | Single line text | party |
    | Message | Long text | party |
+   | Group | Single select: `Family` / `Friends` / `Other` | party |
+
+   **`Group` records which password the guest signed in with.** It is what lets you tell
+   who is being billed for a room and who isn't. It comes from the browser, so treat it as
+   a convenience for reconciling the base rather than proof of anything — the gate is not
+   security and anyone can post whatever they like to the endpoint.
 
    **The single-select fields were created with no options on purpose.** `typecast: true`
    makes Airtable add a missing option on first write, so the choice lists fill themselves
@@ -117,12 +155,33 @@ to Holud attendees, and read off sizes without touching linked records.
    The safari and accommodation options are still `[TBC]` placeholders and need real
    values before launch.
 
-3. Create a personal access token at [airtable.com/create/tokens](https://airtable.com/create/tokens) with the `data.records:write` scope on that base
-4. In Vercel → Project → Settings → Environment Variables, add:
+3. **Add a second table called `Access requests`** with three fields: `Name` (single line
+   text, primary), `Email` (email) and `Requested` (date, include time). This is where
+   "I don't have a password" lands. Without it that form returns an error rather than
+   silently losing the request.
+4. Create a personal access token at [airtable.com/create/tokens](https://airtable.com/create/tokens) with the `data.records:write` scope on that base
+5. In Vercel → Project → Settings → Environment Variables, add:
    - `AIRTABLE_TOKEN`: the token
    - `AIRTABLE_BASE_ID`: the `app…` id from the base URL
    - `AIRTABLE_TABLE`: `RSVPs` (optional, this is the default)
-5. Redeploy
+   - `AIRTABLE_ACCESS_TABLE`: `Access requests` (optional, this is the default)
+6. Redeploy
+
+### Getting emailed about password requests
+
+Requests always land in the `Access requests` table. Getting a notification on top of that
+is optional, and there are two ways:
+
+- **An Airtable automation**, no code and no keys: in the base, Automations → When record
+  created in `Access requests` → Send email, to `gabriella.brigando@gmail.com` and
+  `affyhannan@gmail.com`. Easiest.
+- **Resend**, if you'd rather the site sent it: add `RESEND_API_KEY` in Vercel and
+  `api/access-request.js` starts emailing both of you, with reply-to set to the guest.
+  Optionally set `RESEND_FROM` once you have a verified domain.
+
+The two inboxes live in `api/access-request.js`, not in any page, so they don't get
+scraped off public HTML. There is no automated password reset — the passwords are shared
+per group, so a human decides which group someone belongs to and sends it on.
 
 **The token never goes in this repo.** It lives only in Vercel. Anything in the repo is readable by anyone with access to it, and a leaked token lets someone read or delete the whole guest list.
 

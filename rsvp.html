@@ -155,18 +155,64 @@ a.back { color:var(--muted); font-size:.875rem; }
       <p class="note">We're paying for the coach from Cape Town. Seats are per person.</p>
       <div id="travel"></div>
 
-      <h2>Staying over</h2>
-      <label for="accommodation">Where would you like to stay?</label>
-      <select id="accommodation" name="accommodation">
-        <option value="">Choose…</option>
-        <!-- TODO: replace with real options and per-night prices. Named choices with
-             prices beat asking people what they're willing to spend. -->
-        <option>On-site at the venue (price TBC)</option>
-        <option>Nearby guesthouse (price TBC)</option>
-        <option>Something cheaper, please suggest</option>
-        <option>We'll sort our own</option>
-        <option>Not staying over</option>
-      </select>
+      <!-- =================================================================
+           STAYING OVER — three variants, one per group. js/gate.js deletes the
+           two that don't apply, so only one <select id="accommodation"> ever
+           reaches the DOM and the submit code doesn't need to know which.
+
+             family   no question at all; their room is covered
+             friends  on-reserve rooms, which they pay for
+             town     Oudtshoorn guesthouses
+
+           Group also rides along on every row (see payload below) so the base
+           can be reconciled against who is being billed for what.
+           ================================================================= -->
+
+      <!-- ---------- family: nothing to ask ---------- -->
+      <div data-group="family">
+        <h2>Staying over</h2>
+        <p class="note">You&rsquo;re with us at Buffelsdrift on the reserve and
+          we&rsquo;re taking care of the room, so there&rsquo;s nothing to choose here.
+          A game drive is included too &mdash; we&rsquo;ll be in touch about slots.</p>
+      </div>
+
+      <!-- ---------- friends: on the reserve, paying ---------- -->
+      <div data-group="friends">
+        <h2>Staying over</h2>
+        <p class="note">You&rsquo;re at Buffelsdrift on the reserve. Rooms are booked
+          through us rather than with the lodge, and a game drive is included with
+          your stay.</p>
+        <label for="accommodation">Which room would you like?</label>
+        <select id="accommodation" name="accommodation">
+          <option value="">Choose…</option>
+          <!-- TODO: real room types and per-night rates, coming from Affy. These
+               strings become Airtable select options on first write, so change
+               them here and nowhere else. -->
+          <option>On the reserve &mdash; room type 1 [TBC]</option>
+          <option>On the reserve &mdash; room type 2 [TBC]</option>
+          <option>Tell us the options and we&rsquo;ll choose</option>
+          <option>We&rsquo;ll sort our own in town instead</option>
+          <option>Not staying over</option>
+        </select>
+      </div>
+
+      <!-- ---------- town: Oudtshoorn ---------- -->
+      <div data-group="town">
+        <h2>Staying over</h2>
+        <p class="note">Oudtshoorn fills up over the wedding weekend, so book early. The
+          three we&rsquo;d point you at are on the <a href="/#stay">website</a>, with
+          prices.</p>
+        <label for="accommodation">Where are you staying?</label>
+        <select id="accommodation" name="accommodation">
+          <option value="">Choose…</option>
+          <option>Old Mill Lodge</option>
+          <option>De Zeekoe Guest Farm</option>
+          <option>La Pension Guest House</option>
+          <option>Somewhere else in Oudtshoorn</option>
+          <option>Haven&rsquo;t booked yet</option>
+          <option>Not staying over</option>
+        </select>
+      </div>
 
       <h2>Anything else</h2>
       <label for="song">A song that will get you dancing</label>
@@ -186,9 +232,21 @@ a.back { color:var(--muted); font-size:.875rem; }
   </form>
 </div>
 
+<script src="js/gate.js"></script>
 <script>
-// TODO: replace with the real safari options once confirmed with the operator.
-// Spots are limited, so these need to match what can actually be booked.
+// ---- the gate ----
+// This page is group-specific end to end, so a visitor without one gets sent to
+// sign in rather than shown a form that would ask the wrong questions.
+// requireGroup() redirects and returns null; bail out rather than carry on
+// building a form nobody will see.
+const GROUP = AG.requireGroup();
+if (GROUP) {
+  AG.applyTo();
+}
+
+// Airtable wants a human label, not our internal key.
+const GROUP_LABEL = { family: 'Family', friends: 'Friends', town: 'Other' }[GROUP] || '';
+
 // Buffelsdrift's activity list. Prices deliberately NOT baked into these strings —
 // they live once, in the rate table on the site, so a price change is a one-place edit
 // and Airtable doesn't fill with stale amounts inside option names.
@@ -304,6 +362,10 @@ form.addEventListener('submit', async (e) => {
   const attending = coming.value === 'Yes';
   const seats = [...travel.querySelectorAll('[data-seat]')].map(el => el.checked);
 
+  // The family variant has no accommodation question at all, so the element is
+  // absent rather than empty — optional chaining, not a value read.
+  const accommodation = document.getElementById('accommodation')?.value || '';
+
   const payload = {
     website: document.getElementById('website').value,   // honeypot
     party: {
@@ -311,7 +373,8 @@ form.addEventListener('submit', async (e) => {
       email: document.getElementById('email').value,
       phone: document.getElementById('phone').value,
       attending: coming.value,
-      accommodation: attending ? document.getElementById('accommodation').value : '',
+      group: GROUP_LABEL,
+      accommodation: attending ? accommodation : '',
       song: attending ? document.getElementById('song').value : '',
       message: document.getElementById('message').value,
     },
