@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hero caption &middot; options</title>
+<meta name="robots" content="noindex">
+
+<!--
+  PROTOTYPE ONLY. Not linked from anywhere and not part of the site.
+
+  Four wordings for a cheeky line under the hero, all in the same treatment:
+  centred on the cream ground, directly under the picture, at kicker scale.
+
+  It sits BELOW the image rather than over it on purpose. Gabby's hero already
+  carries "South Africa / আমাদের বিয়ে / March 2027" baked into the bottom of the
+  composition, so anything overlaid there fights type that is already in the
+  picture and can't be moved.
+
+  Pick a letter and it goes into index.html's <header class="hero">.
+-->
+
+<link rel="preload" href="../fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
+
+<style>
+@font-face {
+  font-family: 'Fraunces';
+  src: url('../fonts/fraunces-var.woff2') format('woff2-variations');
+  font-weight: 100 900; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Inter';
+  src: url('../fonts/inter-var.woff2') format('woff2-variations');
+  font-weight: 100 900; font-style: normal; font-display: swap;
+}
+
+:root {
+  --cream: #f4efe1; --ink: #370b0b; --tan: #aa8c6d; --wine: #5b171c;
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --gutter: clamp(1.25rem, 5vw, 3rem);
+}
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--cream); color: var(--ink);
+  font: 17px/1.65 var(--font-body); letter-spacing: -.25px;
+  -webkit-font-smoothing: antialiased;
+}
+img { display: block; max-width: 100%; }
+
+.hero { position: relative; background: #cfe0e8; }
+.hero img { width: 100%; height: auto; }
+
+/* ---- the treatment being tested ----
+   Kicker scale so it reads as a margin note rather than as a headline, and in
+   --tan so it recedes from the picture instead of competing with it. */
+.hero-note {
+  max-width: 46rem;
+  margin: 1.5rem auto 0;
+  padding-inline: var(--gutter);
+  text-align: center;
+  font-size: 13px; line-height: 1.6;
+  color: var(--tan);
+}
+.hero-note em { font-family: var(--font-display); font-style: italic; color: var(--wine); }
+
+/* prototype chrome only — none of this ships */
+.opt { padding: 0 0 3.5rem; border-bottom: 1px solid rgba(55,11,11,.14); }
+.opt:last-child { border-bottom: 0; }
+.tag {
+  display: block; max-width: 46rem; margin: 3rem auto 0; padding-inline: var(--gutter);
+  font: 600 11px/1 var(--font-body); letter-spacing: 2px; text-transform: uppercase;
+  color: var(--wine);
+}
+.tag span { color: var(--tan); letter-spacing: 0; text-transform: none; font-weight: 400; }
+.head {
+  max-width: 46rem; margin: 2.5rem auto 0; padding-inline: var(--gutter);
+}
+.head h1 { font-family: var(--font-display); font-size: 1.7rem; margin: 0 0 .4rem; }
+.head p { margin: 0; color: var(--tan); font-size: 14px; }
+</style>
+</head>
+<body>
+
+<div class="head">
+  <h1>Hero caption &mdash; four wordings</h1>
+  <p>Same treatment throughout: centred under the picture, kicker scale, in tan so it
+    reads as a margin note. The image is shown once at the top; the options below repeat
+    only the caption. Pick a letter.</p>
+</div>
+
+<div class="opt" style="padding-top:2.5rem">
+  <header class="hero">
+    <picture>
+      <source media="(max-width: 46rem)" srcset="../images/hero-gabby-mobile.webp">
+      <img src="../images/hero-gabby-desktop.webp"
+           alt="Snow on the Swartberg, with an elephant on the ridge.">
+    </picture>
+  </header>
+  <p class="tag">Option A <span>&mdash; deadpan, shortest</span></p>
+  <p class="hero-note">Yes, it&rsquo;s real. Yes, there are elephants. Yes, the earth is
+    round.</p>
+</div>
+
+<div class="opt">
+  <p class="tag">Option B <span>&mdash; closest to your draft</span></p>
+  <p class="hero-note">That really is the view from the venue, snow on the Swartberg and
+    all. Get excited &mdash; it&rsquo;s a wild one out at the <em>edge of the round
+    earth</em>.</p>
+</div>
+
+<div class="opt">
+  <p class="tag">Option C <span>&mdash; leans on the not-a-render joke</span></p>
+  <p class="hero-note">Not a render, not a stock photo, not a lie. That is the actual view
+    from Buffelsdrift, elephant included. Come and see the <em>edge of the round
+    earth</em> for yourself.</p>
+</div>
+
+<div class="opt">
+  <p class="tag">Option D <span>&mdash; the warmest, ends on the invitation</span></p>
+  <p class="hero-note">A real photograph, of the real place, with a real elephant standing
+    in it. In March you&rsquo;ll be standing there too &mdash; somewhere near the
+    <em>edge of the round earth</em>.</p>
+</div>
+
+</body>
+</html>
