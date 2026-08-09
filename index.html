@@ -235,6 +235,16 @@ h2 em { font-style: italic; font-weight: 600; }
 }
 .maplink:hover { text-decoration-thickness: 2px; }
 
+/* Prose links inside a pane. There is no global `a { color: inherit }` on this
+   page; links are styled per context, so a plain one renders in default browser
+   blue, which is unreadable against the maroon pane. */
+.card a, .spec dd a:not(.maplink) {
+  color: inherit; text-decoration: underline;
+  text-underline-offset: 3px; text-decoration-thickness: 1px;
+  transition: text-decoration-thickness .15s ease;
+}
+.card a:hover, .spec dd a:not(.maplink):hover { text-decoration-thickness: 2px; }
+
 /* Left to right, so the three land in the order the week happens. */
 .js .stops .stop:nth-child(2) { transition-delay: .12s; }
 .js .stops .stop:nth-child(3) { transition-delay: .24s; }
@@ -393,6 +403,19 @@ h2 em { font-style: italic; font-weight: 600; }
 .card p { margin: 0; color: var(--pane-mute); }
 .card p + p { margin-top: .7rem; }
 .card strong { color: var(--pane-fg); font-weight: 600; }
+
+/* A fold inside a card. The sari instructions apply to some guests only and
+   are long enough to unbalance the three-up dress row, but they carry a real
+   action, so the summary states the requirement outright and stays legible
+   while shut. Inherits the pane vars, so it works on any of the three panes. */
+.drawer { margin-top: 1rem; border-top: 1px solid var(--pane-rule); padding-top: .85rem; }
+.drawer summary {
+  cursor: pointer; color: var(--pane-fg); font-weight: 600;
+  font-size: .9375rem; line-height: 1.4;
+}
+.drawer summary::marker { color: var(--pane-mute); }
+.drawer p { margin-top: .75rem; }
+.card .ask { margin-top: 1rem; font-style: italic; }
 
 /* Where to stay. Photo on top, price last and largest — it is the only number
    anyone is actually comparing. */
@@ -722,23 +745,32 @@ footer a:hover { color: #fff3db; }
   <div class="wrap narrow">
     <p class="kicker">Event 02</p>
     <h2>The Holud</h2>
-    <p class="theme">Gilded and ungovernable</p>
-    <p class="lede">The holud is a traditional ceremony dating back to Affy&rsquo;s
-      forefathers&rsquo; times, when marriages were arranged and the bride and groom would
-      be meeting for the first time. The traditions include &ldquo;looking through the
-      mirror&rdquo;, where the two of them see each other first through the gaze of a
-      mirror. There will also be skits, which will be fun: Gabby&rsquo;s friends acting out
-      her past so we get a sneak peek at who Affy is really getting tied up with, and
-      Affy&rsquo;s mates doing a massive disservice to his spotless one.</p>
+    <p class="theme">Golden and ungovernable</p>
+    <p class="lede">Let&rsquo;s start with the golden. The holud is a centuries-old Bengali
+      wedding tradition. A holud (literally meaning &lsquo;turmeric&rsquo;, and
+      &lsquo;yellow&rsquo;) was an opportunity for the bride and groom to be cleansed with
+      turmeric, a symbolic act to ensure purification, protection and prosperity.</p>
+    <p class="lede">Over time it evolved to include many fun little rituals, which leads us
+      to the ungovernable&hellip; Expect skits and dancing from those who&rsquo;ve known us
+      for far too long. You&rsquo;ll watch Gabby&rsquo;s friends acting out her past so we
+      can see who Affy is really getting hitched to, and also watch Affy&rsquo;s friends do
+      a massive disservice to his spotless history. This is the distinctly Bengali event,
+      but we&rsquo;ll throw in a South African twist or two.</p>
+    <p class="lede">Norval Foundation is one of Cape Town&rsquo;s newer art museums, hosting
+      modern and contemporary work from across Africa and its diaspora, set in gardens built
+      around an indigenous wetland, with Table Mountain draped across the background.
+      We&rsquo;ll be taking over the amphitheatre and grounds for the day. If you arrive a
+      little earlier, you are welcome to visit the gallery: a quiet hour of art before things
+      get loud.</p>
 
     <dl class="spec">
       <div><dt>Location</dt><dd><a class="maplink" target="_blank" rel="noopener"
         href="https://www.google.com/maps/search/?api=1&amp;query=Norval%20Foundation%2C%20Cape%20Town">Norval Foundation gardens, Cape Town</a></dd></div>
       <div><dt>Date</dt><dd>Tuesday, 16 March 2027</dd></div>
       <div><dt>Time</dt><dd>15h00 &ndash; 21h00</dd></div>
-      <div><dt>Dress</dt><dd>We&rsquo;re providing kurtas and saris &mdash; the RSVP asks
-        for your size. Come dressed to get changed but you can wear your own thing instead
-        if you&rsquo;d rather.</dd></div>
+      <div><dt>Dress</dt><dd>Traditional Bengali, and we&rsquo;re providing it: saris and
+        salwar kameezes in shades of pink, kurtas in shades of green.
+        <a href="#wear">What to wear</a> has the detail.</dd></div>
     </dl>
   </div>
 </section>
@@ -1005,9 +1037,25 @@ footer a:hover { color: #fff3db; }
       </div>
       <div class="card">
         <h3>Holud</h3>
-        <p><strong>We&rsquo;re providing the outfits.</strong> A kurta or a sari, handed
-          out at the picnic on the 14th. Come dressed to get changed &mdash; or wear your
-          own thing instead if you&rsquo;d rather.</p>
+        <p><strong>Traditional Bengali, and we&rsquo;re providing it.</strong> For the
+          ladies, saris or salwar kameezes in shades of pink. For the gents, kurtas in
+          shades of green. You&rsquo;ll request your size and preferences in
+          <a href="/rsvp">the RSVP</a>, and we hand the outfits out at the picnic on the
+          14th.</p>
+        <p>For shoes, guys are encouraged to wear sandals. Ladies, sandals are also great,
+          and heels are welcome, but note that we&rsquo;ll be on grass for most of the
+          event.</p>
+        <details class="drawer">
+          <summary>Wearing a sari? There&rsquo;s one thing you&rsquo;ll need to bring</summary>
+          <p>You&rsquo;ll need to provide your own top to go underneath, as we can&rsquo;t
+            get these all made to your measurements. It needs to be something fitted and
+            preferably cropped so the sari can sit well. An actual crop top will work
+            wonders, and you&rsquo;re welcome to get it in any colour you want, but shades
+            of pink, yellow, orange or green would be ideal.</p>
+          <p>We&rsquo;ll provide instructions on how to put the sari on, and will have
+            expert help available on the day if you need it.</p>
+        </details>
+        <p class="ask">Any questions about any of this, just pop us a message.</p>
       </div>
       <div class="card">
         <h3>Wedding</h3>
