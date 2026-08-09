@@ -383,14 +383,16 @@ h2 em { font-style: italic; font-weight: 600; }
 }
 .locked h3 { margin: 0 0 .8rem; font-size: 1.4rem; }
 .locked p { max-width: 30rem; margin: 0 auto 1.8rem; color: var(--pane-mute); }
-.signout {
-  margin-top: 2rem; font-size: 13px; color: var(--pane-mute);
-}
+/* Sign out is a footnote in the footer, not a control inside the accommodation
+   section. It sits on the maroon ground, so it takes footer's colour and spacing
+   rather than the --pane-* tokens, which are only defined inside a pane.
+   Still a button and not a link: it changes state, it doesn't navigate. */
 .signout button {
   border: 0; background: none; padding: 0; cursor: pointer;
-  font: inherit; color: inherit; text-decoration: underline; text-underline-offset: 3px;
+  font: inherit; color: var(--sand);
+  text-decoration: underline; text-underline-offset: 3px;
 }
-.signout button:hover { color: var(--pane-fg); }
+.signout button:hover { color: #fff3db; }
 
 /* ---- FAQ ----
    <details> rather than a JS accordion: it is searchable with cmd-F when
@@ -928,9 +930,6 @@ footer a:hover { color: #fff3db; }
         Book it yourself, and book it early.</p>
     </div>
 
-    <p class="signout" data-group="family friends town">
-      Not your details? <button type="button" id="signout">Sign out</button>
-    </p>
   </div>
 </section>
 
@@ -1077,6 +1076,9 @@ footer a:hover { color: #fff3db; }
   <p>Affy &amp; Gabby &middot; 20 March 2027</p>
   <p>Waiting? <a href="/game/">Rescue Gabby from Bibi</a>, or
     <a href="/bibi">feed Bibi to a crocodile</a>.</p>
+  <p class="signout" data-group="family friends town">
+    Not your details? <button type="button" id="signout">Sign out</button>
+  </p>
 </footer>
 
 
