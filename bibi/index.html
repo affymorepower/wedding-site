@@ -141,23 +141,36 @@
     color: #7a5a48; line-height: 1.6;
   }
   .rule { height: 1px; background: #c9a227; margin: 12px 0; }
-  .field { text-align: left; margin: 0 0 9px; }
-  .field label {
-    display: block; font-size: 10px; letter-spacing: 2px;
-    text-transform: uppercase; color: #7a5a48; margin: 0 0 3px;
+
+  /* ---- the prize card ----
+     The clip is 576x1024 phone footage and the frame is 8:5, so the two sit
+     side by side: portrait video hard right, words filling the space it leaves.
+     Stacking them would waste the whole width and shrink the video to a strip.
+
+     Heights are percentages, never vh. This overlay lives inside #game-area,
+     which is 440px tall inside the page embed while vh is the entire document —
+     a vh-sized video would run straight out of the frame. */
+  .card--prize {
+    display: flex; align-items: center; gap: 16px;
+    max-width: 600px; height: 100%; padding: 14px 16px;
+    text-align: left;
   }
-  .field input {
-    width: 100%; box-sizing: border-box;
-    padding: 8px 9px; font-family: inherit; font-size: 14px;
-    border: 1px solid #b9a894; background: #fffdf8; color: #3a2418;
-    border-radius: 2px;
+  .prize-text { flex: 1 1 auto; min-width: 0; }
+  .prize-video { flex: 0 0 auto; height: 100%; display: flex; align-items: center; }
+  .prize-video video {
+    display: block; height: 94%; width: auto;
+    aspect-ratio: 576 / 1024;
+    background: #000; border: 1px solid #8a2f3f;
   }
-  .field input:focus { outline: 2px solid #c9a227; outline-offset: -1px; }
-  #song-status {
-    font-size: 11px; line-height: 1.6; margin: 10px 0 0; min-height: 15px;
+  /* A phone held upright letterboxes the game very short. Below this the row
+     has no room for both, so the words go under the clip instead. */
+  @media (max-height: 300px) {
+    .card--prize { gap: 10px; padding: 8px 10px; }
+    .card h2 { font-size: 14px; }
+    .card .sub { font-size: 10px; margin-bottom: 8px; }
+    .rule { margin: 7px 0; }
   }
-  #song-status.err { color: #a8302a; }
-  #song-status.ok  { color: #3f6b3a; }
+
   .win-actions { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 12px; }
   button.card-btn {
     padding: 11px 20px; font-family: inherit; font-size: 12px;
@@ -261,36 +274,26 @@
     </div>
 
     <div id="win-overlay" class="hidden">
-      <div class="card">
-        <h2>Bibi is crocodile food</h2>
-        <p class="sub">
-          You have earned one song on the dancefloor at Buffelsdrift.<br>
-          Choose carefully. We will actually play it.
-        </p>
-        <div class="rule"></div>
-        <form id="song-form" autocomplete="off">
-          <div class="field">
-            <label for="f-name">Your name</label>
-            <input id="f-name" name="name" maxlength="80" required placeholder="So we know who to blame" />
-          </div>
-          <div class="field">
-            <label for="f-song">Song</label>
-            <input id="f-song" name="song" maxlength="120" required placeholder="Title" />
-          </div>
-          <div class="field">
-            <label for="f-artist">Artist</label>
-            <input id="f-artist" name="artist" maxlength="120" placeholder="Optional, but it helps" />
-          </div>
-          <input class="hp" tabindex="-1" aria-hidden="true" id="f-website" name="website" autocomplete="off" />
-          <p id="song-status"></p>
+      <div class="card card--prize">
+        <div class="prize-text">
+          <h2>Bibi, in real life</h2>
+          <p class="sub">
+            This is the footage. It actually happened, and it is the reason he
+            has spent two games trying to get even.
+          </p>
+          <div class="rule"></div>
+          <p class="sub" style="margin:0;">Nobody who hasn&rsquo;t beaten him gets to see this.</p>
           <div class="win-actions">
-            <button type="submit" class="card-btn" id="song-submit">CLAIM MY SONG</button>
             <button type="button" class="card-btn ghost" id="win-replay">PLAY AGAIN</button>
+            <button type="button" class="card-btn" id="win-rsvp">RSVP &rarr;</button>
           </div>
-        </form>
-        <div class="rule"></div>
-        <div class="win-actions" style="margin-top:0;">
-          <button type="button" class="card-btn ghost" id="win-rsvp">RSVP &rarr;</button>
+        </div>
+        <div class="prize-video">
+          <!-- Portrait phone footage in a landscape frame, so it sits beside the
+               words rather than under them. preload=metadata keeps 3.7MB off the
+               wire until somebody actually wins. -->
+          <video id="prize-clip" src="../video/bibi-reward.mp4"
+                 playsinline controls preload="metadata"></video>
         </div>
       </div>
     </div>
@@ -424,18 +427,22 @@
   let scroll = 3.0;      // world speed, px/frame
   let scrollAcc = 0;     // total distance, for parallax + ground texture
 
-  const player = { x: PLAYER_HOME, y: 0, vy: 0, dir: 1, onGround: true, hearts: 3, invuln: 0, tilt: 0 };
+  const player = { x: PLAYER_HOME, y: 0, vy: 0, vx: 0, dir: 1, onGround: true,
+                   hearts: 3, invuln: 0, tilt: 0, leaping: false, crossed: false };
   const keys = { left: false, right: false };
   let ostriches = [];    // { x, y, speed, scale, dodged }
   let eggs = [];         // { x, y, vy, roll }
   let dust = [];         // { x, y, vx, vy, life, max, col }
   let feathers = [];     // { x, y, vx, vy, spin, life }
+  let hearts = [];       // { x, y, vx, vy, size, life, max } — the ending only
   let dodged = 0;
   let nextSpawn = 90;
 
   const bibi = { x: 760, y: 0, dir: -1, shoves: 0, cool: 0, teeter: 0, vy: 0, dead: false, eggT: 0 };
   let pit = null;        // { x, w } screen space, phase 'pit' only
   let pitT = 0;          // frames since the pit reached the player — drives the cutscene
+  let deadT = null;      // pitT at which Bibi hit the water
+  let landT = null;      // pitT at which Affy landed beside her
   let shake = 0;
   let cutscene = 0;      // frames since the pit phase began
   let flash = 0;
@@ -453,14 +460,16 @@
   function reset() {
     phase = 'run'; t = 0; scroll = 3.0; scrollAcc = 0;
     player.x = PLAYER_HOME; player.dir = 1;
-    player.y = groundFeet(); player.vy = 0; player.onGround = true;
+    player.y = groundFeet(); player.vy = 0; player.vx = 0; player.onGround = true;
     player.hearts = 3; player.invuln = 0; player.tilt = 0;
+    player.leaping = false; player.crossed = false;
     keys.left = keys.right = false;
-    ostriches = []; eggs = []; dust = []; feathers = [];
+    ostriches = []; eggs = []; dust = []; feathers = []; hearts = [];
     dodged = 0; nextSpawn = 64;
     bibi.x = 760; bibi.y = GROUND_Y - 71; bibi.dir = -1; bibi.shoves = 0;
     bibi.cool = 0; bibi.teeter = 0; bibi.vy = 0; bibi.dead = false; bibi.eggT = 0;
-    pit = null; pitT = 0; shake = 0; cutscene = 0; flash = 0;
+    pit = null; pitT = 0; deadT = null; landT = null;
+    shake = 0; cutscene = 0; flash = 0;
     musicSpeed = 1;
     updateHud();
     hideBanner();
@@ -549,10 +558,16 @@
     reset(); startMusic();
   });
   document.getElementById('win-replay').addEventListener('click', () => {
+    stopPrize();          // or it keeps talking over the chiptune
     document.getElementById('win-overlay').classList.add('hidden');
     reset(); startMusic();
   });
-  document.getElementById('win-rsvp').addEventListener('click', () => { location.href = '/rsvp'; });
+  document.getElementById('win-rsvp').addEventListener('click', () => {
+    stopPrize();
+    // top, not _self: inside the page embed this is an iframe, and navigating
+    // it would leave the RSVP running in a 704px box inside the wedding site.
+    (window.top || window).location.href = '/rsvp';
+  });
 
   const muteBtn = document.getElementById('mute-btn');
   muteBtn.addEventListener('click', (e) => {
@@ -573,6 +588,10 @@
   // Once the pit is on screen his right-hand bound becomes its lip rather than
   // the usual one. Nothing here should end with the hero eaten by his own prize.
   function clampPlayerX() {
+    // The leap is the one time he is allowed over the pit, so it opts out of
+    // the bound that exists to stop exactly that — and stays opted out once he
+    // is across, or the frame he lands on would snap him back to the near lip.
+    if (player.leaping || player.crossed) return;
     let maxX = PLAYER_MAX_X;
     if (pit) maxX = Math.min(maxX, pit.x - PLAYER_W - 2);
     player.x = Math.max(PLAYER_MIN_X, Math.min(maxX, player.x));
@@ -607,10 +626,10 @@
 
   function win() {
     phase = 'win';
-    stopMusic();
+    stopMusic();          // before the clip rolls — they both have audio
     hideBanner();
-    sfxWin();
     document.getElementById('win-overlay').classList.remove('hidden');
+    playPrize();
   }
 
   // ============================================================
@@ -631,8 +650,12 @@
 
     // ---- player physics ----
     // Horizontal first, so the clamp below is the last word on where he ends up.
-    const move = (keys.right ? 1 : 0) - (keys.left ? 1 : 0);
-    if (move) { player.x += move * MOVE_SPEED; player.dir = move; }
+    // Hands off the controls once Bibi is in the water — the rest is a cutscene.
+    const scripted = phase === 'pit' && bibi.dead;
+    if (!scripted) {
+      const move = (keys.right ? 1 : 0) - (keys.left ? 1 : 0);
+      if (move) { player.x += move * MOVE_SPEED; player.dir = move; }
+    }
     clampPlayerX();
 
     player.vy += GRAV;
@@ -785,7 +808,9 @@
   }
 
   const TEETER = 38;     // frames he wobbles on the lip before gravity wins
-  const CHOMP  = 85;     // frames of crocodile before the card comes up
+  const CHOMP  = 55;     // frames of crocodile before Affy goes to her
+  const LEAP   = 40;     // frames in the air clearing the pit
+  const REUNION = 62;    // frames of hearts before the card comes up
 
   // Where the pit comes to rest. Fixed, not measured off the player: he can be
   // anywhere in his band by now, and a pit that parked relative to him would
@@ -834,10 +859,73 @@
       }
     }
 
-    if (bibi.dead) {
-      if (pitT % 15 === 0 && pitT < TEETER + CHOMP) { sfxChomp(); shake = 7; }
-      if (pitT > TEETER + CHOMP) win();
+    if (!bibi.dead) return;
+
+    // ---- and then he goes and gets her ----
+    // Everything from here is scripted. deadT anchors it rather than TEETER,
+    // because how long he takes to hit the water depends on where he was shoved
+    // from, and the crocodiles should get their full beat either way.
+    if (deadT === null) deadT = pitT;
+    const since = pitT - deadT;
+
+    if (since < CHOMP) {
+      if (since % 15 === 0) { sfxChomp(); shake = 7; }
+      // He walks up to the edge to watch, which also parks him on the lip so
+      // the leap is the same distance however the chase was played.
+      const lipX = pit.x - PLAYER_W - 2;
+      if (player.x < lipX) player.x = Math.min(lipX, player.x + 1.7);
+      else if (player.x > lipX) player.x = Math.max(lipX, player.x - 1.7);
+      player.dir = 1;
+      return;
     }
+
+    if (since === CHOMP) {
+      // A fixed flight time, and the speeds derived from it — so he always
+      // lands just past the far lip no matter where he took off from.
+      player.leaping = true;
+      player.crossed = true;
+      player.onGround = false;
+      player.vy = -(GRAV * LEAP) / 2;
+      player.vx = (gabbyX() - 30 - player.x) / LEAP;
+      sfxJump();
+      return;
+    }
+
+    if (player.leaping) {
+      player.x += player.vx;
+      if (player.onGround) {           // physics in update() landed him
+        player.leaping = false;
+        player.vx = 0;
+        landT = pitT;
+        sfxWin();
+        for (let i = 0; i < 5; i++) spawnHeart();
+      }
+      return;
+    }
+
+    if (landT !== null) {
+      if ((pitT - landT) % 7 === 0) spawnHeart();
+      if (pitT - landT > REUNION) win();
+    }
+  }
+
+  // She waits on the far side of the pit, so she is on screen well before he
+  // gets to her — the point of the ending is that you can see where it is going.
+  function gabbyX() { return pit ? pit.x + pit.w + 34 : W; }
+
+  function spawnHeart() {
+    // Spread wide and stagger the start height, or two or three spawning on the
+    // same frame stack into one pink blob instead of reading as hearts.
+    const mid = (player.x + gabbyX()) / 2;
+    hearts.push({
+      x: mid + (Math.random() - 0.5) * 92,
+      y: GROUND_Y - 14 - Math.random() * 40,
+      vx: (Math.random() - 0.5) * 0.7,
+      vy: -0.7 - Math.random() * 0.8,
+      size: 2 + Math.floor(Math.random() * 2),
+      life: 90 + Math.random() * 40,
+      max: 130,
+    });
   }
 
   function stepParticles() {
@@ -845,6 +933,13 @@
       const p = dust[i];
       p.x += p.vx; p.y += p.vy; p.vy += 0.03; p.life--;
       if (p.life <= 0) dust.splice(i, 1);
+    }
+    for (let i = hearts.length - 1; i >= 0; i--) {
+      const h = hearts[i];
+      h.x += h.vx; h.y += h.vy;
+      h.vx += Math.sin((h.life + h.x) * 0.06) * 0.02;   // gentle drift
+      h.life--;
+      if (h.life <= 0) hearts.splice(i, 1);
     }
     for (let i = feathers.length - 1; i >= 0; i--) {
       const f = feathers[i];
@@ -1179,6 +1274,77 @@
     ctx.restore();
   }
 
+  // ---- Queen Gabby, waiting it out on the far side ----
+  function drawGabby() {
+    if (!pit) return;
+    const x = Math.round(gabbyX());
+    // A slow sway while she waits, a delighted bounce once he is over.
+    const home = GROUND_Y - 38;
+    const y = Math.round(landT !== null
+      ? home - Math.abs(Math.sin((pitT - landT) * 0.22)) * 5
+      : home + Math.sin(t * 0.06) * 1.5);
+
+    // dress
+    ctx.fillStyle = '#c23f8f';
+    ctx.fillRect(x + 2, y + 16, 18, 20);
+    ctx.fillStyle = '#e05aa8';
+    ctx.fillRect(x + 3, y + 17, 16, 5);
+    ctx.fillStyle = '#ffd23f';                 // gold trim
+    ctx.fillRect(x + 2, y + 22, 18, 2);
+    ctx.fillRect(x + 1, y + 34, 20, 2);
+    // arms, raised for him
+    ctx.fillStyle = '#c98a5e';
+    if (landT !== null) {
+      ctx.fillRect(x - 2, y + 10, 4, 9);
+      ctx.fillRect(x + 20, y + 10, 4, 9);
+    } else {
+      ctx.fillRect(x - 1, y + 18, 4, 9);
+      ctx.fillRect(x + 19, y + 18, 4, 9);
+    }
+    // face
+    ctx.fillStyle = '#c98a5e';
+    ctx.fillRect(x + 4, y + 5, 14, 12);
+    ctx.fillStyle = '#2e1b10';                 // hair
+    ctx.fillRect(x + 3, y + 2, 16, 6);
+    ctx.fillRect(x + 2, y + 5, 3, 12);
+    ctx.fillRect(x + 17, y + 5, 3, 12);
+    ctx.fillStyle = '#000';
+    ctx.fillRect(x + 7, y + 9, 2, 2);
+    ctx.fillRect(x + 13, y + 9, 2, 2);
+    ctx.fillStyle = '#8a3a3a';                 // smile
+    ctx.fillRect(x + 8, y + 13, 6, 1);
+    ctx.fillRect(x + 7, y + 12, 1, 1);
+    ctx.fillRect(x + 14, y + 12, 1, 1);
+    // crown — she is the queen, and it matches Bibi's stolen crest
+    ctx.fillStyle = '#ffd23f';
+    ctx.fillRect(x + 3, y - 3, 16, 4);
+    ctx.fillRect(x + 4, y - 6, 2, 3);
+    ctx.fillRect(x + 10, y - 7, 2, 4);
+    ctx.fillRect(x + 16, y - 6, 2, 3);
+    ctx.fillStyle = '#ec4ec0';
+    ctx.fillRect(x + 10, y - 2, 2, 2);
+  }
+
+  function drawHeart(hx, hy, s, alpha) {
+    // 5x5 pixel heart, scaled by s
+    const rows = [
+      [0, 1, 0, 1, 0],
+      [1, 1, 1, 1, 1],
+      [1, 1, 1, 1, 1],
+      [0, 1, 1, 1, 0],
+      [0, 0, 1, 0, 0],
+    ];
+    ctx.globalAlpha = alpha;
+    for (let r = 0; r < 5; r++) {
+      for (let c = 0; c < 5; c++) {
+        if (!rows[r][c]) continue;
+        ctx.fillStyle = (r === 0 || (r === 1 && c < 2)) ? '#ff8fc0' : '#ec4e7c';
+        ctx.fillRect(Math.round(hx + c * s), Math.round(hy + r * s), s, s);
+      }
+    }
+    ctx.globalAlpha = 1;
+  }
+
   // ---- ostriches, charging left ----
   function drawOstrich(o) {
     const x = Math.round(o.x), y = Math.round(o.y);
@@ -1278,6 +1444,7 @@
       ctx.fillRect(Math.round(p.x), Math.round(p.y), 3, 3);
     }
     ctx.globalAlpha = 1;
+    for (const h of hearts) drawHeart(h.x, h.y, h.size, Math.min(1, h.life / 45));
     for (const f of feathers) {
       ctx.globalAlpha = Math.min(1, f.life / 40);
       ctx.fillStyle = '#2a2a2a';
@@ -1300,6 +1467,7 @@
 
     for (const o of ostriches) drawOstrich(o);
     for (const e of eggs) drawEgg(e);
+    drawGabby();
     if (phase === 'bibi-in' || phase === 'chase' || phase === 'pit') drawBibi();
     if (phase !== 'title') drawPlayer();
     drawParticles();
@@ -1340,49 +1508,26 @@
   requestAnimationFrame(frame);
 
   // ============================================================
-  // THE PRIZE — one song, straight into the wedding playlist
+  // THE PRIZE — the footage of the real Bibi
   // ============================================================
-  const form = document.getElementById('song-form');
-  const statusEl = document.getElementById('song-status');
-  const submitBtn = document.getElementById('song-submit');
+  const clip = document.getElementById('prize-clip');
 
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const name = document.getElementById('f-name').value.trim();
-    const song = document.getElementById('f-song').value.trim();
-    const artist = document.getElementById('f-artist').value.trim();
-    const website = document.getElementById('f-website').value;
+  // Try to roll it the moment the card appears. The player has just been
+  // clicking and tapping, so the page holds user activation and unmuted
+  // playback is normally allowed — but Safari can still refuse, and the
+  // controls are right there, so a rejection is not worth surfacing.
+  function playPrize() {
+    if (!clip) return;
+    clip.currentTime = 0;
+    const p = clip.play();
+    if (p && p.catch) p.catch(() => {});
+  }
 
-    if (!name || !song) {
-      statusEl.className = 'err';
-      statusEl.textContent = 'We need a name and a song.';
-      return;
-    }
-
-    submitBtn.disabled = true;
-    statusEl.className = '';
-    statusEl.textContent = 'Sending it to the DJ...';
-
-    try {
-      const r = await fetch('/api/song', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, song, artist, website, source: "Bibi's Revenge" }),
-      });
-      const data = await r.json().catch(() => ({}));
-      if (!r.ok) throw new Error(data.error || 'Could not save that.');
-
-      statusEl.className = 'ok';
-      statusEl.textContent = `Locked in. "${song}"${artist ? ' by ' + artist : ''} is on the list.`;
-      form.querySelectorAll('input').forEach((i) => { i.disabled = true; });
-      submitBtn.textContent = 'CLAIMED';
-    } catch (err) {
-      statusEl.className = 'err';
-      // Never strand them — the RSVP has a song field too.
-      statusEl.textContent = "That didn't save. Put it in your RSVP instead and we'll still play it.";
-      submitBtn.disabled = false;
-    }
-  });
+  function stopPrize() {
+    if (!clip) return;
+    clip.pause();
+    clip.currentTime = 0;
+  }
 })();
 </script>
 </body>

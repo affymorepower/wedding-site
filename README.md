@@ -23,10 +23,10 @@ rsvp.html           the RSVP form, served at /rsvp
 js/gate.js          the three-group gate — READ ITS HEADER before trusting it
 api/rsvp.js         serverless function: form → Airtable, one row per guest
 api/access-request.js  "I don't have a password" → Airtable row, and email if configured
-api/song.js         serverless function: song won in Bibi's Revenge → Airtable
 vercel.json         cleanUrls, so /rsvp and /login work without the .html
 game/index.html     the save-the-date platformer, unchanged
-bibi/index.html     Bibi's Revenge — the 30-second runner, served at /bibi
+bibi/index.html     Bibi's Revenge — the 20-second runner, served at /bibi
+video/              the reward clip the game unlocks
 prototypes/         early explorations, reference only
 # website-plan.md is deliberately not in this repo (budget figures)
 ```
@@ -200,8 +200,8 @@ canvas engine, Web Audio chiptune, no dependencies.
 
 **`bibi/index.html`** — *Bibi's Revenge*, the sequel, at `/bibi`. About twenty seconds:
 hop seven charging ostriches, then jump into Bibi three times to shove him into a
-crocodile pit. Finishing it earns the guest one song on the dancefloor, which is the
-actual point of it.
+crocodile pit. Affy then leaps the pit to Queen Gabby waiting on the far side, and
+finishing unlocks the footage of the real Bibi, which is the actual point of it.
 
 Space or a tap jumps; the arrows move him within a band roughly a third of the screen
 wide. Jump is the whole game and you can win without ever touching left or right —
@@ -229,25 +229,21 @@ Four things worth knowing before editing it:
   because otherwise Space and the arrows scroll the page instead of reaching the game.
   It stays a standalone page because that is the link people paste into WhatsApp.
 
-### The song it wins
+### The prize
 
-`api/song.js` writes to a **separate `Songs` table**, not to the RSVP row — a guest can
-beat the game before they RSVP, or instead of it, and matching a free-typed name back to
-a guest row is guesswork. The RSVP's own `Song request` field still exists; reconciling
-the two lists is a human job for the playlist evening.
+`video/bibi-reward.mp4` — 17.9s, 576×1024, H.264/AAC, 3.7 MB. The real encounter the
+whole thing is based on. The win card plays it beside the words rather than under them,
+because it is portrait footage in an 8:5 frame and stacking would shrink it to a strip.
 
-**The table does not exist yet.** Create it in the same base, called `Songs`:
+Two things that follow from it being a video rather than a form:
 
-| Field | Type | Notes |
-|---|---|---|
-| Song | Single line text | make this the primary field |
-| Artist | Single line text | |
-| Requested by | Single line text | |
-| Source | Single select | leave it with no options — `typecast` fills it in |
+- **The clip is only as private as its URL.** The repo is private but the deployed site
+  is not, so anyone who guesses `/video/bibi-reward.mp4` can watch it without playing.
+  The game gates the route to it, not the file. If that ever matters, serve it through a
+  function that checks something instead of as a static path.
+- **`preload="metadata"`**, so the 3.7 MB only downloads when somebody wins — the game is
+  embedded on the front page and would otherwise cost every visitor the whole file.
 
-No new environment variables: it reuses `AIRTABLE_TOKEN` and `AIRTABLE_BASE_ID`. Only set
-`AIRTABLE_SONGS_TABLE` if you call the table something other than `Songs`.
-
-Until the table exists the endpoint returns 502 and the game says *"That didn't save. Put
-it in your RSVP instead and we'll still play it."* — so it fails politely rather than
-losing someone's song silently, but nothing is being recorded.
+It replaced an earlier song-request prize that wrote to an Airtable `Songs` table via
+`api/song.js`. Both are deleted; `git log` has them if the song is ever wanted back. The
+RSVP's own `Song request` field is untouched and still collects songs from everyone.
