@@ -356,7 +356,7 @@ h2 em { font-style: italic; font-weight: 600; }
    epigraph under it. Fraunces italic keeps it the most decorative thing in the
    pane without it competing for the heading slot. */
 .event .theme {
-  margin: .65rem 0 0;
+  max-width: var(--measure); margin: .65rem 0 0;
   font-family: var(--font-display); font-style: italic; font-weight: 400;
   font-size: clamp(1.15rem, 2.7vw, 1.55rem); line-height: 1.3; letter-spacing: -0.2px;
   color: var(--pane-mute);
@@ -377,8 +377,13 @@ h2 em { font-style: italic; font-weight: 600; }
 }
 
 /* The spec list. A definition list because that is exactly what it is, with
-   the default indent stripped and each pair on its own ruled row. */
-.spec { margin: 2.8rem 0 0; }
+   the default indent stripped and each pair on its own ruled row.
+
+   Held to --measure like everything else in the column: the rules used to run
+   the full 62rem wrap while the lede above them stopped at 40rem, which left
+   every event pane with two different right edges. The practical sections read
+   as one column because their prose and their cards agree; these now do too. */
+.spec { max-width: var(--measure); margin: 2.8rem 0 0; }
 .spec div {
   display: grid; gap: .15rem;
   padding: 1rem 0; border-top: 1px solid var(--pane-rule);
