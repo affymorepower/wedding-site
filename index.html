@@ -339,7 +339,8 @@ h2 em { font-style: italic; font-weight: 600; }
    on the page, and slower to scroll past. That is the trade that came with
    choosing artwork over live type. */
 .band { position: relative; background: #cfe0e8; }
-.band > img { width: 100%; height: auto; }
+.band > img { width: 100%; height: auto; display: block; }
+
 
 /* =========================================================================
    EVENT PANES
@@ -362,6 +363,24 @@ h2 em { font-style: italic; font-weight: 600; }
   color: var(--pane-mute);
 }
 .event .theme + .lede { margin-top: 1.6rem; }
+
+/* Split view from 62rem up: the story on the left, the facts on the right.
+   Below that they stack in source order, which is the reading order anyway.
+   The prose is wrapped in .event__text so the left side is a single grid cell.
+   Left as four loose children it becomes four rows, and a spec taller than them
+   makes the grid share the surplus out between those rows, which pulls the
+   kicker away from its heading. The spec also drops its own max-width here, or
+   it would hold itself to the 40rem reading measure inside a narrower column. */
+@media (min-width: 62rem) {
+  .event > .wrap {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr);
+    column-gap: clamp(2.5rem, 5vw, 4.5rem);
+    align-items: start;
+  }
+  .event__text { grid-column: 1; }
+  .event > .wrap > .spec { grid-column: 2; margin-top: .4rem; max-width: none; }
+}
 
 .event--picnic {
   --pane-bg: var(--cream-2); --pane-fg: var(--ink);
@@ -742,15 +761,17 @@ footer a:hover { color: #fff3db; }
 
 <section class="event event--picnic" id="events">
   <div class="wrap">
-    <p class="kicker">Event 01</p>
-    <h2>The welcome picnic</h2>
-    <p class="theme">An &lsquo;adda&rsquo; under the mountain</p>
-    <p class="lede">An <em>adda</em> is a Bengali tradition, essentially the art of hanging
-      out. Think long, easy, unstructured conversation with good people, unhurried chats
-      that go wherever they go. That&rsquo;s exactly the spirit we want to start the week
-      with: a mountain-side picnic where everyone can meet each other, swap some stories,
-      play some games, and stay for as long as you like. We&rsquo;ll hand out your Holud
-      outfit here, so do come to this one if you can.</p>
+    <div class="event__text">
+      <p class="kicker">Event 01</p>
+      <h2>The Welcome Picnic</h2>
+      <p class="theme">An &lsquo;adda&rsquo; under the mountain</p>
+      <p class="lede">An <em>adda</em> is a Bengali tradition, essentially the art of hanging
+        out. Think long, easy, unstructured conversation with good people, unhurried chats
+        that go wherever they go. That&rsquo;s exactly the spirit we want to start the week
+        with: a mountain-side picnic where everyone can meet each other, swap some stories,
+        play some games, and stay for as long as you like. We&rsquo;ll hand out your Holud
+        outfit here, so do come to this one if you can.</p>
+    </div>
 
     <dl class="spec">
       <div><dt>Location</dt><dd><a class="maplink" target="_blank" rel="noopener"
@@ -764,25 +785,27 @@ footer a:hover { color: #fff3db; }
 
 <section class="event event--holud">
   <div class="wrap">
-    <p class="kicker">Event 02</p>
-    <h2>The Holud</h2>
-    <p class="theme">Golden and ungovernable</p>
-    <p class="lede">Let&rsquo;s start with the golden. The holud is a centuries-old Bengali
-      wedding tradition. A holud (literally meaning &lsquo;turmeric&rsquo;, and
-      &lsquo;yellow&rsquo;) was an opportunity for the bride and groom to be cleansed with
-      turmeric, a symbolic act to ensure purification, protection and prosperity.</p>
-    <p class="lede">Over time it evolved to include many fun little rituals, which leads us
-      to the ungovernable&hellip; Expect skits and dancing from those who&rsquo;ve known us
-      for far too long. You&rsquo;ll watch Gabby&rsquo;s friends acting out her past so we
-      can see who Affy is really getting hitched to, and also watch Affy&rsquo;s friends do
-      a massive disservice to his spotless history. This is the distinctly Bengali event,
-      but we&rsquo;ll throw in a South African twist or two.</p>
-    <p class="lede">Norval Foundation is one of Cape Town&rsquo;s newer art museums, hosting
-      modern and contemporary work from across Africa and its diaspora, set in gardens built
-      around an indigenous wetland, with Table Mountain draped across the background.
-      We&rsquo;ll be taking over the amphitheatre and grounds for the day. If you arrive a
-      little earlier, you are welcome to visit the gallery: a quiet hour of art before things
-      get loud.</p>
+    <div class="event__text">
+      <p class="kicker">Event 02</p>
+      <h2>The Holud</h2>
+      <p class="theme">Golden and ungovernable</p>
+      <p class="lede">Let&rsquo;s start with the golden. The holud is a centuries-old Bengali
+        wedding tradition. A holud (literally meaning &lsquo;turmeric&rsquo;, and
+        &lsquo;yellow&rsquo;) was an opportunity for the bride and groom to be cleansed with
+        turmeric, a symbolic act to ensure purification, protection and prosperity.</p>
+      <p class="lede">Over time it evolved to include many fun little rituals, which leads us
+        to the ungovernable&hellip; Expect skits and dancing from those who&rsquo;ve known us
+        for far too long. You&rsquo;ll watch Gabby&rsquo;s friends acting out her past so we
+        can see who Affy is really getting hitched to, and also watch Affy&rsquo;s friends do
+        a massive disservice to his spotless history. This is the distinctly Bengali event,
+        but we&rsquo;ll throw in a South African twist or two.</p>
+      <p class="lede">Norval Foundation is one of Cape Town&rsquo;s newer art museums, hosting
+        modern and contemporary work from across Africa and its diaspora, set in gardens built
+        around an indigenous wetland, with Table Mountain draped across the background.
+        We&rsquo;ll be taking over the amphitheatre and grounds for the day. If you arrive a
+        little earlier, you are welcome to visit the gallery: a quiet hour of art before things
+        get loud.</p>
+    </div>
 
     <dl class="spec">
       <div><dt>Location</dt><dd><a class="maplink" target="_blank" rel="noopener"
@@ -804,14 +827,16 @@ footer a:hover { color: #fff3db; }
 
 <section class="event event--wedding">
   <div class="wrap">
-    <p class="kicker">Event 03</p>
-    <h2>The wedding</h2>
-    <p class="theme">A wild dream at the edge of the world</p>
-    <p class="lede">Following the beautiful Route 62, coaches will pick us up from Cape
-      Town and carry everyone about five hours into the wilderness of the Karoo, arriving
-      the night before. During the day you&rsquo;ll spot giraffes, zebras and the rest of
-      it. On the day itself we&rsquo;ll have a toast, speeches, and one last celebration to
-      tie out the adventure, dancing into the night under the stars.</p>
+    <div class="event__text">
+      <p class="kicker">Event 03</p>
+      <h2>The Wedding</h2>
+      <p class="theme">A wild dream at the edge of the world</p>
+      <p class="lede">Following the beautiful Route 62, coaches will pick us up from Cape
+        Town and carry everyone about five hours into the wilderness of the Karoo, arriving
+        the night before. During the day you&rsquo;ll spot giraffes, zebras and the rest of
+        it. On the day itself we&rsquo;ll have a toast, speeches, and one last celebration to
+        tie out the adventure, dancing into the night under the stars.</p>
+    </div>
 
     <dl class="spec">
       <div><dt>Location</dt><dd><a class="maplink" target="_blank" rel="noopener"
@@ -838,12 +863,12 @@ footer a:hover { color: #fff3db; }
 
     <div class="cards">
       <div class="card">
-        <h3>Coach from Cape Town</h3>
+        <h3>Coach from Cape Town 🚌</h3>
         <p>We&rsquo;re paying for it. Tell us on the RSVP if you want a seat and
           we&rsquo;ll sort the rest.</p>
       </div>
       <div class="card">
-        <h3>Drive Route 62</h3>
+        <h3>Drive Route 62 🚗</h3>
         <p>The inland route through the Little Karoo: beautiful open roads, mountain
           passes, farm stalls. Worth stretching over two days if you can.</p>
       </div>
