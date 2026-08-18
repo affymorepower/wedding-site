@@ -6,9 +6,9 @@
 <title>Where you&rsquo;re staying &middot; Affy &amp; Gabby</title>
 <meta name="robots" content="noindex, nofollow">
 
-<link rel="icon" href="/favicon.ico" sizes="any">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <!--
   ACCOMMODATION PAGE — group 2, friends &mdash; on the reserve, paying their own way.
   Served at /hippoproblems. This replaces stay/group-2.html, which is now a
@@ -37,7 +37,7 @@
   open by double-click as well as over http — an absolute /js/gate.js resolves to
   file:///js/gate.js, and since the page stays hidden until the gate has run, a
   missing gate.js renders a BLANK PAGE rather than an obviously broken one. Route
-  links (/rsvp, /login) stay absolute; they are routes, not files. If this file
+  links (/rsvp, /#wear) stay absolute; they are routes, not files. If this file
   ever moves into a folder, the asset paths have to go absolute with it.
 
   THE FORM: the slot at the foot is where this group's questions go. Empty for
@@ -51,14 +51,14 @@
 <style>
 @font-face {
   font-family: 'Fraunces';
-  src: url('/fonts/fraunces-var.woff2') format('woff2-variations'),
-       url('/fonts/fraunces-var.woff2') format('woff2');
+  src: url('fonts/fraunces-var.woff2') format('woff2-variations'),
+       url('fonts/fraunces-var.woff2') format('woff2');
   font-weight: 100 900; font-style: normal; font-display: swap;
 }
 @font-face {
   font-family: 'Inter';
-  src: url('/fonts/inter-var.woff2') format('woff2-variations'),
-       url('/fonts/inter-var.woff2') format('woff2');
+  src: url('fonts/inter-var.woff2') format('woff2-variations'),
+       url('fonts/inter-var.woff2') format('woff2');
   font-weight: 100 900; font-style: normal; font-display: swap;
 }
 
@@ -89,6 +89,12 @@ header.top {
   padding: 1rem 0; margin-bottom: 2.5rem;
 }
 header.top .wrap { display: flex; gap: 1rem; align-items: baseline; justify-content: space-between; }
+/* Two links on the right of the bar rather than one. Dress code goes to the
+   front page's What to wear section — it is the question this page gets asked
+   next, and it was a scroll away on the main site with nothing pointing at it.
+   Same bar as /zebracrossing: the stay pages differ in layout, not in where
+   they let a guest go next. */
+.topnav { display: flex; gap: clamp(1rem, 4vw, 1.75rem); flex-wrap: wrap; }
 a { color: inherit; }
 .back {
   font: 600 .78rem/1 var(--font-body); letter-spacing: 1.6px; text-transform: uppercase;
@@ -126,7 +132,13 @@ p { margin: 0 0 1.1rem; }
    the narrower half of a two-up; here the column is the 34rem reading measure,
    and a square stamp run to that full width sets a taller block than anything
    else on the page. Capped and centred instead, so it reads as a picture in
-   the text rather than a banner across it. */
+   the text rather than a banner across it.
+
+   /zebracrossing runs this same rail as a two-up beside its copy, on a wider
+   56rem measure. That is not an improvement waiting to be copied over here:
+   the three stay pages are meant to read as three letters, not one template
+   (README — "They deliberately don't look alike"). Checked and left alone,
+   2026-08-18. */
 .rail {
   display: flex; gap: clamp(1rem, 3vw, 2rem);
   overflow-x: auto; scroll-snap-type: x mandatory;
@@ -171,7 +183,10 @@ footer.foot button {
   <header class="top">
     <div class="wrap">
       <a class="back" href="/#travel">&larr; Back to the website</a>
-      <a class="back" href="/rsvp">RSVP</a>
+      <nav class="topnav">
+        <a class="back" href="/#wear">Dress code</a>
+        <a class="back" href="/rsvp">RSVP</a>
+      </nav>
     </div>
   </header>
 
