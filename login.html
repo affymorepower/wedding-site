@@ -173,11 +173,19 @@ button:disabled { opacity: .55; cursor: default; }
 
   const say = (el, text, tone) => { el.textContent = text; el.dataset.tone = tone || ''; };
 
-  // Only ever send guests to a path on this site. ?next= comes from the URL bar,
-  // so without this check it is an open redirect to anywhere.
+  // Where to send them once they're in.
+  //
+  // Default is their own accommodation page — that is what most guests came here
+  // for, and it is the one page that can't be linked to before signing in
+  // because its URL depends on the group. An explicit ?next= wins, so the RSVP
+  // link and the "where to stay" link still land where they pointed.
+  //
+  // Only ever a path on this site: ?next= comes from the URL bar, so without the
+  // check it is an open redirect to anywhere.
   function safeNext() {
-    const raw = new URLSearchParams(location.search).get('next') || '/';
-    return /^\/(?!\/)/.test(raw) ? raw : '/';
+    const raw = new URLSearchParams(location.search).get('next');
+    if (raw && /^\/(?!\/)/.test(raw)) return raw;
+    return AG.stayPath() || '/';
   }
 
   // Already signed in? Don't make them do it twice.

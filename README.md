@@ -20,6 +20,9 @@ need it.
 index.html          single-scroll site: timeline, story, three events, travel, dress, FAQ
 login.html          the password page, served at /login
 rsvp.html           the RSVP form, served at /rsvp
+stay/group-1.html   accommodation, family — served at /stay/group-1
+stay/group-2.html   accommodation, friends — served at /stay/group-2
+stay/group-3.html   accommodation, Oudtshoorn — served at /stay/group-3
 js/gate.js          the three-group gate — READ ITS HEADER before trusting it
 api/rsvp.js         serverless function: form → Airtable, one row per guest
 api/access-request.js  "I don't have a password" → Airtable row, and email if configured
@@ -36,15 +39,20 @@ prototypes/         early explorations, reference only
 Two parts of the site differ by group: **where to stay** on the front page, and the
 **RSVP form**. Everything else is open to anyone with the link.
 
-| Password | Group | Sleeps | Pays |
-|---|---|---|---|
-| `weddinggame` | Family | On the reserve | We do |
-| `hippoproblems` | Friends | On the reserve | They do |
-| `marriedtothestars` | Other | Oudtshoorn | They do |
+| Password | Group | Page | Sleeps | Pays |
+|---|---|---|---|---|
+| `zebracrossing` | Family | `/stay/group-1` | On the reserve | We do |
+| `hippoproblems` | Friends | `/stay/group-2` | On the reserve | They do |
+| `marriedtothestars` | Other | `/stay/group-3` | Oudtshoorn | They do |
 
 Guests type one password at `/login`; which group they land in is derived from which
 password matched, so the three tiers are never named on screen. The choice is remembered
 in `localStorage` under `ag.group`.
+
+**Signing in takes them to their own accommodation page**, unless the link they arrived on
+said otherwise: `/login` on its own goes to `/stay/group-N`, `/login?next=/rsvp` goes to the
+RSVP. The three group numbers are the shorthand from the guest sheet — 1 family, 2 friends,
+3 everyone else — and they are deliberately the only thing the URL says.
 
 **This is a polite gate, not security.** The check runs in the browser, so every group's
 content is present in the page and readable in dev tools, and the passwords are recoverable
@@ -65,6 +73,38 @@ block at the top of each page. Theming should mean editing that block. If you fi
 yourself hunting for hard-coded colours further down, something has gone wrong.
 
 Search the pages for `[TBC]` and `todo` to find everything still needing real content.
+
+## The three accommodation pages
+
+One page per group, one file each, so either of us can rewrite one without touching the
+others and each group has a URL that can be pasted into a WhatsApp thread.
+
+```
+stay/group-1.html   family  — on the reserve, we're covering it
+stay/group-2.html   friends — on the reserve, they settle their own room
+stay/group-3.html   other   — guesthouses in and around Oudtshoorn
+```
+
+**Editing one:** everything between the `CONTENT STARTS` and `CONTENT ENDS` markers is
+content. The `:root` block above it holds the same colour and font tokens as `index.html`,
+so a page can be restyled without hunting for hard-coded values. Paths must be absolute
+(`/fonts/…`, `/images/…`) because these files sit a folder down.
+
+**What guards them:** `AG.guardPage('family')` at the foot of each page. Signed out, the
+visitor goes to `/login` and comes back afterwards. Signed in on the wrong page, they are
+moved to their own — a wrong URL is a mis-sent link, not a trespasser. The page body stays
+hidden until that check passes, so another group's page never flashes up first (the browser
+tab title can still flicker; it's in `<head>`, which paints before any script runs). Same
+caveat as everything else here: this is a polite gate, and the file is readable by anyone
+who knows the URL. **Don't write on one group's page what another group is paying.**
+
+**Each page has a form slot** at the foot, marked `Form to come`. Until those are written,
+the staying-over questions on `/rsvp` still cover it, so no guest is blocked.
+
+**The front page still carries the old inline version** of the reserve and town
+accommodation blocks, marked with a `KEEP UNTIL` comment in `index.html`. They're the detail
+these three pages are replacing; once the pages are written, delete both blocks and leave
+the "your own accommodation page" link that sits above them.
 
 ## Making changes
 

@@ -30,7 +30,7 @@
 
   // sha256(password) -> group key. Plain passwords are deliberately absent.
   const GROUPS = {
-    fdf75bab50a0c4837ee60723b01beb179ee535dcbf4b4444b8fae4ae21bcb51a: 'family',
+    '053098243213651f6249ccc753abec371a41b0c5a9cd71867b129efe47127983': 'family',
     '2690521135fc31616e8dd9c0fa7f7fb37a67060ea42dc1edcf2c6c817e5de3ff': 'friends',
     cb8d6299e41b87f4ba06047268fb41c0347fa4d6534c3fedc0ee20815cca4692: 'town',
   };
@@ -41,6 +41,11 @@
   // Where each group sleeps. Two accommodation variants, three RSVP variants —
   // family and friends share a section but not a form.
   const STAY = { family: 'reserve', friends: 'reserve', town: 'town' };
+
+  // Each group's own accommodation page. Group numbers are Affy and Gabby's
+  // shorthand — 1 family, 2 friends, 3 everyone else — and they are what the
+  // URLs use, so a link can be pasted into WhatsApp without naming the tier.
+  const PAGE = { family: '/stay/group-1', friends: '/stay/group-2', town: '/stay/group-3' };
 
   async function sha256(text) {
     const bytes = new TextEncoder().encode(text);
@@ -84,6 +89,31 @@
     stay() {
       const g = current();
       return g ? STAY[g] : null;
+    },
+
+    /* The signed-in guest's own accommodation page, or null if signed out. */
+    stayPath() {
+      const g = current();
+      return g ? PAGE[g] : null;
+    },
+
+    /* Guard for one of the per-group pages. Pass the group (or groups, space
+       separated) the page belongs to:
+
+         if (!AG.guardPage('family')) return;
+
+       Signed out, they go to /login and come back here afterwards. Signed in
+       but on someone else's page, they are moved to their own rather than shown
+       an error — a guest who lands on the wrong URL is a mis-sent link, not a
+       trespasser, and there is nothing here to protect (see the header). */
+    guardPage(groups) {
+      const g = AG.requireGroup();
+      if (!g) return false;
+      if (!String(groups).split(/\s+/).includes(g)) {
+        location.replace(PAGE[g]);
+        return false;
+      }
+      return true;
     },
 
     forget() {
@@ -135,6 +165,15 @@
       });
       root.querySelectorAll('[data-locked]').forEach((el) => {
         if (group) el.remove();
+      });
+
+      /* Anchors that should point at the visitor's own accommodation page. The
+         href can't be written into the HTML because it differs by group, and
+         hard-coding all three would put the other two in view-source for no
+         reason. Signed out, the anchor goes with the rest of the locked bits. */
+      root.querySelectorAll('[data-stay-link]').forEach((el) => {
+        if (group) el.href = PAGE[group];
+        else el.remove();
       });
 
       document.documentElement.dataset.group = group || 'none';

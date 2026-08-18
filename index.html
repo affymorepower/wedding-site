@@ -1144,11 +1144,23 @@ footer p + p { margin-top: .5rem; }
         <h3>Sign in to see your accommodation</h3>
         <p>It&rsquo;s the same password we sent with your invitation. If you can&rsquo;t
           find it, you can ask us for another on the next page.</p>
-        <a class="btn" href="/login?next=%2F%23stay">Sign in</a>
+        <a class="btn" href="/login">Sign in</a>
       </div>
     </div>
 
-    <!-- ---------- family + friends: on the reserve ---------- -->
+    <!-- ---------- signed in: their own page ----------
+         The href differs by group, so gate.js fills it (data-stay-link) rather
+         than the HTML carrying all three. Signed out, this line is removed with
+         the other locked bits. -->
+    <p class="lede" data-group="family friends town"><strong>Your rooms, rates and
+      what happens on each night are on <a data-stay-link href="/login">your own
+      accommodation page</a>.</strong> What follows is the short version.</p>
+
+    <!-- ---------- family + friends: on the reserve ----------
+         KEEP UNTIL THE /stay PAGES CARRY THE REAL CONTENT. These two blocks are
+         the detail Gabby's three pages are replacing; deleting them now would
+         lose it while those pages are still placeholders. Once /stay/group-1..3
+         are written, cut both variants and leave the link above. -->
     <div data-stay="reserve">
       <p class="lede">You&rsquo;re staying with us at Buffelsdrift, right on the game
         reserve, so you don&rsquo;t have to think about getting anywhere on the day. The
