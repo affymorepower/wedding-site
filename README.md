@@ -20,10 +20,11 @@ need it.
 index.html          single-scroll site: timeline, story, three events, travel, dress, FAQ
 login.html          the password page, served at /login
 rsvp.html           the RSVP form, served at /rsvp
-stay/group-1.html   accommodation, family — served at /stay/group-1
+zebracrossing.html      accommodation, family — served at /zebracrossing
 hippoproblems.html      accommodation, friends — served at /hippoproblems
 marriedtothestars.html  accommodation, Oudtshoorn — served at /marriedtothestars
-stay/group-2.html   redirect to /hippoproblems (old link, still in threads)
+stay/group-1.html   redirect to /zebracrossing (old link, still in threads)
+stay/group-2.html   redirect to /hippoproblems (same)
 stay/group-3.html   redirect to /marriedtothestars (same)
 js/gate.js          the three-group gate — READ ITS HEADER before trusting it
 api/rsvp.js         serverless function: form → Airtable, one row per guest
@@ -43,18 +44,19 @@ Two parts of the site differ by group: **where to stay** on the front page, and 
 
 | Password | Group | Page | Sleeps | Pays |
 |---|---|---|---|---|
-| `zebracrossing` | Family | `/stay/group-1` | On the reserve | We do |
+| `zebracrossing` | Family | `/zebracrossing` | On the reserve | We do |
 | `hippoproblems` | Friends | `/hippoproblems` | On the reserve | They do |
 | `marriedtothestars` | Other | `/marriedtothestars` | Oudtshoorn | They do |
 
-**Groups 2 and 3 have the password *as* the path**, so one link both signs the guest in
+**All three groups have the password *as* the path**, so one link both signs the guest in
 and lands them on their own page — nothing to type, nothing to remember, and it can be
 pasted straight into a WhatsApp thread. The page hashes the last segment of its own URL
 and checks it against the same table gate.js checks a typed password against
 (`AG.enterFromPath`), so the plain password still isn't written into any file and a
-guessed URL still fails. **Renaming either file changes that group's password**, so
-`PAGE` in `js/gate.js` must move with it. The old `/stay/group-2` and `/stay/group-3`
-URLs redirect to the new ones. Group 1 hasn't been moved.
+guessed URL still fails. **Renaming any of the three changes that group's password**, so
+`PAGE` in `js/gate.js` must move with it. The old `/stay/group-1`, `/stay/group-2` and
+`/stay/group-3` URLs all redirect to the new ones, and the `stay/` folder can go once no
+thread still carries one.
 
 It is weaker than typing a password, because a URL leaks in ways a typed string doesn't —
 browser history, link previews, a forwarded screenshot of the address bar. That was an
@@ -67,9 +69,8 @@ in `localStorage` under `ag.group`.
 
 **Signing in takes them to their own accommodation page**, unless the link they arrived on
 said otherwise: `/login` on its own goes to whichever page `PAGE` in `js/gate.js` names for
-that group, `/login?next=/rsvp` goes to the RSVP. Group 1 still uses the guest-sheet
-shorthand — 1 family, 2 friends, 3 everyone else — so `/stay/group-1` names a tier only by
-number; groups 2 and 3 are named for their password instead.
+that group, `/login?next=/rsvp` goes to the RSVP. None of the three URLs names a tier any
+more — each is just its own password.
 
 **Arriving on a password-path only signs in a visitor who is signed OUT.** Someone already
 signed in as another group is moved to their own page rather than quietly reclassified. That
@@ -103,25 +104,30 @@ One page per group, one file each, so either of us can rewrite one without touch
 others and each group has a URL that can be pasted into a WhatsApp thread.
 
 ```
-stay/group-1.html       family  — on the reserve, we're covering it
+zebracrossing.html      family  — on the reserve, we're covering it
 hippoproblems.html      friends — on the reserve, they settle their own room
 marriedtothestars.html  other   — guesthouses in and around Oudtshoorn
 ```
 
 **They deliberately don't look alike.** Groups 1 and 2 are sleeping at Buffelsdrift, so
 their pages carry the lodge's own stamp rail — it's a picture of where they'll wake up.
+Group 1 runs it as a two-up beside the copy, the same shape as Our story on the front
+page, which is why that page is wider than group 2's single reading column.
+The rails **loop rather than rewind**: the run of stamps is cloned once and the scroll
+position rolled back a whole run when it crosses into the copy, so the pictures only ever
+march one way. Same code on `index.html`; change one, change both.
 Group 3 is booking their own room in town, so its page carries the three Booking.com
 options instead, and no rail: photographs of a lodge they aren't staying at would be
 decoration. Don't "fix" that by making the three pages match.
 
 **Editing one:** everything between the `CONTENT STARTS` and `CONTENT ENDS` markers is
 content. The `:root` block above it holds the same colour and font tokens as `index.html`,
-so a page can be restyled without hunting for hard-coded values. Paths must be absolute
-(`/fonts/…`, `/images/…`) because these files sit a folder down.
+so a page can be restyled without hunting for hard-coded values. All three sit at the repo
+root now, so asset paths are **relative** (`fonts/…`, `images/…`, `js/…`) like
+`index.html`; route links (`/rsvp`, `/#wear`) stay absolute.
 
-**What guards them:** `AG.guardPage('family')` at the foot of each page, preceded on the
-two password-path pages by `AG.enterFromPath()`, which signs a signed-out visitor in from
-the URL they arrived on. Signed out, the
+**What guards them:** `AG.guardPage(<group>)` at the foot of each page, preceded by
+`AG.enterFromPath()`, which signs a signed-out visitor in from the URL they arrived on. Signed out, the
 visitor goes to `/login` and comes back afterwards. Signed in on the wrong page, they are
 moved to their own — a wrong URL is a mis-sent link, not a trespasser. The page body stays
 hidden until that check passes, so another group's page never flashes up first (the browser

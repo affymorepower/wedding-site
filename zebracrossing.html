@@ -6,21 +6,22 @@
 <title>Where you&rsquo;re staying &middot; Affy &amp; Gabby</title>
 <meta name="robots" content="noindex, nofollow">
 
-<link rel="icon" href="/favicon.ico" sizes="any">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <!--
-  ACCOMMODATION PAGE — group 2, friends &mdash; on the reserve, paying their own way.
-  Served at /hippoproblems. This replaces stay/group-2.html, which is now a
+  ACCOMMODATION PAGE — group 1, family &mdash; on the reserve, we are covering it.
+  Served at /zebracrossing. This replaces stay/group-1.html, which is now a
   redirect to here.
 
-  THE FILENAME IS THE PASSWORD. That is the point of it (Affy, 2026-08-18):
-  the link can be pasted straight into a WhatsApp thread and the guest never
-  sees /login. The script at the foot hashes the last segment of its own URL and
-  checks it against GROUPS in /js/gate.js, exactly as a typed password is
-  checked — so the plain password is NOT written anywhere in this file, a
-  guessed URL still fails, and RENAMING THIS FILE CHANGES THE PASSWORD WITH IT.
-  If you rename it, update PAGE.friends in /js/gate.js and the hash beside it.
+  THE FILENAME IS THE PASSWORD, the same arrangement groups 2 and 3 already had
+  and group 1 was left out of until now (Affy, 2026-08-18): the link can be
+  pasted straight into a WhatsApp thread and the guest never sees /login. The
+  script at the foot hashes the last segment of its own URL and checks it against
+  GROUPS in js/gate.js, exactly as a typed password is checked — so the plain
+  password is NOT written anywhere in this file, a guessed URL still fails, and
+  RENAMING THIS FILE CHANGES THE PASSWORD WITH IT. If you rename it, update
+  PAGE.family in js/gate.js and the hash beside it.
 
   It is weaker than typing a password, because a URL leaks in ways a typed
   string doesn't — browser history, link previews, a forwarded screenshot. That
@@ -28,17 +29,22 @@
   gate: don't put anything here that would genuinely harm someone if it leaked,
   and DON'T write what the other groups are paying.
 
+  NO SIGN-IN BLOCK HERE, deliberately. The front page carries one because a
+  stranger can land on it signed out; nobody reaches this page without either the
+  link (which signs them in) or a session that already says family.
+
   EDITING IT: everything between CONTENT STARTS and CONTENT ENDS is yours.
   Colours, fonts and spacing are tokens in the :root block below, same names as
   index.html.
 
   ASSET PATHS ARE RELATIVE (fonts/…, images/…, js/…), the same convention
-  index.html uses, because this file sits at the repo root. That is what lets it
-  open by double-click as well as over http — an absolute /js/gate.js resolves to
-  file:///js/gate.js, and since the page stays hidden until the gate has run, a
-  missing gate.js renders a BLANK PAGE rather than an obviously broken one. Route
-  links (/rsvp, /login) stay absolute; they are routes, not files. If this file
-  ever moves into a folder, the asset paths have to go absolute with it.
+  index.html and /hippoproblems use, because this file sits at the repo root.
+  That is what lets it open by double-click as well as over http — an absolute
+  /js/gate.js resolves to file:///js/gate.js, and since the page stays hidden
+  until the gate has run, a missing gate.js renders a BLANK PAGE rather than an
+  obviously broken one. Route links (/rsvp, /#wear) stay absolute; they are
+  routes, not files. If this file ever moves into a folder, the asset paths have
+  to go absolute with it.
 
   THE FORM: the slot at the foot is where this group's questions go. Empty for
   now — the RSVP at /rsvp still carries its own staying-over block, so nothing
@@ -51,14 +57,14 @@
 <style>
 @font-face {
   font-family: 'Fraunces';
-  src: url('/fonts/fraunces-var.woff2') format('woff2-variations'),
-       url('/fonts/fraunces-var.woff2') format('woff2');
+  src: url('fonts/fraunces-var.woff2') format('woff2-variations'),
+       url('fonts/fraunces-var.woff2') format('woff2');
   font-weight: 100 900; font-style: normal; font-display: swap;
 }
 @font-face {
   font-family: 'Inter';
-  src: url('/fonts/inter-var.woff2') format('woff2-variations'),
-       url('/fonts/inter-var.woff2') format('woff2');
+  src: url('fonts/inter-var.woff2') format('woff2-variations'),
+       url('fonts/inter-var.woff2') format('woff2');
   font-weight: 100 900; font-style: normal; font-display: swap;
 }
 
@@ -69,7 +75,11 @@
   --cta:#46603f; --cta-fg:#ffffff;
   --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
   --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --measure: 34rem; --gutter: 1.25rem; --radius: 4px;
+  /* Wider than the other two accommodation pages on purpose: this one runs the
+     copy and the lodge rail as a two-up, the same shape as Our story on the
+     front page, and a two-up inside a 34rem reading measure is two cramped
+     columns. Prose is held back to the measure by .stay__copy and .slot. */
+  --measure: 56rem; --reading: 34rem; --gutter: 1.25rem; --radius: 4px;
 }
 *, *::before, *::after { box-sizing: border-box; }
 html { color-scheme: light; }
@@ -89,6 +99,10 @@ header.top {
   padding: 1rem 0; margin-bottom: 2.5rem;
 }
 header.top .wrap { display: flex; gap: 1rem; align-items: baseline; justify-content: space-between; }
+/* Two links on the right of the bar rather than one. Dress code goes to the
+   front page's What to wear section — it is the question this page gets asked
+   next, and it was a scroll away on the main site with nothing pointing at it. */
+.topnav { display: flex; gap: clamp(1rem, 4vw, 1.75rem); flex-wrap: wrap; }
 a { color: inherit; }
 .back {
   font: 600 .78rem/1 var(--font-body); letter-spacing: 1.6px; text-transform: uppercase;
@@ -116,23 +130,36 @@ p { margin: 0 0 1.1rem; }
   color: var(--error); border-bottom: 1px dotted currentColor;
 }
 
+/* ---- copy left, pictures right ----
+   The same two-up as Our story on the front page, and the same proportions:
+   words get the flexible column, the stamps the narrower fixed one, because a
+   stamp is square and a square at half of 56rem already sets the height of the
+   whole block. Stacks below 52rem, copy first. */
+.stay__grid {
+  display: grid; gap: clamp(2rem, 5vw, 3.5rem); align-items: center;
+  margin: 1.8rem 0 0;
+}
+@media (min-width: 52rem) {
+  .stay__grid { grid-template-columns: 1fr minmax(0, 22rem); }
+}
+.stay__copy { max-width: var(--reading); }
+.stay__copy > :last-child { margin-bottom: 0; }
+
 /* ---- the stamp rail ----
    Lifted from index.html, where the same seven lodge photographs run in the
    Where to stay pane. Overflow + snap is the whole carousel: swipe on a phone,
    two-finger scroll on a trackpad, arrow keys when focused. The timer in the
    script below just does what a finger would.
 
-   The one change from the front page is the max-width. There the rail sits in
-   the narrower half of a two-up; here the column is the 34rem reading measure,
-   and a square stamp run to that full width sets a taller block than anything
-   else on the page. Capped and centred instead, so it reads as a picture in
-   the text rather than a banner across it. */
+   Capped on narrow screens so the stacked rail reads as a picture beside the
+   text rather than a banner across it; in the two-up the grid column already
+   holds it in. */
 .rail {
   display: flex; gap: clamp(1rem, 3vw, 2rem);
   overflow-x: auto; scroll-snap-type: x mandatory;
   scrollbar-width: none; -webkit-overflow-scrolling: touch;
   border-radius: 2px;
-  max-width: 24rem; margin: 1.8rem auto 2.4rem;
+  max-width: 24rem; margin-inline: auto;
 }
 .rail::-webkit-scrollbar { display: none; }
 .rail:focus-visible { outline: 2px solid var(--accent); outline-offset: 6px; }
@@ -144,7 +171,8 @@ p { margin: 0 0 1.1rem; }
 
 .slot {
   border: 1px dashed var(--line); border-radius: var(--radius);
-  background: var(--surface); padding: 1.25rem; margin: 1.5rem 0;
+  background: var(--surface); padding: 1.25rem; margin: 2.6rem 0 0;
+  max-width: var(--reading);
 }
 .slot h2 { margin-top: 0; }
 footer.foot {
@@ -171,7 +199,10 @@ footer.foot button {
   <header class="top">
     <div class="wrap">
       <a class="back" href="/#travel">&larr; Back to the website</a>
-      <a class="back" href="/rsvp">RSVP</a>
+      <nav class="topnav">
+        <a class="back" href="/#wear">Dress code</a>
+        <a class="back" href="/rsvp">RSVP</a>
+      </nav>
     </div>
   </header>
 
@@ -179,45 +210,41 @@ footer.foot button {
     <p class="kicker">Where to stay</p>
 
     <!-- ============================ CONTENT STARTS ============================
-         Gabby's words, as sent 2026-08-18. Replace everything down to CONTENT ENDS.
+         Affy's words, as sent 2026-08-18. Replace everything down to CONTENT ENDS.
          ===================================================================== -->
 
-    <h1>You&rsquo;re on the reserve at Buffelsdrift</h1>
+    <h1>You&rsquo;re staying with us at Buffelsdrift</h1>
 
-    <p class="lede">Our nearest and dearest! We would love to invite you to stay at the
-      venue with us on the Friday and Saturday night. You&rsquo;ll also have the option to
-      extend to Sunday night if you would like to soak up more of the bush before heading
-      home.</p>
+    <div class="stay__grid">
+      <div class="stay__copy">
+        <p class="lede"><strong>Our beloved family! Accommodation is on us for the wedding
+          weekend!</strong> We&rsquo;ll be hosting you at Buffelsdrift (the venue) for
+          Friday and Saturday night, and you&rsquo;ll have the option to extend to Sunday
+          night as well to soak up more of the bush before heading home.</p>
 
-    <!-- Buffelsdrift's own photographs, from buffelsdrift.com, framed as stamps to
-         match Our story on the front page and served locally so they don't vanish if
-         that site is redesigned. Same seven images and same markup as the front page
-         rail; the script at the foot picks up every .rail on the page. -->
-    <div class="rail" tabindex="0" role="group" aria-roledescription="carousel"
-         aria-label="Photographs of Buffelsdrift, the game lodge">
-      <figure class="stamp"><img loading="lazy" width="500" height="500" src="images/stamps-lodge/12.webp" alt="A luxury tent at dusk, aloes and red flowers on the slope below it"></figure>
-      <figure class="stamp"><img loading="lazy" width="500" height="500" src="images/stamps-lodge/13.webp" alt="Inside a tent: bed, patterned cushions and an armchair by the window"></figure>
-      <figure class="stamp"><img loading="lazy" width="500" height="500" src="images/stamps-lodge/14.webp" alt="A tent bedroom with the deck door open onto the reserve"></figure>
-      <figure class="stamp"><img loading="lazy" width="500" height="500" src="images/stamps-lodge/15.webp" alt="A tent bathroom: stone basin, mirror lights and a freestanding bath by the window"></figure>
-      <figure class="stamp"><img loading="lazy" width="500" height="500" src="images/stamps-lodge/16.webp" alt="The view from a shaded deck across the waterhole to the Swartberg"></figure>
-      <figure class="stamp"><img loading="lazy" width="500" height="500" src="images/stamps-lodge/17.webp" alt="Five meerkats standing on a sandy bank"></figure>
-      <figure class="stamp"><img loading="lazy" width="500" height="500" src="images/stamps-lodge/18.webp" alt="The thatched main lodge on stilts, reflected in the waterhole"></figure>
+        <p class="lede">Saturday is the big day, so we will host a relaxed braai on the
+          Friday evening for all those staying at the venue. A safari is included in your
+          stay, and the lodge also has a spa and a few extra wildlife experiences if
+          you&rsquo;d rather swap out the standard safari for something else (like an
+          elephant or lion experience).</p>
+      </div>
+
+      <!-- Buffelsdrift's own photographs, from buffelsdrift.com, framed as stamps to
+           match Our story on the front page and served locally so they don't vanish if
+           that site is redesigned. Same seven images and same markup as the front page
+           rail; the script at the foot picks up every .rail on the page and clones the
+           run so it loops rather than rewinding. -->
+      <div class="rail" tabindex="0" role="group" aria-roledescription="carousel"
+           aria-label="Photographs of Buffelsdrift, the game lodge">
+        <figure class="stamp"><img loading="lazy" width="500" height="500" src="images/stamps-lodge/12.webp" alt="A luxury tent at dusk, aloes and red flowers on the slope below it"></figure>
+        <figure class="stamp"><img loading="lazy" width="500" height="500" src="images/stamps-lodge/13.webp" alt="Inside a tent: bed, patterned cushions and an armchair by the window"></figure>
+        <figure class="stamp"><img loading="lazy" width="500" height="500" src="images/stamps-lodge/14.webp" alt="A tent bedroom with the deck door open onto the reserve"></figure>
+        <figure class="stamp"><img loading="lazy" width="500" height="500" src="images/stamps-lodge/15.webp" alt="A tent bathroom: stone basin, mirror lights and a freestanding bath by the window"></figure>
+        <figure class="stamp"><img loading="lazy" width="500" height="500" src="images/stamps-lodge/16.webp" alt="The view from a shaded deck across the waterhole to the Swartberg"></figure>
+        <figure class="stamp"><img loading="lazy" width="500" height="500" src="images/stamps-lodge/17.webp" alt="Five meerkats standing on a sandy bank"></figure>
+        <figure class="stamp"><img loading="lazy" width="500" height="500" src="images/stamps-lodge/18.webp" alt="The thatched main lodge on stilts, reflected in the waterhole"></figure>
+      </div>
     </div>
-
-    <p class="lede">Accommodation is roughly <strong>&euro;300 per person</strong> for the
-      Friday &amp; Saturday night (depending on your room). This includes breakfast on both
-      days, a safari drive, and a simple lunch on the wedding day. Also, since Saturday is
-      the big day, we will host a relaxed braai on the Friday evening for all those staying
-      at the venue. The lodge also has a spa, a pool and a few extra wildlife experiences
-      you can sign up for or swap out for the standard safari.</p>
-
-    <p class="lede">Most of the rooms are for 2 persons sharing. There are also five
-      4-person rooms, each with 2 bedrooms. If you would like to / are open to staying in
-      one of these with another couple, please let us know in the RSVP. If you have kids,
-      we can add a small bed to your room (kiddies 4&ndash;13 stay at half price, kiddies 3
-      and under stay for free). We will collect the relevant info in the RSVP, but also
-      feel free to reach out with any questions! Once the RSVPs and rooms are confirmed, we
-      will send through a payment link.</p>
 
     <!-- ============================= CONTENT ENDS ============================= -->
 
@@ -252,24 +279,24 @@ footer.foot button {
   if (typeof AG === 'undefined') {
     document.documentElement.classList.add('ready');
     document.querySelector('main').innerHTML =
-      '<div class="wrap"><p class="lede">This page couldn\u2019t finish loading.</p>' +
+      '<div class="wrap"><p class="lede">This page couldn’t finish loading.</p>' +
       '<p class="note">If you opened it from a file on your computer, it needs to be ' +
-      'served over http \u2014 try the live site instead. Otherwise reload, and if it ' +
-      'keeps happening just message us and we\u2019ll send your details over.</p></div>';
+      'served over http — try the live site instead. Otherwise reload, and if it ' +
+      'keeps happening just message us and we’ll send your details over.</p></div>';
     return;
   }
 
   // Signed out, this page's own URL signs the visitor in: its last path segment
   // is this group's password, hashed and checked like any typed one
-  // (AG.enterFromPath — read its comment in /js/gate.js).
+  // (AG.enterFromPath — read its comment in js/gate.js).
   //
   // Already signed in as ANOTHER group, we deliberately do not reclassify them.
-  // A forwarded link is a mis-sent link, and quietly moving a family guest into
-  // this group would change what their RSVP records them as owing. The ordinary
+  // A forwarded link is a mis-sent link, and quietly moving a friend into this
+  // group would tell them their room is covered when it isn't. The ordinary
   // guard takes them to their own page instead — and the Sign out button in the
   // footer is there for anyone who really is in this group.
   if (!AG.group()) await AG.enterFromPath();
-  if (!AG.guardPage('friends')) return;
+  if (!AG.guardPage('family')) return;
 
   document.documentElement.classList.add('ready');
   AG.applyTo();
@@ -279,22 +306,21 @@ footer.foot button {
   });
 
   // Stamp rail: advances itself, no arrows. The scrolling is the browser's own —
-  // this only nudges it one stamp along on a timer and loops at the end. It steps
-  // by the measured distance between two stamps rather than a stored index, so it
-  // stays in step with wherever a finger left the rail, and it stands down
-  // whenever the visitor is plausibly looking. Same code as index.html.
+  // this only nudges it one stamp along on a timer, and it stands down whenever
+  // the visitor is plausibly looking. Same code as index.html.
+  //
+  // A CONTINUOUS LOOP, not a rewind (Affy, 2026-08-18). It used to scroll back to
+  // the first stamp on reaching the end, which read as the album being yanked
+  // backwards. Instead the run is cloned once and appended, and the scroll
+  // position is rolled back by exactly one run's width the moment it crosses into
+  // the copy — the two runs are identical, so nothing moves on screen and the
+  // pictures only ever march one way. Clones are aria-hidden with empty alt: one
+  // album, announced once.
   document.querySelectorAll('.rail').forEach((rail) => {
     const DWELL = 4000;
     const reduced = matchMedia('(prefers-reduced-motion: reduce)');
     let timer = null, held = false;
 
-    // A CONTINUOUS LOOP, not a rewind (Affy, 2026-08-18). It used to scroll back to
-    // the first stamp on reaching the end, which read as the album being yanked
-    // backwards. Instead the run is cloned once and appended, and the scroll
-    // position is rolled back by exactly one run's width the moment it crosses into
-    // the copy — the two runs are identical, so nothing moves on screen and the
-    // pictures only ever march one way. Clones are aria-hidden with empty alt: one
-    // album, announced once.
     const run = [...rail.querySelectorAll('.stamp')];
     if (run.length > 1) {
       run.forEach((stamp) => {
@@ -310,9 +336,9 @@ footer.foot button {
       if (cards.length < 2) return;
       const stride = cards[1].offsetLeft - cards[0].offsetLeft;
       // Roll back a whole run BEFORE stepping, never after: we land on the
-      // identical stamp in the first run, so the jump is invisible, and the smooth
-      // step that follows always goes forwards. 2px of slack because scrollLeft
-      // lands on fractional pixels at some zoom levels.
+      // identical stamp in the first run, so the jump is invisible, and the
+      // smooth step that follows always goes forwards. 2px of slack because
+      // scrollLeft lands on fractional pixels at some zoom levels.
       const runWidth = stride * run.length;
       if (runWidth && rail.scrollLeft >= runWidth - 2) rail.scrollLeft -= runWidth;
       rail.scrollTo({ left: rail.scrollLeft + stride, behavior: 'smooth' });

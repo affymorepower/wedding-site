@@ -901,6 +901,10 @@ footer p + p { margin-top: .5rem; }
   <a href="#story">Our story</a>
   <a href="#events">Events</a>
   <a href="#travel">Logistics</a>
+  <!-- What to wear is the question this site gets asked most after the dates,
+       and it was a scroll away with nothing pointing at it. The bar wraps, so a
+       sixth item costs nothing on a phone. -->
+  <a href="#wear">Dress code</a>
   <a href="#faq">Questions</a>
   <a class="cta" href="/rsvp">RSVP</a>
 </nav>
@@ -1555,7 +1559,7 @@ if ('IntersectionObserver' in window) {
 })();
 
 // Stamp rail: advances itself, no arrows. The scrolling is the browser's own —
-// this only nudges it one stamp along on a timer and wraps at the end.
+// this only nudges it one stamp along on a timer and loops at the end.
 //
 // It steps by the measured distance between two stamps rather than by a stored
 // index, so it stays in step with wherever a finger left the rail. It also
@@ -1571,13 +1575,34 @@ document.querySelectorAll('.rail').forEach((rail) => {
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   let timer = null, held = false;
 
+  // A CONTINUOUS LOOP, not a rewind (Affy, 2026-08-18). It used to scroll back to
+  // the first stamp on reaching the end, which read as the album being yanked
+  // backwards. Instead the run is cloned once and appended, and the scroll
+  // position is rolled back by exactly one run's width the moment it crosses into
+  // the copy — the two runs are identical, so nothing moves on screen and the
+  // pictures only ever march one way. Clones are aria-hidden with empty alt: one
+  // album, announced once.
+  const run = [...rail.querySelectorAll('.stamp')];
+  if (run.length > 1) {
+    run.forEach((stamp) => {
+      const clone = stamp.cloneNode(true);
+      clone.setAttribute('aria-hidden', 'true');
+      clone.querySelectorAll('img').forEach((img) => { img.alt = ''; });
+      rail.append(clone);
+    });
+  }
+
   const step = () => {
     const cards = rail.querySelectorAll('.stamp');
     if (cards.length < 2) return;
     const stride = cards[1].offsetLeft - cards[0].offsetLeft;
-    // 2px of slack: scrollLeft lands on fractional pixels at some zoom levels.
-    const atEnd = rail.scrollLeft + rail.clientWidth >= rail.scrollWidth - 2;
-    rail.scrollTo({ left: atEnd ? 0 : rail.scrollLeft + stride, behavior: 'smooth' });
+    // Roll back a whole run BEFORE stepping, never after: we land on the
+    // identical stamp in the first run, so the jump is invisible, and the smooth
+    // step that follows always goes forwards. 2px of slack because scrollLeft
+    // lands on fractional pixels at some zoom levels.
+    const runWidth = stride * run.length;
+    if (runWidth && rail.scrollLeft >= runWidth - 2) rail.scrollLeft -= runWidth;
+    rail.scrollTo({ left: rail.scrollLeft + stride, behavior: 'smooth' });
   };
 
   const start = () => {

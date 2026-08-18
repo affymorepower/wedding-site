@@ -37,16 +37,23 @@
 
   EDITING IT: everything between CONTENT STARTS and CONTENT ENDS is yours.
   Colours, fonts and spacing are tokens in the :root block below, same names as
-  index.html. Absolute paths (/fonts/…, /images/…, /js/…) so this keeps working
-  if the file ever moves into a folder.
+  index.html.
+
+  ASSET PATHS ARE RELATIVE (fonts/…, images/…, js/…), the same convention
+  index.html uses, because this file sits at the repo root. That is what lets it
+  open by double-click as well as over http — an absolute /js/gate.js resolves to
+  file:///js/gate.js, and since the page stays hidden until the gate has run, a
+  missing gate.js renders a BLANK PAGE rather than an obviously broken one. Route
+  links (/rsvp, /login) stay absolute; they are routes, not files. If this file
+  ever moves into a folder, the asset paths have to go absolute with it.
 
   THE FORM: the slot at the foot is where this group's questions go. Empty for
   now — the RSVP at /rsvp still carries its own staying-over block, so nothing
   is missing while this is being written.
 -->
 
-<link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
 
 <style>
 @font-face {
@@ -274,9 +281,28 @@ footer.foot button {
   </footer>
 </div>
 
-<script src="/js/gate.js"></script>
+<script src="js/gate.js"></script>
 <script>
 (async () => {
+  // If gate.js didn't load, AG is undefined and every line below throws. The page
+  // is hidden until .ready is set, so that used to render a BLANK CREAM PAGE with
+  // nothing in the console but a ReferenceError — the single worst way for this to
+  // fail, and it is what happens if the file is opened from the wrong place, if a
+  // deploy drops the script, or if an extension blocks it.
+  //
+  // Say so instead. It deliberately does NOT reveal the content: the gate is a
+  // courtesy, but "couldn't check, so here it is anyway" is not a failure mode
+  // anyone chose. Same stance as the <noscript> block above.
+  if (typeof AG === 'undefined') {
+    document.documentElement.classList.add('ready');
+    document.querySelector('main').innerHTML =
+      '<div class="wrap"><p class="lede">This page couldn\u2019t finish loading.</p>' +
+      '<p class="note">If you opened it from a file on your computer, it needs to be ' +
+      'served over http \u2014 try the live site instead. Otherwise reload, and if it ' +
+      'keeps happening just message us and we\u2019ll send your details over.</p></div>';
+    return;
+  }
+
   // Signed out, this page's own URL signs the visitor in: its last path segment
   // is this group's password, hashed and checked like any typed one
   // (AG.enterFromPath — read its comment in /js/gate.js).

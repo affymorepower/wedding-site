@@ -44,15 +44,14 @@
 
   // Each group's own accommodation page.
   //
-  // Group 1 still uses Affy and Gabby's sheet shorthand — 1 family — so a link
-  // can be pasted into WhatsApp without naming the tier.
-  //
-  // Groups 2 and 3 are different on purpose (Affy, 2026-08-18): their path IS
-  // their password, so the one link both signs the guest in and lands them on
-  // their own page, and /login never has to come up. See enterFromPath below for
-  // what that costs. If either path changes, that group's password changes with
-  // it, so keep each equal to the plain string behind its hash above.
-  const PAGE = { family: '/stay/group-1', friends: '/hippoproblems', town: '/marriedtothestars' };
+  // All three paths ARE their group's password (Affy, 2026-08-18; group 1 moved
+  // off /stay/group-1 the same day). One link both signs the guest in and lands
+  // them on their own page, so it can be pasted into a WhatsApp thread and
+  // /login never has to come up. See enterFromPath below for what that costs.
+  // Changing any path changes that group's password with it, so keep each equal
+  // to the plain string behind its hash above. The old /stay/group-1..3 URLs
+  // redirect here and can be deleted once no thread still carries one.
+  const PAGE = { family: '/zebracrossing', friends: '/hippoproblems', town: '/marriedtothestars' };
 
   async function sha256(text) {
     const bytes = new TextEncoder().encode(text);
@@ -91,7 +90,8 @@
     },
 
     /* Sign in from a page's own URL, for a page whose last path segment IS the
-       group's password (/hippoproblems, /marriedtothestars). The point is that
+       group's password (/zebracrossing, /hippoproblems, /marriedtothestars). The
+       point is that
        the link can be
        pasted straight into a WhatsApp thread: the guest never sees /login, and
        there is one link to send rather than a link plus a password.
