@@ -16,3 +16,9 @@ node_modules/
 
 # Planning doc — budget figures, kept out of the public repo
 website-plan.md
+
+# Supplier quotes and negotiated rates. Same reasoning as website-plan.md:
+# these are commercial figures, not site content, and a deploy from this folder
+# would otherwise serve them at a public URL.
+*.csv
+.env*

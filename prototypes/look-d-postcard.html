@@ -1,0 +1,786 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Look D — Postcard · Affy &amp; Gabby</title>
+<meta name="robots" content="noindex">
+
+<!--
+  LOOK D — "POSTCARD". Lifted from the Framer draft at
+  orange-variation-873829.framer.app, rebuilt in the site's own idiom.
+
+  Four ideas taken across, in order of how much they change the page:
+
+  1. COLOUR PANES. Every event sits on its own full-bleed pane instead of
+     alternating two shades of linen. Cream → gold → wine, getting deeper as
+     the week builds. A fifth pane, near-black maroon, holds the photos.
+     This is the whole reason for the prototype; everything else supports it.
+  2. PLACE BANDS. A full-bleed photograph of the city, with its name set huge
+     and half-transparent across the top, marks each move: Cape Town before
+     the picnic, Oudtshoorn before the wedding. The band appears when the
+     place changes, not once per event — so it reads as travel, not decoration.
+  3. POSTAGE STAMPS. Our photos framed as stamps, perforations and postmark,
+     on the maroon pane. Fits two people who met each other travelling and
+     stops a photo grid looking like an estate agent's listing.
+  4. SPEC LISTS. Location / date / time / dress on hairline-ruled rows rather
+     than the current inline WHEN · WHERE · DRESS. Scannable while packing,
+     which is the only moment anyone reads it.
+
+  One section group here is NOT from the Framer draft: GETTING THERE / WHERE TO
+  STAY / WHAT TO WEAR. The draft stops after the three events, which leaves out
+  roughly half of what a guest needs. These carry the live site's real copy.
+
+  Two things were tried and dropped, both recoverable from git if wanted:
+  a huge ghosted watermark for the place names (Gabby's reference — lovely, but
+  it needed a scrim on every photograph), and a cut-out that let the giraffes'
+  heads climb onto the pane above. The keyed image for that one still exists at
+  images/giraffes-breakout.webp.
+
+  The draft's own copy is placeholder — events 2 and 3 repeat the picnic's
+  paragraph and the wedding's details still say Kirstenbosch. The words here
+  are the real ones off the live site. Where the two disagree the live site wins.
+
+  THE REMAINING IMAGES ARE HOTLINKED FROM FRAMER'S CDN and are the one thing
+  that must change before this ships: they die the moment that draft is
+  deleted. Everything marked [framer] below wants pulling into images/. The
+  flowers and the giraffes are local already.
+-->
+
+<link rel="preload" href="../fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
+
+<style>
+@font-face {
+  font-family: 'Fraunces';
+  src: url('../fonts/fraunces-var.woff2') format('woff2-variations'),
+       url('../fonts/fraunces-var.woff2') format('woff2');
+  font-weight: 100 900; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Inter';
+  src: url('../fonts/inter-var.woff2') format('woff2-variations'),
+       url('../fonts/inter-var.woff2') format('woff2');
+  font-weight: 100 900; font-style: normal; font-display: swap;
+}
+
+:root {
+  /* ---- the palette, measured off the Framer draft ----
+     Five grounds. The three event panes run quiet → warm → deep, so the page
+     darkens as the week goes on and the wedding lands heaviest. --maroon is
+     the photo pane and the closing call to action; it bookends the colour. */
+  --cream:   #f4efe1;   /* page ground */
+  --cream-2: #fff3db;   /* pane 1 — the picnic, one step lighter than ground */
+  --gold:    #d9a257;   /* pane 2 — the holud */
+  --wine:    #5b171c;   /* pane 3 — the wedding */
+  --maroon:  #370b0a;   /* photo pane, and the RSVP foot */
+
+  /* Ink. --ink on light grounds, --sand on dark, --tan for every label and
+     kicker regardless of ground — it is the one colour that reads on all five. */
+  --ink:   #370b0b;
+  --tan:   #aa8c6d;
+  --sand:  #f0dfc0;
+  --chalk: #f5f0e1;
+  --sky:   #cedaf2;   /* the giant place names, over photographs only */
+
+  /* Hairline for anything sitting directly on the page ground rather than
+     inside a pane, where --pane-rule isn't defined. */
+  --rule-soft: rgba(55, 11, 11, .2);
+
+  --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
+  --font-body:    'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --measure: 40rem;
+  --gutter:  clamp(1.25rem, 5vw, 3rem);
+  --pane-y:  clamp(4rem, 9vw, 7rem);   /* vertical padding inside a colour pane */
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; color-scheme: light; }
+body {
+  margin: 0; background: var(--cream); color: var(--ink);
+  font: 17px/1.65 var(--font-body);
+  letter-spacing: -0.25px;
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+img { display: block; max-width: 100%; }
+
+.wrap { max-width: 62rem; margin-inline: auto; padding-inline: var(--gutter); }
+.narrow { max-width: var(--measure); }
+
+/* ---- shared type ----
+   The kicker is doing a lot of work across five grounds, so it is defined once
+   and only ever recoloured. Fraunces headings carry a negative track because
+   at display sizes the default fitting opens up too much. */
+.kicker {
+  margin: 0 0 1.1rem;
+  font: 600 12px/1.4 var(--font-body);
+  letter-spacing: 2px; text-transform: uppercase;
+  color: var(--tan);
+}
+h1, h2, h3 { margin: 0; font-family: var(--font-display); font-weight: 600; }
+h2 {
+  font-size: clamp(2rem, 5.2vw, 2.7rem);
+  line-height: 1.08; letter-spacing: -1px;
+}
+h2 em { font-style: italic; font-weight: 600; }
+.lede { max-width: var(--measure); margin: 1.4rem 0 0; }
+
+/* =========================================================================
+   HERO
+   The names sit at 38% opacity over the mountains rather than solid white.
+   It is the single most distinctive thing in the Framer draft: the type
+   belongs to the photograph instead of sitting on top of it. It only works
+   because the sky behind is pale and even — over a busy frame it would be
+   unreadable, so the scrim below guarantees a floor of contrast.
+   ========================================================================= */
+.hero {
+  position: relative; min-height: 100svh;
+  display: grid; grid-template-rows: auto 1fr auto;
+  padding: clamp(2rem, 5vw, 3.5rem) var(--gutter);
+  color: var(--chalk); text-align: center;
+  background: #cfe0e8 center 30%/cover no-repeat;
+  /* [framer] the snow on the Swartberg, with the elephant on the ridge */
+  background-image: url('https://framerusercontent.com/images/CTWhPrcKib73VnPce3YJpXATM.jpg');
+}
+/* Scrim: darkens top and bottom for the eyebrow and meta row, plus a soft
+   pool through the middle so the names have something to sit against. The
+   middle stop is an ellipse rather than a band — a straight gradient across
+   the snowline reads as a grey stripe on the mountain. */
+.hero::after {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 70% 32% at 50% 41%, rgba(24,18,12,.42), transparent 70%),
+    linear-gradient(to bottom, rgba(28,20,14,.38), transparent 22%),
+    linear-gradient(to top,    rgba(28,20,14,.34), transparent 26%);
+}
+.hero > * { position: relative; z-index: 1; }
+.hero__eyebrow {
+  margin: 0; font: 600 12px/1.4 var(--font-body);
+  letter-spacing: 2.4px; text-transform: uppercase; color: var(--chalk);
+}
+/* The Framer draft ghosts these to 38% and they disappear on a phone, where
+   the sky behind is paler. Solid warm cream at weight 500 instead: heavier
+   strokes, full opacity, and two shadows — a tight one to hold the edge
+   against snow, a wide one to lift the whole word off the mountain. */
+.hero__names {
+  /* Lifted off dead-centre so the elephant on the ridge stays clear of the
+     descenders — it is the reason this photograph was picked. */
+  align-self: center; transform: translateY(-9%);
+  margin: 0; font-family: var(--font-display); font-weight: 500; font-style: italic;
+  font-size: clamp(3rem, 11vw, 6.2rem); line-height: .96; letter-spacing: -2px;
+  color: #fff3db;
+  text-shadow: 0 1px 3px rgba(24, 18, 12, .45), 0 4px 34px rgba(24, 18, 12, .55);
+}
+.hero__meta {
+  display: flex; justify-content: space-between; align-items: end; gap: 1rem;
+  margin: 0; font-size: 15px; letter-spacing: 3px; text-transform: uppercase;
+}
+.hero__meta span:nth-child(2) {
+  font-family: 'Noto Serif Bengali', var(--font-display), serif;
+  letter-spacing: 1.6px; text-transform: none; font-size: 16px;
+}
+@media (max-width: 34rem) {
+  .hero__meta { flex-direction: column; align-items: center; gap: .5rem; letter-spacing: 2px; font-size: 13px; }
+}
+
+/* =========================================================================
+   TIMELINE — on the page ground, between the hero and the first pane.
+   Vertical and centred, one flower per stop. Place reads above the event so
+   the two Cape Town stops group visually before Oudtshoorn breaks away.
+   ========================================================================= */
+.timeline { padding: var(--pane-y) 0 calc(var(--pane-y) * .8); text-align: center; }
+.timeline > .kicker { margin-bottom: clamp(2.5rem, 5vw, 3.5rem); }
+
+/* Three abreast. Explicitly 1 column or 3, never auto-fit: with exactly three
+   items an intermediate 2-column state strands the third on its own row, which
+   reads as a mistake rather than a wrap. */
+.stops {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; gap: clamp(2.75rem, 5vw, 2rem);
+  grid-template-columns: 1fr;
+}
+@media (min-width: 46rem) { .stops { grid-template-columns: repeat(3, 1fr); } }
+
+.stop { display: flex; flex-direction: column; align-items: center; }
+.stop img {
+  width: clamp(72px, 8vw, 92px); height: clamp(72px, 8vw, 92px);
+  margin-bottom: 1rem; object-fit: contain;
+}
+.stop .numeral {
+  margin: 0 0 .7rem; font-family: var(--font-display); font-size: 13px;
+  letter-spacing: 3px; color: #b2452f;
+}
+/* The rule is the h3's own bottom border. In a centred flex column the heading
+   shrinks to its content, so each rule comes out the width of the name it sits
+   under; the side padding stops it hugging the letters. */
+.stop h3 {
+  margin: 0; padding: 0 1.4rem .7rem;
+  border-bottom: 1px solid var(--rule-soft);
+  font-size: clamp(1.4rem, 2.6vw, 1.7rem); letter-spacing: -0.4px;
+}
+.stop .date { margin: .9rem 0 0; font-family: var(--font-display); font-size: 1rem; }
+.stop .where { margin: .35rem 0 0; font-size: 14px; color: var(--tan); }
+
+/* Map links. They inherit their colour so the same rule works on cream, gold,
+   wine and maroon; only the underline marks them, and it thickens rather than
+   changes colour on hover so nothing shifts on the coloured panes. */
+.maplink {
+  color: inherit; text-decoration: underline;
+  text-underline-offset: 3px; text-decoration-thickness: 1px;
+  transition: text-decoration-thickness .15s ease;
+}
+.maplink:hover { text-decoration-thickness: 2px; }
+
+/* Left to right, so the three land in the order the week happens. */
+.js .stops .stop:nth-child(2) { transition-delay: .12s; }
+.js .stops .stop:nth-child(3) { transition-delay: .24s; }
+
+/* Reveal on scroll. Held back only when the browser supports the observer and
+   the visitor hasn't asked for less motion — otherwise everything starts visible. */
+.reveal { opacity: 1; transform: none; }
+.js .reveal { opacity: 0; transform: translateY(18px); transition: opacity .7s ease, transform .7s ease; }
+.js .reveal.in { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  .js .reveal { opacity: 1; transform: none; transition: none; }
+  html { scroll-behavior: auto; }
+}
+
+/* =========================================================================
+   THE STAMP PANE
+   Photographs as franked postage. The perforation is a repeating radial
+   gradient rather than an image, so it recolours with the pane and costs
+   nothing to load. --perf is the bite radius; keep it half of --perf-gap or
+   the scallops overlap and the edge goes ragged.
+   ========================================================================= */
+.stamps {
+  background: var(--maroon); color: var(--sand);
+  padding: var(--pane-y) 0;
+  --perf: 7px; --perf-gap: 14px;
+}
+.stamps .kicker { color: #cfb99d; text-align: center; }
+.rail {
+  display: flex; gap: clamp(1rem, 3vw, 2rem);
+  overflow-x: auto; scroll-snap-type: x mandatory;
+  padding: 1.5rem var(--gutter) 2.2rem;
+  scrollbar-width: none;
+}
+.rail::-webkit-scrollbar { display: none; }
+.stamp {
+  flex: 0 0 auto; scroll-snap-align: center;
+  width: clamp(230px, 62vw, 330px);
+  padding: var(--perf-gap);
+  background: var(--cream-2);
+  /* Four gradients bite semicircles out of each edge. transparent must sit at
+     the same stop as the colour or Safari renders a hard-edged sawtooth. */
+  -webkit-mask:
+    radial-gradient(var(--perf) at var(--perf-gap) 0, transparent 99%, #000 100%) 0 0 / var(--perf-gap) 100% repeat-x,
+    radial-gradient(var(--perf) at var(--perf-gap) 100%, transparent 99%, #000 100%) 0 100% / var(--perf-gap) 100% repeat-x,
+    radial-gradient(var(--perf) at 0 var(--perf-gap), transparent 99%, #000 100%) 0 0 / 100% var(--perf-gap) repeat-y,
+    radial-gradient(var(--perf) at 100% var(--perf-gap), transparent 99%, #000 100%) 100% 0 / 100% var(--perf-gap) repeat-y;
+  -webkit-mask-composite: source-in;
+          mask-composite: intersect;
+  transition: transform .4s ease;
+}
+.stamp:hover { transform: translateY(-6px) rotate(-.6deg); }
+.stamp img { width: 100%; aspect-ratio: 1; object-fit: cover; }
+.stamp figcaption {
+  margin-top: .7rem; text-align: center;
+  font: 600 10px/1.3 var(--font-body); letter-spacing: 1.4px;
+  text-transform: uppercase; color: var(--tan);
+}
+.rail__nav { display: flex; justify-content: center; gap: .75rem; }
+.rail__nav button {
+  width: 42px; height: 42px; border-radius: 50%; cursor: pointer;
+  border: 1px solid rgba(240, 223, 192, .35);
+  background: transparent; color: var(--sand);
+  font-size: 15px; line-height: 1;
+  transition: background .2s ease, border-color .2s ease;
+}
+.rail__nav button:hover { background: rgba(240, 223, 192, .12); border-color: var(--sand); }
+
+/* =========================================================================
+   PLACE BAND — the photograph with the city name across it.
+   The name overhangs the top edge of the photo by design, so it reads as
+   applied to the page rather than captioned onto the image.
+   ========================================================================= */
+.band { position: relative; }
+.band > img { width: 100%; height: clamp(200px, 32vw, 340px); object-fit: cover; }
+
+/* ---- naming the place: the field label ----
+   Small, tracked out, sitting on a rule in the bottom corner, after a specimen
+   plate. It survives a busy photograph without needing a scrim behind it,
+   which the big ghosted alternative did not. */
+.band__label {
+  position: absolute; margin: 0; pointer-events: none;
+  left: var(--gutter); bottom: 1.6rem;
+}
+/* The rule sits under the name rather than around it, so the label anchors to
+   the photo's bottom edge without drawing a box on the landscape. */
+.band__name {
+  display: block; padding-bottom: .55rem; border-bottom: 1px solid rgba(255,243,219,.55);
+  font: 600 clamp(12px, 1.4vw, 14px)/1 var(--font-body);
+  letter-spacing: 3.2px; text-transform: uppercase; color: #fff3db;
+  text-shadow: 0 1px 8px rgba(20, 30, 50, .6);
+}
+
+/* The giraffes get a deeper band than Cape Town does. Table Mountain is a wide,
+   flat subject that suits a letterbox; giraffes are tall, and at the standard
+   band height the crop was showing heads and almost no animal. Taller frame,
+   with the focus still above centre so the heads stay in and the bodies come
+   with them. */
+.band--giraffes > img {
+  height: clamp(300px, 44vw, 560px);
+  object-position: 50% 34%;
+}
+
+/* =========================================================================
+   EVENT PANES
+   Three grounds, one layout. Each pane sets --pane-fg / --pane-mute / --pane-rule
+   and every rule below reads those, so recolouring an event is three lines.
+   ========================================================================= */
+.event { padding: var(--pane-y) 0; background: var(--pane-bg); color: var(--pane-fg); }
+.event .kicker { color: var(--pane-mute); }
+.event h2 { color: var(--pane-fg); }
+.event .lede { color: var(--pane-mute); }
+
+/* The theme line. It used to be the headline; the event's name carries more
+   weight for a guest scanning for their own plans, so the poetry drops to an
+   epigraph under it. Fraunces italic keeps it the most decorative thing in the
+   pane without it competing for the heading slot. */
+.event .theme {
+  margin: .65rem 0 0;
+  font-family: var(--font-display); font-style: italic; font-weight: 400;
+  font-size: clamp(1.15rem, 2.7vw, 1.55rem); line-height: 1.3; letter-spacing: -0.2px;
+  color: var(--pane-mute);
+}
+.event .theme + .lede { margin-top: 1.6rem; }
+
+.event--picnic {
+  --pane-bg: var(--cream-2); --pane-fg: var(--ink);
+  --pane-mute: #8a6f52; --pane-rule: rgba(55, 11, 11, .16);
+}
+.event--holud {
+  --pane-bg: var(--gold); --pane-fg: #3a1608;
+  --pane-mute: #6b3d16; --pane-rule: rgba(58, 22, 8, .22);
+}
+.event--wedding {
+  --pane-bg: var(--wine); --pane-fg: var(--chalk);
+  --pane-mute: #e0c9a4; --pane-rule: rgba(240, 223, 192, .22);
+}
+
+/* The spec list. A definition list because that is exactly what it is, with
+   the default indent stripped and each pair on its own ruled row. */
+.spec { margin: 2.8rem 0 0; }
+.spec div {
+  display: grid; gap: .15rem;
+  padding: 1rem 0; border-top: 1px solid var(--pane-rule);
+}
+.spec div:last-child { border-bottom: 1px solid var(--pane-rule); }
+.spec dt {
+  font: 600 13px/1.4 var(--font-body); letter-spacing: 1.2px;
+  text-transform: uppercase; color: var(--pane-mute);
+}
+.spec dd { margin: 0; color: var(--pane-fg); }
+@media (min-width: 44rem) {
+  .spec div { grid-template-columns: 12rem 1fr; gap: 1.5rem; align-items: baseline; }
+}
+
+/* =========================================================================
+   THE PRACTICAL SECTIONS — transport, beds, clothes.
+   These use the same pane machinery as the events but stay quiet: the three
+   event colours carry the story, and if logistics shouted in a fourth and
+   fifth colour the sequence would stop meaning anything. Ground, ground,
+   dark. Only "what to wear" goes dark, to mark the end of the reading.
+   ========================================================================= */
+.practical { padding: var(--pane-y) 0; background: var(--pane-bg); color: var(--pane-fg); }
+.practical .kicker { color: var(--pane-mute); }
+.practical .lede { color: var(--pane-mute); }
+.practical h3 { font-size: 1.35rem; letter-spacing: -0.3px; margin-bottom: .5rem; }
+
+.practical--pale { --pane-bg: var(--cream);   --pane-fg: var(--ink); --pane-mute: #8a6f52; --pane-rule: rgba(55,11,11,.16); }
+.practical--warm { --pane-bg: var(--cream-2); --pane-fg: var(--ink); --pane-mute: #8a6f52; --pane-rule: rgba(55,11,11,.16); }
+.practical--dark { --pane-bg: var(--maroon);  --pane-fg: var(--chalk); --pane-mute: #cfb99d; --pane-rule: rgba(240,223,192,.2); }
+
+/* Two- and three-up card grids. auto-fit rather than fixed columns so the
+   same rule serves the 2-card travel row and the 3-card dress row. */
+.cards {
+  display: grid; gap: clamp(1.25rem, 3vw, 2rem); margin-top: 2.6rem;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+}
+.card { padding-top: 1.2rem; border-top: 2px solid var(--pane-rule); }
+.card p { margin: 0; color: var(--pane-mute); }
+.card p + p { margin-top: .7rem; }
+.card strong { color: var(--pane-fg); font-weight: 600; }
+
+/* Where to stay. Photo on top, price last and largest — it is the only number
+   anyone is actually comparing. */
+.stays {
+  display: grid; gap: clamp(1.25rem, 3vw, 2rem); margin-top: 2.6rem;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+}
+.stay {
+  display: block; text-decoration: none; color: inherit;
+  background: #fffaf0; border: 1px solid var(--pane-rule);
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+.stay:hover { transform: translateY(-4px); box-shadow: 0 14px 34px rgba(55, 11, 11, .13); }
+.stay img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
+.stay__body { padding: 1.1rem 1.2rem 1.4rem; }
+.stay h4 { margin: 0 0 .35rem; font-family: var(--font-display); font-size: 1.2rem; font-weight: 600; }
+.stay .meta { margin: 0; font-size: 14px; line-height: 1.5; color: var(--pane-mute); }
+.stay .price {
+  margin: .8rem 0 0; font-family: var(--font-display); font-size: 1.35rem; font-weight: 600;
+}
+.stay .price span { font-family: var(--font-body); font-size: 13px; font-weight: 400; color: var(--pane-mute); }
+
+
+/* The "these are suggestions" note. Set in the pane's full foreground rather
+   than the muted tone the ledes use, and hung off a rule, because a guest who
+   is anxious about what to wear is exactly the guest who skims — this is the
+   one paragraph in the section that must not read as small print. */
+.aside {
+  max-width: var(--measure); margin: 1.8rem 0 0;
+  padding-left: clamp(1rem, 2.5vw, 1.5rem);
+  border-left: 2px solid var(--pane-rule);
+  color: var(--pane-fg);
+}
+
+/* =========================================================================
+   RSVP FOOT — gold, so the last thing on the page is the brightest.
+   ========================================================================= */
+.rsvp {
+  background: var(--gold); color: #3a1608;
+  padding: calc(var(--pane-y) * 1.1) 0; text-align: center;
+}
+.rsvp h2 { color: #3a1608; }
+.rsvp p { max-width: 34rem; margin: 1.2rem auto 2.2rem; color: #6b3d16; }
+.btn {
+  display: inline-block; padding: 1rem 3rem;
+  background: var(--maroon); color: var(--sand); text-decoration: none;
+  font: 600 13px/1 var(--font-body); letter-spacing: 2px; text-transform: uppercase;
+  transition: background .2s ease, transform .2s ease;
+}
+.btn:hover { background: #5b171c; transform: translateY(-2px); }
+
+/* padding-top, not zero: without it the first <p>'s margin collapses out of
+   the footer and a stripe of page ground shows between two maroon sections. */
+footer {
+  background: var(--maroon); color: var(--tan);
+  padding: 2.5rem var(--gutter) 3rem; text-align: center; font-size: 13px;
+}
+footer p { margin: 0; }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <p class="hero__eyebrow">Join us for our biggest adventure yet</p>
+  <h1 class="hero__names">Affy &amp; Gabby&rsquo;s<br>Wedding</h1>
+  <p class="hero__meta">
+    <span>South Africa</span>
+    <span>&#2438;&#2478;&#2494;&#2470;&#2503;&#2480; &#2476;&#2495;&#2479;&#2492;&#2503;</span>
+    <span>March 2027</span>
+  </p>
+</header>
+
+<main>
+
+<section class="timeline wrap">
+  <p class="kicker">Our wedding timeline</p>
+
+  <ol class="stops">
+    <li class="stop reveal">
+      <img src="../images/flowers/picnic.webp" alt="" aria-hidden="true">
+      <p class="numeral">I</p>
+      <h3>Welcome picnic</h3>
+      <p class="date">Sunday, 14 March 2027</p>
+      <p class="where"><a class="maplink" target="_blank" rel="noopener"
+        href="https://www.google.com/maps/search/?api=1&amp;query=Kirstenbosch%20National%20Botanical%20Garden%2C%20Cape%20Town">Kirstenbosch, Cape Town</a></p>
+    </li>
+
+    <li class="stop reveal">
+      <img src="../images/flowers/holud.webp" alt="" aria-hidden="true">
+      <p class="numeral">II</p>
+      <h3>The Holud</h3>
+      <p class="date">Tuesday, 16 March 2027</p>
+      <p class="where"><a class="maplink" target="_blank" rel="noopener"
+        href="https://www.google.com/maps/search/?api=1&amp;query=Norval%20Foundation%2C%20Cape%20Town">Norval Foundation, Cape Town</a></p>
+    </li>
+
+    <li class="stop reveal">
+      <img src="../images/flowers/wedding.webp" alt="" aria-hidden="true">
+      <p class="numeral">III</p>
+      <h3>The wedding</h3>
+      <p class="date">Saturday, 20 March 2027</p>
+      <p class="where"><a class="maplink" target="_blank" rel="noopener"
+        href="https://www.google.com/maps/search/?api=1&amp;query=Buffelsdrift%20Game%20Lodge%2C%20Oudtshoorn">Buffelsdrift, Oudtshoorn</a></p>
+    </li>
+  </ol>
+</section>
+
+<!-- ===== the stamps ===== -->
+<section class="stamps">
+  <p class="kicker">Places we&rsquo;ve been</p>
+
+  <!-- [framer] nine photos, already cropped square. Pull local before shipping. -->
+  <div class="rail" id="rail">
+    <figure class="stamp"><img loading="lazy" src="https://framerusercontent.com/images/A63vcq13y4ZmiMEJSF1ffP5PhA.png?width=813&height=813" alt="Affy and Gabby travelling"><figcaption>Sydney</figcaption></figure>
+    <figure class="stamp"><img loading="lazy" src="https://framerusercontent.com/images/OqICjlJtkzPTIKUUQq7EolzmV3M.png?width=813&height=813" alt="Affy and Gabby travelling"><figcaption>Caption needed</figcaption></figure>
+    <figure class="stamp"><img loading="lazy" src="https://framerusercontent.com/images/WEucFzgyum1WwSCL8uMzpdF5hY.png?width=813&height=813" alt="Affy and Gabby travelling"><figcaption>Caption needed</figcaption></figure>
+    <figure class="stamp"><img loading="lazy" src="https://framerusercontent.com/images/QIvE27vdP7Wk6HxnrWViKU3ad0.png?width=813&height=813" alt="Affy and Gabby travelling"><figcaption>Caption needed</figcaption></figure>
+    <figure class="stamp"><img loading="lazy" src="https://framerusercontent.com/images/OBBzjzb1HUygCq8ZUaRnhzt8w.png?width=813&height=813" alt="Affy and Gabby travelling"><figcaption>Caption needed</figcaption></figure>
+    <figure class="stamp"><img loading="lazy" src="https://framerusercontent.com/images/9ulnOekX9c9UBrAkp8mskF81GkU.png?width=813&height=813" alt="Affy and Gabby travelling"><figcaption>Caption needed</figcaption></figure>
+    <figure class="stamp"><img loading="lazy" src="https://framerusercontent.com/images/c3LkD9MYle76EWeMnn7G03ZXH7k.png?width=813&height=813" alt="Affy and Gabby travelling"><figcaption>Caption needed</figcaption></figure>
+    <figure class="stamp"><img loading="lazy" src="https://framerusercontent.com/images/sFqyc0pdSI0YGTotcdh7vPERHLo.png?width=813&height=813" alt="Affy and Gabby travelling"><figcaption>Caption needed</figcaption></figure>
+    <figure class="stamp"><img loading="lazy" src="https://framerusercontent.com/images/dU5vYA5IDNj0nFXXolgwLYyKg0.png?width=813&height=813" alt="Affy and Gabby travelling"><figcaption>Caption needed</figcaption></figure>
+  </div>
+
+  <div class="rail__nav">
+    <button type="button" data-dir="-1" aria-label="Previous photos">&#8249;</button>
+    <button type="button" data-dir="1" aria-label="Next photos">&#8250;</button>
+  </div>
+</section>
+
+<!-- ===== Cape Town ===== -->
+<div class="band">
+  <!-- [framer] Table Mountain at last light -->
+  <img loading="lazy" src="https://framerusercontent.com/images/Dvw5QAod0qAXxX8c4fyExogjnDo.jpeg?width=768&height=449" alt="Table Mountain above Cape Town at sunset">
+  <p class="band__label"><span class="band__name">Cape Town</span></p>
+</div>
+
+<section class="event event--picnic">
+  <div class="wrap narrow">
+    <p class="kicker">Event 01</p>
+    <h2>The welcome picnic</h2>
+    <p class="theme">An &lsquo;adda&rsquo; under the mountain</p>
+    <p class="lede">An <em>adda</em> is a Bengali tradition, essentially the art of hanging
+      out. Think long, easy, unstructured conversation with good people, unhurried chats
+      that go wherever they go. That&rsquo;s exactly the spirit we want to start the week
+      with: a mountain-side picnic where everyone can meet each other, swap some stories,
+      play some games, and stay for as long as you like. We&rsquo;ll hand out your Holud
+      outfit here, so do come to this one if you can.</p>
+
+    <dl class="spec">
+      <div><dt>Location</dt><dd><a class="maplink" target="_blank" rel="noopener"
+        href="https://www.google.com/maps/search/?api=1&amp;query=Kirstenbosch%20National%20Botanical%20Garden%2C%20Cape%20Town">Kirstenbosch Botanical Gardens, Cape Town</a></dd></div>
+      <div><dt>Date</dt><dd>Sunday, 14 March 2027</dd></div>
+      <div><dt>Time</dt><dd>15h00 &ndash; 19h00</dd></div>
+      <div><dt>Dress</dt><dd>Casual and cool.</dd></div>
+    </dl>
+  </div>
+</section>
+
+<section class="event event--holud">
+  <div class="wrap narrow">
+    <p class="kicker">Event 02</p>
+    <h2>The Holud</h2>
+    <p class="theme">Gilded and ungovernable</p>
+    <p class="lede">The holud is a traditional ceremony dating back to Affy&rsquo;s
+      forefathers&rsquo; times, when marriages were arranged and the bride and groom would
+      be meeting for the first time. The traditions include &ldquo;looking through the
+      mirror&rdquo;, where the two of them see each other first through the gaze of a
+      mirror. There will also be skits, which will be fun: Gabby&rsquo;s friends acting out
+      her past so we get a sneak peek at who Affy is really getting tied up with, and
+      Affy&rsquo;s mates doing a massive disservice to his spotless one.</p>
+
+    <dl class="spec">
+      <div><dt>Location</dt><dd><a class="maplink" target="_blank" rel="noopener"
+        href="https://www.google.com/maps/search/?api=1&amp;query=Norval%20Foundation%2C%20Cape%20Town">Norval Foundation gardens, Cape Town</a></dd></div>
+      <div><dt>Date</dt><dd>Tuesday, 16 March 2027</dd></div>
+      <div><dt>Time</dt><dd>15h00 &ndash; 21h00</dd></div>
+      <div><dt>Dress</dt><dd>We&rsquo;re providing kurtas and saris &mdash; the RSVP asks
+        for your size. Come dressed to get changed but you can wear your own thing instead
+        if you&rsquo;d rather.</dd></div>
+    </dl>
+  </div>
+</section>
+
+<!-- ===== Oudtshoorn ===== -->
+<div class="band band--giraffes">
+  <img loading="lazy" src="../images/giraffes.webp" alt="A tower of giraffes in the Karoo scrub below the mountains">
+  <p class="band__label"><span class="band__name">Oudtshoorn</span></p>
+</div>
+
+<section class="event event--wedding">
+  <div class="wrap narrow">
+    <p class="kicker">Event 03</p>
+    <h2>The wedding</h2>
+    <p class="theme">A wild dream at the edge of the world</p>
+    <p class="lede">Following the beautiful Route 62, coaches will pick us up from Cape
+      Town and carry everyone about five hours into the wilderness of the Karoo, arriving
+      the night before. During the day you&rsquo;ll spot giraffes, zebras and the rest of
+      it. On the day itself we&rsquo;ll have a toast, speeches, and one last celebration to
+      tie out the adventure, dancing into the night under the stars.</p>
+
+    <dl class="spec">
+      <div><dt>Location</dt><dd><a class="maplink" target="_blank" rel="noopener"
+        href="https://www.google.com/maps/search/?api=1&amp;query=Buffelsdrift%20Game%20Lodge%2C%20Oudtshoorn">Buffelsdrift Game Lodge, Oudtshoorn</a></dd></div>
+      <div><dt>Date</dt><dd>Saturday, 20 March 2027</dd></div>
+      <div><dt>Time</dt><dd>From 15h00</dd></div>
+      <div><dt>Dress</dt><dd>Formal attire. It&rsquo;s a game lodge, so the evening runs on
+        grass and gravel and cools off after dark &mdash; worth a thought for shoes and a
+        second layer.</dd></div>
+    </dl>
+  </div>
+</section>
+
+<!-- ===== getting there ===== -->
+<section class="practical practical--pale">
+  <div class="wrap">
+    <p class="kicker">Logistics</p>
+    <h2>Getting there</h2>
+    <p class="lede">The week happens in two places. The picnic and the Holud are both in
+      Cape Town; the wedding is at Oudtshoorn, about four to five hours drive away. To help
+      you get there we&rsquo;ll be chartering coaches from Cape Town on the Friday morning,
+      at no cost to you. If you&rsquo;d rather rent a car and make your own journey of it,
+      you&rsquo;re more than welcome.</p>
+
+    <div class="cards">
+      <div class="card">
+        <h3>Coach from Cape Town</h3>
+        <p>We&rsquo;re paying for it. Tell us on the RSVP if you want a seat and
+          we&rsquo;ll sort the rest.</p>
+      </div>
+      <div class="card">
+        <h3>Drive Route 62</h3>
+        <p>The inland route through the Little Karoo: beautiful open roads, mountain
+          passes, farm stalls. Worth stretching over two days if you can.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== where to stay ===== -->
+<section class="practical practical--warm">
+  <div class="wrap">
+    <p class="kicker">Logistics</p>
+    <h2>Where to stay</h2>
+    <p class="lede">Oudtshoorn is a small town and the wedding weekend will fill it, so
+      book early. Three we&rsquo;d point you at, cheapest first.</p>
+
+    <div class="stays">
+      <a class="stay" target="_blank" rel="noopener"
+         href="https://www.booking.com/hotel/za/old-mill-lodge-a-la-carte-restaurant.en-gb.html">
+        <img loading="lazy" alt="Poplars and a still dam below the mountain at Old Mill Lodge"
+             src="https://cf.bstatic.com/xdata/images/hotel/square600/198889117.webp?k=19f69644a24c999d954853656caf35c422f13b9f40ddb8f109ebaac831f67a58&amp;o=">
+        <div class="stay__body">
+          <h4>Old Mill Lodge</h4>
+          <p class="meta">A working ostrich farm, 14 km out of town. Scored 8.5 across
+            2,989 reviews.</p>
+          <p class="price">R1 762 <span>for the two nights</span></p>
+        </div>
+      </a>
+
+      <a class="stay" target="_blank" rel="noopener"
+         href="https://www.booking.com/hotel/za/de-zeekoe-guest-farm.en-gb.html">
+        <img loading="lazy" alt="A windmill and palms at sunset on De Zeekoe Guest Farm"
+             src="https://cf.bstatic.com/xdata/images/hotel/square600/225418475.webp?k=11b2804ca2a93e16acf6a8327c82f0e795242df94a0437239d714a8c8eaf6ca9&amp;o=">
+        <div class="stay__body">
+          <h4>De Zeekoe Guest Farm</h4>
+          <p class="meta">A guest farm 7 km out, breakfast included. Scored 8.9 across
+            738 reviews.</p>
+          <p class="price">R4 068 <span>for the two nights</span></p>
+        </div>
+      </a>
+
+      <a class="stay" target="_blank" rel="noopener"
+         href="https://www.booking.com/hotel/za/la-pension-guest-house.en-gb.html">
+        <img loading="lazy" alt="Pool and shaded terrace at La Pension Guest House"
+             src="https://cf.bstatic.com/xdata/images/hotel/square600/411756616.webp?k=3468da1580ca40cabd99632909ceb5d24f584da4351db9eafb702a07d38df8a4&amp;o=">
+        <div class="stay__body">
+          <h4>La Pension Guest House</h4>
+          <p class="meta">In town, a ten minute walk from the centre, breakfast included.
+            Scored 9.8 across 755 reviews.</p>
+          <p class="price">R4 800 <span>for the two nights</span></p>
+        </div>
+      </a>
+    </div>
+
+  </div>
+</section>
+
+<!-- ===== what to wear ===== -->
+<section class="practical practical--dark">
+  <div class="wrap">
+    <p class="kicker">Practical</p>
+    <h2>What to wear</h2>
+    <p class="lede">We know you&rsquo;ll be travelling from all over the world and we hope
+      you can travel light. Cape Town in March is very pleasant: expect 25 degrees and a
+      little bit of wind. The Karoo is a few degrees warmer and a fair bit drier, but it
+      cools off marvellously during the evening.</p>
+
+    <p class="aside">All of this is a steer, not a rule. It&rsquo;s here to save you the
+      guessing, not to hold you to anything. If you&rsquo;d rather wear something else,
+      please do &mdash; we&rsquo;d far rather you turned up feeling like yourself than
+      spent a fortnight hunting down exactly the right thing.</p>
+
+    <div class="cards">
+      <div class="card">
+        <h3>Welcome picnic</h3>
+        <p><strong>Casual and cool.</strong> It&rsquo;s a garden, on grass, in the
+          afternoon &mdash; so bring shoes that agree with that.</p>
+      </div>
+      <div class="card">
+        <h3>Holud</h3>
+        <p><strong>We&rsquo;re providing the outfits.</strong> A kurta or a sari, handed
+          out at the picnic on the 14th. Come dressed to get changed &mdash; or wear your
+          own thing instead if you&rsquo;d rather.</p>
+      </div>
+      <div class="card">
+        <h3>Wedding</h3>
+        <p><strong>Formal attire.</strong> The one practical warning: it&rsquo;s a game
+          lodge, so a good part of the evening happens on grass and gravel, and the Karoo
+          cools off properly once the sun goes. Heels will struggle, and you&rsquo;ll want
+          a second layer by the time we&rsquo;re dancing.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="rsvp">
+  <div class="wrap">
+    <h2>Will you come?</h2>
+    <p>Please let us know by <strong>Sept 15th 2026</strong> so we can count heads.</p>
+    <a class="btn" href="../rsvp.html">RSVP</a>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <p>Affy &amp; Gabby &middot; 20 March 2027</p>
+</footer>
+
+
+<script>
+document.documentElement.classList.add('js');
+
+// Reveal the timeline stops as they arrive. Guarded: no observer, no hiding.
+if ('IntersectionObserver' in window) {
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { rootMargin: '0px 0px -12% 0px' });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+} else {
+  document.querySelectorAll('.reveal').forEach(el => el.classList.add('in'));
+}
+
+// Stamp rail. Scroll by one card plus its gap, so a click always lands a stamp
+// on a snap point rather than halfway between two.
+(() => {
+  const rail = document.getElementById('rail');
+  const card = rail.querySelector('.stamp');
+  document.querySelectorAll('.rail__nav button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const gap = parseFloat(getComputedStyle(rail).columnGap) || 0;
+      rail.scrollBy({ left: (card.offsetWidth + gap) * Number(btn.dataset.dir), behavior: 'smooth' });
+    });
+  });
+})();
+</script>
+
+</body>
+</html>

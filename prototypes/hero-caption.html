@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hero caption &middot; visual styles</title>
+<meta name="robots" content="noindex">
+
+<!--
+  PROTOTYPE ONLY. Not linked from anywhere; index.html is untouched.
+
+  ONE wording — Affy's, verbatim, with punctuation added — in five visual
+  treatments. Each panel shows the bottom slice of the real hero so the caption
+  can be judged against the photograph rather than in isolation.
+
+  The constraint every style is working around: Gabby's hero already carries
+  "South Africa / আমাদের বিয়ে / March 2027" baked into the bottom of the
+  composition. Anything laid over that zone competes with type that cannot be
+  moved, which is why only style 2 overlaps the picture at all, and then only
+  below her meta row.
+-->
+
+<link rel="preload" href="../fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
+
+<style>
+@font-face {
+  font-family: 'Fraunces';
+  src: url('../fonts/fraunces-var.woff2') format('woff2-variations');
+  font-weight: 100 900; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Inter';
+  src: url('../fonts/inter-var.woff2') format('woff2-variations');
+  font-weight: 100 900; font-style: normal; font-display: swap;
+}
+
+:root {
+  --cream:#f4efe1; --ink:#370b0b; --tan:#aa8c6d; --wine:#5b171c; --maroon:#370b0a;
+  --sand:#f0dfc0; --chalk:#f5f0e1;
+  --font-display:'Fraunces',Georgia,serif;
+  --font-body:'Inter',system-ui,sans-serif;
+  --gutter: clamp(1.25rem,5vw,3rem);
+  --measure: 46rem;
+}
+*,*::before,*::after{box-sizing:border-box}
+body{
+  margin:0;background:var(--cream);color:var(--ink);
+  font:17px/1.65 var(--font-body);letter-spacing:-.25px;-webkit-font-smoothing:antialiased;
+}
+img{display:block;max-width:100%}
+
+/* Bottom slice of the real hero, so every caption is judged against the picture. */
+.slice{position:relative;height:min(46vw,380px);overflow:hidden;background:#cfe0e8}
+.slice img{position:absolute;left:0;bottom:0;width:100%;height:auto}
+
+/* ============ 1. MARGIN NOTE — under the picture, recedes ============ */
+.s1{
+  max-width:var(--measure);margin:1.5rem auto 0;padding-inline:var(--gutter);
+  text-align:center;font-size:13px;line-height:1.6;color:var(--tan);
+}
+
+/* ============ 2. OVERLAID — on the photo, under her meta row ============ */
+.s2-wrap .slice::after{
+  content:'';position:absolute;inset:auto 0 0 0;height:58%;
+  background:linear-gradient(to bottom,rgba(20,8,6,0),rgba(20,8,6,.72));
+}
+.s2{
+  position:absolute;left:0;right:0;bottom:0;z-index:2;
+  margin:0;padding:0 var(--gutter) 1.15rem;text-align:center;
+  font-size:12.5px;line-height:1.55;color:rgba(245,240,225,.9);
+  text-shadow:0 1px 10px rgba(0,0,0,.5);
+}
+
+/* ============ 3. TICKET STRIP — full-bleed band under the picture ============ */
+.s3{
+  margin:0;background:var(--maroon);color:var(--sand);
+  padding:.95rem var(--gutter);text-align:center;
+  font-size:12.5px;line-height:1.5;
+}
+.s3 b{
+  font-weight:600;letter-spacing:2px;text-transform:uppercase;
+  font-size:10.5px;color:var(--tan);margin-right:.55rem;
+}
+
+/* ============ 4. BOOK CAPTION — ruled, left-aligned, Fraunces italic ============ */
+.s4{
+  max-width:var(--measure);margin:1.6rem auto 0;padding-inline:var(--gutter);
+}
+.s4 hr{border:0;border-top:1px solid rgba(55,11,11,.22);margin:0 0 .9rem;width:3.5rem}
+.s4 p{
+  margin:0;font-family:var(--font-display);font-style:italic;
+  font-size:1.05rem;line-height:1.5;color:var(--wine);
+}
+
+/* ============ 5. FRANKED — echoes the site's postage-stamp motif ============ */
+.s5{max-width:var(--measure);margin:1.7rem auto 0;padding-inline:var(--gutter);display:flex;justify-content:center}
+.s5 p{
+  margin:0;border:1px dashed rgba(55,11,11,.4);border-radius:2px;
+  padding:.6rem .95rem;max-width:34rem;text-align:center;
+  font-size:12.5px;line-height:1.55;color:var(--ink);
+  background:rgba(255,255,255,.35);
+}
+.s5 b{
+  display:block;font-weight:600;letter-spacing:2px;text-transform:uppercase;
+  font-size:10px;color:var(--wine);margin-bottom:.3rem;
+}
+
+/* ---- prototype chrome, none of this ships ---- */
+.tag{
+  display:block;max-width:var(--measure);margin:0 auto;padding:2.6rem var(--gutter) .9rem;
+  font:600 11px/1 var(--font-body);letter-spacing:2px;text-transform:uppercase;color:var(--wine);
+}
+.tag span{color:var(--tan);letter-spacing:0;text-transform:none;font-weight:400}
+.opt{padding-bottom:3.2rem;border-bottom:1px solid rgba(55,11,11,.13)}
+.head{max-width:var(--measure);margin:0 auto;padding:2.6rem var(--gutter) 0}
+.head h1{font-family:var(--font-display);font-size:1.7rem;margin:0 0 .4rem}
+.head p{margin:0;color:var(--tan);font-size:14px}
+</style>
+</head>
+<body>
+
+<div class="head">
+  <h1>Hero caption &mdash; five visual styles</h1>
+  <p>Your wording throughout, unchanged apart from punctuation. Each panel shows the
+    bottom of the real hero so you can judge the caption against the photograph. Pick a
+    number.</p>
+</div>
+
+<!-- 1 -->
+<div class="opt">
+  <p class="tag">Style 1 <span>&mdash; margin note. Quietest; recedes from the picture.</span></p>
+  <div class="slice"><img src="../images/hero-gabby-desktop.webp" alt=""></div>
+  <p class="s1">Note: this is a real image from the wedding venue. Get excited for a wild
+    adventure on the edge of the round earth.</p>
+</div>
+
+<!-- 2 -->
+<div class="opt s2-wrap">
+  <p class="tag">Style 2 <span>&mdash; overlaid on the photo, below Gabby&rsquo;s meta row.</span></p>
+  <div class="slice">
+    <img src="../images/hero-gabby-desktop.webp" alt="">
+    <p class="s2">Note: this is a real image from the wedding venue. Get excited for a wild
+      adventure on the edge of the round earth.</p>
+  </div>
+</div>
+
+<!-- 3 -->
+<div class="opt">
+  <p class="tag">Style 3 <span>&mdash; ticket strip. Full-bleed maroon band, hard to miss.</span></p>
+  <div class="slice"><img src="../images/hero-gabby-desktop.webp" alt=""></div>
+  <p class="s3"><b>Note</b>this is a real image from the wedding venue. Get excited for a
+    wild adventure on the edge of the round earth.</p>
+</div>
+
+<!-- 4 -->
+<div class="opt">
+  <p class="tag">Style 4 <span>&mdash; book caption. Fraunces italic, ruled, left-aligned.</span></p>
+  <div class="slice"><img src="../images/hero-gabby-desktop.webp" alt=""></div>
+  <div class="s4">
+    <hr>
+    <p>Note: this is a real image from the wedding venue. Get excited for a wild adventure
+      on the edge of the round earth.</p>
+  </div>
+</div>
+
+<!-- 5 -->
+<div class="opt" style="border-bottom:0">
+  <p class="tag">Style 5 <span>&mdash; franked. Picks up the postage-stamp motif further down the page.</span></p>
+  <div class="slice"><img src="../images/hero-gabby-desktop.webp" alt=""></div>
+  <div class="s5">
+    <p><b>Note</b>this is a real image from the wedding venue. Get excited for a wild
+      adventure on the edge of the round earth.</p>
+  </div>
+</div>
+
+</body>
+</html>

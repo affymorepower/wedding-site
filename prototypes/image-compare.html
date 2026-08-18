@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Images A/B &middot; Affy &amp; Gabby</title>
+<meta name="robots" content="noindex">
+
+<!--
+  IMAGE A/B. Three places where Gabby has supplied a new picture, each shown
+  the way it would actually appear on the page, with a button to flip between
+  the two.
+
+  The difference is not only which photograph. Gabby's exports have the TYPE
+  BAKED INTO THE PIXELS — the hero's names and both place names are part of the
+  image, not HTML on top of it. That is the real decision here, and it is a
+  bigger one than which shot is nicer. Each section spells out what it costs.
+-->
+
+<link rel="preload" href="../fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
+
+<style>
+@font-face {
+  font-family: 'Fraunces';
+  src: url('../fonts/fraunces-var.woff2') format('woff2-variations');
+  font-weight: 100 900; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Inter';
+  src: url('../fonts/inter-var.woff2') format('woff2-variations');
+  font-weight: 100 900; font-style: normal; font-display: swap;
+}
+
+:root {
+  --cream: #f4efe1; --cream-2: #fff3db; --gold: #d9a257;
+  --wine: #5b171c; --maroon: #370b0a;
+  --ink: #370b0b; --tan: #aa8c6d; --sand: #f0dfc0; --chalk: #f5f0e1;
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --gutter: clamp(1.25rem, 5vw, 3rem);
+}
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--cream); color: var(--ink);
+  font: 17px/1.65 var(--font-body); letter-spacing: -0.25px;
+  -webkit-font-smoothing: antialiased; overflow-x: hidden;
+}
+img { display: block; max-width: 100%; }
+.wrap { max-width: 62rem; margin-inline: auto; padding-inline: var(--gutter); }
+
+.page-head { padding: clamp(3rem, 8vw, 5rem) 0 1rem; }
+h1 { margin: 0 0 .8rem; font-family: var(--font-display); font-size: clamp(2rem, 6vw, 3rem); letter-spacing: -1.5px; }
+.kicker {
+  margin: 0 0 1rem; font: 600 12px/1.4 var(--font-body);
+  letter-spacing: 2px; text-transform: uppercase; color: var(--tan);
+}
+.lede { max-width: 42rem; margin: 0 0 1rem; color: #6b563f; }
+
+/* ---- each comparison block ---- */
+.ab { padding: clamp(2.5rem, 6vw, 4rem) 0 0; border-top: 1px solid rgba(55,11,11,.15); margin-top: clamp(2.5rem,6vw,4rem); }
+.ab h2 { margin: 0 0 .4rem; font-family: var(--font-display); font-size: clamp(1.5rem, 4vw, 2rem); letter-spacing: -.8px; }
+
+.switch { display: flex; gap: 2px; margin: 1.4rem 0 .6rem; padding: 4px; background: rgba(55,11,10,.9); width: max-content; }
+.switch button {
+  border: 0; cursor: pointer; padding: .65rem 1.1rem; background: transparent;
+  color: rgba(240,223,192,.75);
+  font: 600 11px/1 var(--font-body); letter-spacing: 1.2px; text-transform: uppercase;
+  transition: background .15s ease, color .15s ease;
+}
+.switch button:hover { color: #fff3db; }
+.switch button[aria-pressed='true'] { background: var(--gold); color: #3a1608; }
+.which { margin: 0 0 1.2rem; font-size: 13px; color: var(--tan); }
+
+/* Full-bleed stage, so each option is seen at the width it would really run at. */
+.stage { position: relative; width: 100vw; margin-left: calc(50% - 50vw); background: var(--maroon); }
+.panel[hidden] { display: none !important; }
+
+/* ---- hero, rebuilt exactly as index.html has it ---- */
+.hero {
+  position: relative; min-height: 82svh;
+  display: grid; grid-template-rows: auto 1fr auto;
+  padding: clamp(3rem, 7vw, 4.5rem) var(--gutter) clamp(2rem, 5vw, 3.5rem);
+  color: var(--chalk); text-align: center;
+  background: #cfe0e8 center 30%/cover no-repeat;
+}
+.hero--ours { background-image: url('../images/hero-swartberg.webp'); }
+.hero::after {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 70% 32% at 50% 41%, rgba(24,18,12,.42), transparent 70%),
+    linear-gradient(to bottom, rgba(28,20,14,.38), transparent 22%),
+    linear-gradient(to top, rgba(28,20,14,.34), transparent 26%);
+}
+.hero > * { position: relative; z-index: 1; }
+.hero__eyebrow { margin: 0; font: 600 12px/1.4 var(--font-body); letter-spacing: 2.4px; text-transform: uppercase; }
+.hero__names {
+  align-self: center; transform: translateY(-9%); margin: 0;
+  font-family: var(--font-display); font-weight: 500; font-style: italic;
+  font-size: clamp(2.6rem, 9vw, 5.4rem); line-height: .96; letter-spacing: -2px;
+  color: #fff3db; text-shadow: 0 1px 3px rgba(24,18,12,.45), 0 4px 34px rgba(24,18,12,.55);
+}
+.hero__meta { display: flex; justify-content: space-between; align-items: end; gap: 1rem; margin: 0; font-size: 14px; letter-spacing: 3px; text-transform: uppercase; }
+@media (max-width: 34rem) { .hero__meta { flex-direction: column; align-items: center; gap: .4rem; font-size: 12px; letter-spacing: 1.6px; } }
+
+/* Gabby's hero is a finished picture: no HTML sits on top of it, and the
+   desktop and mobile crops are different files, swapped by media query the way
+   <picture> would do it in production. */
+.hero--gabby img { width: 100%; height: auto; }
+.hero--gabby .mobile { display: none; }
+@media (max-width: 46rem) {
+  .hero--gabby .desktop { display: none; }
+  .hero--gabby .mobile { display: block; }
+}
+
+/* ---- place bands, as index.html has them ---- */
+.band { position: relative; }
+.band > img { width: 100%; height: clamp(200px, 32vw, 340px); object-fit: cover; }
+.band--giraffes > img { height: clamp(300px, 44vw, 560px); object-position: 50% 34%; }
+.band__label { position: absolute; margin: 0; left: var(--gutter); bottom: 1.6rem; }
+.band__name {
+  display: block; padding-bottom: .55rem; border-bottom: 1px solid rgba(255,243,219,.55);
+  font: 600 clamp(12px, 1.4vw, 14px)/1 var(--font-body);
+  letter-spacing: 3.2px; text-transform: uppercase; color: #fff3db;
+  text-shadow: 0 1px 8px rgba(20,30,50,.6);
+}
+/* Gabby's bands carry their own name, so they run at natural aspect with
+   nothing over the top. */
+.band--baked > img { height: auto; }
+
+/* ---- the trade-off notes ---- */
+.notes { display: grid; gap: 1.5rem; margin: 2rem 0 0; }
+@media (min-width: 46rem) { .notes { grid-template-columns: 1fr 1fr; } }
+.note { padding-top: 1rem; border-top: 2px solid rgba(55,11,11,.18); }
+.note h3 { margin: 0 0 .5rem; font-family: var(--font-display); font-size: 1.15rem; }
+.note p { margin: 0; font-size: 15px; color: #6b563f; }
+.note ul { margin: .6rem 0 0; padding-left: 1.1rem; font-size: 15px; color: #6b563f; }
+.note li { margin-bottom: .35rem; }
+.note--pick { border-top-color: var(--gold); }
+.weight { font-size: 13px; color: var(--tan); margin-top: .8rem; }
+
+footer { padding: clamp(3rem,8vw,5rem) 0; color: var(--tan); font-size: 13px; }
+</style>
+</head>
+<body>
+
+<div class="wrap page-head">
+  <p class="kicker">Side by side</p>
+  <h1>Which pictures?</h1>
+  <p class="lede">Gabby&rsquo;s three new images against what&rsquo;s in the build now. Each
+    one is shown the way it would really appear on the page, at full width.</p>
+  <p class="lede"><strong>The photograph isn&rsquo;t the only difference.</strong> Gabby&rsquo;s
+    exports have the type baked into the pixels &mdash; the names on the hero and both place
+    names are part of the picture, not text sitting on top of it. That decision matters more
+    than which shot is nicer, so each section says what it costs.</p>
+</div>
+
+<!-- ============================ HERO ============================ -->
+<section class="ab">
+  <div class="wrap">
+    <p class="kicker">01</p>
+    <h2>The hero</h2>
+    <div class="switch" role="group" aria-label="Hero image">
+      <button type="button" data-t="hero" data-p="ours" aria-pressed="true">In the build now</button>
+      <button type="button" data-t="hero" data-p="gabby" aria-pressed="false">Gabby&rsquo;s</button>
+    </div>
+    <p class="which" id="which-hero">Live HTML type over the photograph.</p>
+  </div>
+
+  <div class="stage">
+    <div class="panel" data-t="hero" data-p="ours">
+      <header class="hero hero--ours">
+        <p class="hero__eyebrow">Join us for our biggest adventure yet</p>
+        <h2 class="hero__names">Affy &amp; Gabby&rsquo;s<br>Wedding</h2>
+        <p class="hero__meta">
+          <span>South Africa</span>
+          <span>&#2438;&#2478;&#2494;&#2470;&#2503;&#2480; &#2476;&#2495;&#2479;&#2492;&#2503;</span>
+          <span>March 2027</span>
+        </p>
+      </header>
+    </div>
+    <div class="panel hero--gabby" data-t="hero" data-p="gabby" hidden>
+      <img class="desktop" src="../images/hero-gabby-desktop.webp" alt="Affy and Gabby's Wedding, over the snow-capped Swartberg with an elephant on the ridge">
+      <img class="mobile" src="../images/hero-gabby-mobile.webp" alt="Affy and Gabby's Wedding, over the snow-capped Swartberg with an elephant on the ridge">
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="notes">
+      <div class="note note--pick">
+        <h3>In the build now</h3>
+        <p>The same photograph, with the eyebrow, the names and the meta row as real text
+          over it.</p>
+        <ul>
+          <li>One image serves every screen; the type reflows to fit</li>
+          <li>Reads at any size, and to a screen reader</li>
+          <li>Changing a word is a one-line edit</li>
+          <li>The names needed a scrim to stay legible over snow</li>
+        </ul>
+        <p class="weight">233&nbsp;KB</p>
+      </div>
+      <div class="note">
+        <h3>Gabby&rsquo;s</h3>
+        <p>A finished composition. Typography exactly as drawn, including the wide
+          letter-spaced setting that CSS would have to approximate.</p>
+        <ul>
+          <li>Needs two files &mdash; a separate mobile crop, which she has supplied</li>
+          <li>Type is pixels: it can&rsquo;t be selected, searched or read aloud</li>
+          <li>Fixed 2000&times;1422, so very wide or very tall screens crop or letterbox</li>
+          <li>Any wording change means a re-export from her, not an edit here</li>
+        </ul>
+        <p class="weight">233&nbsp;KB desktop + 162&nbsp;KB mobile</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ CAPE TOWN ============================ -->
+<section class="ab">
+  <div class="wrap">
+    <p class="kicker">02</p>
+    <h2>The Cape Town band</h2>
+    <div class="switch" role="group" aria-label="Cape Town image">
+      <button type="button" data-t="ct" data-p="ours" aria-pressed="true">In the build now</button>
+      <button type="button" data-t="ct" data-p="gabby" aria-pressed="false">Gabby&rsquo;s</button>
+    </div>
+    <p class="which" id="which-ct">Cropped to a band, with the field label bottom-left.</p>
+  </div>
+
+  <div class="stage">
+    <div class="panel" data-t="ct" data-p="ours">
+      <div class="band">
+        <img src="../images/capetown.webp" alt="Table Mountain above Cape Town at sunset">
+        <p class="band__label"><span class="band__name">Cape Town</span></p>
+      </div>
+    </div>
+    <div class="panel" data-t="ct" data-p="gabby" hidden>
+      <div class="band band--baked">
+        <img src="../images/capetown-gabby.webp" alt="Cape Town from the air at sunset, with Table Mountain behind the city">
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="notes">
+      <div class="note note--pick">
+        <h3>In the build now</h3>
+        <p>A tighter shot from the mountainside. Cropped to a letterbox band so it reads as
+          a divider between sections rather than a picture in its own right.</p>
+        <ul>
+          <li>Band height is ours to set, and it stays a band on every screen</li>
+          <li>The field label is live text, and matches the Oudtshoorn one</li>
+        </ul>
+      </div>
+      <div class="note">
+        <h3>Gabby&rsquo;s</h3>
+        <p>An aerial: the whole peninsula, the stadium, Lion&rsquo;s Head, the sea on both
+          sides. Honestly the better photograph &mdash; it says <em>Cape Town</em> in a way
+          the tighter crop doesn&rsquo;t.</p>
+        <ul>
+          <li>Carries the big ghosted watermark, which is the treatment you dropped in
+            favour of the field label</li>
+          <li>Runs at full height, so it&rsquo;s a picture rather than a divider &mdash;
+            cropping it to a band would cut the watermark in half</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ OUDTSHOORN ============================ -->
+<section class="ab">
+  <div class="wrap">
+    <p class="kicker">03</p>
+    <h2>The Oudtshoorn band</h2>
+    <div class="switch" role="group" aria-label="Oudtshoorn image">
+      <button type="button" data-t="gi" data-p="ours" aria-pressed="true">In the build now</button>
+      <button type="button" data-t="gi" data-p="gabby" aria-pressed="false">Gabby&rsquo;s</button>
+    </div>
+    <p class="which" id="which-gi">Deeper band, focus pulled above centre to keep the heads.</p>
+  </div>
+
+  <div class="stage">
+    <div class="panel" data-t="gi" data-p="ours">
+      <div class="band band--giraffes">
+        <img src="../images/giraffes.webp" alt="A tower of giraffes in the Karoo scrub below the mountains">
+        <p class="band__label"><span class="band__name">Oudtshoorn</span></p>
+      </div>
+    </div>
+    <div class="panel" data-t="gi" data-p="gabby" hidden>
+      <div class="band band--baked">
+        <img src="../images/giraffes-gabby.webp" alt="A tower of giraffes in the Karoo scrub, with Oudtshoorn lettered across the sky">
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="notes">
+      <div class="note note--pick">
+        <h3>In the build now</h3>
+        <p>The same photograph, cropped to a deep band with the focus pulled above centre
+          so the heads stay in frame.</p>
+        <ul>
+          <li>Consistent with the Cape Town band above it</li>
+          <li>Field label, as chosen</li>
+        </ul>
+      </div>
+      <div class="note">
+        <h3>Gabby&rsquo;s</h3>
+        <p>Very close to the same frame, shown whole rather than cropped, with the
+          watermark across the sky.</p>
+        <ul>
+          <li>Nothing is cut off &mdash; the full herd and the whole ridge</li>
+          <li>Watermark again, so this only makes sense if Cape Town uses it too</li>
+          <li>Much taller on the page than a band, which changes the pacing between the
+            Holud and the wedding</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="wrap">
+  <footer>
+    <p><strong>The thing to decide first is the treatment, not the pictures.</strong>
+      Watermark and field label can&rsquo;t sensibly be mixed &mdash; two place bands with
+      two different systems reads as an accident. So it&rsquo;s all three of Gabby&rsquo;s,
+      or the hero on its own with the bands left as they are.</p>
+    <p>A third option, if you like her photographs but want the type live: send me the
+      versions without the lettering and I&rsquo;ll put the field labels back over them.
+      That gets the better Cape Town shot without giving up editable text.</p>
+  </footer>
+</div>
+
+<script>
+document.querySelectorAll('.switch button').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    const { t, p } = btn.dataset;
+    document.querySelectorAll(`.panel[data-t="${t}"]`).forEach((el) => { el.hidden = el.dataset.p !== p; });
+    document.querySelectorAll(`.switch button[data-t="${t}"]`).forEach((b) => {
+      b.setAttribute('aria-pressed', String(b === btn));
+    });
+    const say = {
+      hero: { ours: 'Live HTML type over the photograph.', gabby: 'Type baked in. Separate desktop and mobile files — resize the window past 46rem to see it swap.' },
+      ct:   { ours: 'Cropped to a band, with the field label bottom-left.', gabby: 'Full-height aerial with the watermark baked in.' },
+      gi:   { ours: 'Deeper band, focus pulled above centre to keep the heads.', gabby: 'Uncropped, with the watermark baked in.' },
+    };
+    document.getElementById('which-' + t).textContent = say[t][p];
+  });
+});
+</script>
+
+</body>
+</html>

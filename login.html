@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sign in &middot; Affy &amp; Gabby</title>
+<meta name="robots" content="noindex">
+
+
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<!--
+  THE LOGIN PAGE.
+
+  One password box. Which group a guest lands in is derived from which password
+  matched — the three tiers are never named on screen, because what separates
+  them is who is paying for a room. See js/gate.js for what this gate is and
+  is not.
+
+  Guests without a password use "Request access", which posts a name and email
+  to /api/access-request. Affy and Gabby's addresses live in that function, not
+  here: putting two personal Gmail addresses in public page source is how you
+  get them scraped.
+-->
+
+<link rel="preload" href="fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
+
+<style>
+@font-face {
+  font-family: 'Fraunces';
+  src: url('fonts/fraunces-var.woff2') format('woff2-variations'),
+       url('fonts/fraunces-var.woff2') format('woff2');
+  font-weight: 100 900; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Inter';
+  src: url('fonts/inter-var.woff2') format('woff2-variations'),
+       url('fonts/inter-var.woff2') format('woff2');
+  font-weight: 100 900; font-style: normal; font-display: swap;
+}
+
+:root {
+  --cream: #f4efe1; --gold: #d9a257; --maroon: #370b0a;
+  --ink: #370b0b; --tan: #aa8c6d; --sand: #f0dfc0; --chalk: #f5f0e1;
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { color-scheme: light; }
+body {
+  margin: 0; min-height: 100svh;
+  display: grid; place-items: center; padding: 2rem 1.25rem;
+  color: var(--chalk); font: 17px/1.6 var(--font-body); letter-spacing: -0.25px;
+  -webkit-font-smoothing: antialiased;
+  background: var(--maroon) center/cover no-repeat;
+  background-image:
+    linear-gradient(rgba(40, 12, 10, .78), rgba(40, 12, 10, .88)),
+    url('images/hero-swartberg.webp');
+}
+.card { width: 100%; max-width: 26rem; text-align: center; }
+.brand {
+  margin: 0 0 .4rem; font: 600 11px/1 var(--font-body);
+  letter-spacing: 2.4px; text-transform: uppercase; color: var(--tan);
+}
+h1 {
+  margin: 0 0 .6rem; font-family: var(--font-display); font-weight: 500;
+  font-style: italic; font-size: clamp(2.2rem, 8vw, 3rem); line-height: 1.05;
+  letter-spacing: -1.5px;
+}
+.sub { margin: 0 0 2rem; color: var(--sand); font-size: 15px; }
+
+label {
+  display: block; margin-bottom: .5rem; text-align: left;
+  font: 600 12px/1 var(--font-body); letter-spacing: 1.6px;
+  text-transform: uppercase; color: var(--tan);
+}
+input {
+  width: 100%; padding: .95rem 1rem; margin-bottom: 1rem;
+  border: 1px solid rgba(240, 223, 192, .3); border-radius: 2px;
+  background: rgba(255, 255, 255, .06); color: var(--chalk);
+  font: 17px/1.4 var(--font-body);
+}
+input:focus {
+  outline: none; border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(217, 162, 87, .2);
+}
+button {
+  width: 100%; padding: 1rem; border: 0; border-radius: 2px; cursor: pointer;
+  background: var(--gold); color: #3a1608;
+  font: 600 13px/1 var(--font-body); letter-spacing: 2px; text-transform: uppercase;
+  transition: background .2s ease;
+}
+button:hover:not(:disabled) { background: #e8b26a; }
+button:disabled { opacity: .55; cursor: default; }
+
+.linkish {
+  margin-top: 1.5rem; background: none; border: 0; padding: .5rem; width: auto;
+  color: var(--sand); letter-spacing: .4px; text-transform: none;
+  font-size: 14px; font-weight: 400; text-decoration: underline;
+  text-underline-offset: 3px; cursor: pointer;
+}
+.linkish:hover { background: none; color: #fff3db; }
+
+.msg { margin: 1rem 0 0; min-height: 1.4em; font-size: 14px; }
+.msg[data-tone='bad'] { color: #ffb4a0; }
+.msg[data-tone='good'] { color: var(--gold); }
+
+.back { display: inline-block; margin-top: 2.5rem; color: var(--tan); font-size: 13px; }
+[hidden] { display: none !important; }
+</style>
+</head>
+<body>
+
+<main class="card">
+  <p class="brand">Affy &amp; Gabby &middot; March 2027</p>
+
+  <!-- ===== password ===== -->
+  <section id="signin">
+    <h1>An African adventure awaits</h1>
+    <p class="sub">Pop in the password we sent you and we&rsquo;ll show you your
+      travel and accommodation details.</p>
+
+    <form id="loginForm" novalidate>
+      <label for="password">Password</label>
+      <input id="password" name="password" type="password" autocomplete="current-password"
+             autocapitalize="off" autocorrect="off" spellcheck="false" required>
+      <button type="submit">Enter</button>
+    </form>
+
+    <p class="msg" id="loginMsg" role="status" aria-live="polite"></p>
+    <button type="button" class="linkish" id="showRequest">I don&rsquo;t have a password</button>
+  </section>
+
+  <!-- ===== request access ===== -->
+  <section id="request" hidden>
+    <h1>No password?</h1>
+    <p class="sub">Leave your name and email and we&rsquo;ll send you one.</p>
+
+    <form id="requestForm" novalidate>
+      <label for="reqName">Full name</label>
+      <input id="reqName" name="name" autocomplete="name" required>
+
+      <label for="reqEmail">Email</label>
+      <input id="reqEmail" name="email" type="email" autocomplete="email" required>
+
+      <!-- People leave this empty, bots fill it in. -->
+      <div style="position:absolute;left:-9999px" aria-hidden="true">
+        <label for="website">Leave this blank</label>
+        <input id="website" name="website" tabindex="-1" autocomplete="off">
+      </div>
+
+      <button type="submit">Send request</button>
+    </form>
+
+    <p class="msg" id="requestMsg" role="status" aria-live="polite"></p>
+    <button type="button" class="linkish" id="showSignin">Back to the password</button>
+  </section>
+
+  <a class="back" href="/">&larr; Back to the site</a>
+</main>
+
+<script src="js/gate.js"></script>
+<script>
+(() => {
+  const signin  = document.getElementById('signin');
+  const request = document.getElementById('request');
+  const loginForm = document.getElementById('loginForm');
+  const loginMsg  = document.getElementById('loginMsg');
+  const reqForm   = document.getElementById('requestForm');
+  const reqMsg    = document.getElementById('requestMsg');
+
+  const say = (el, text, tone) => { el.textContent = text; el.dataset.tone = tone || ''; };
+
+  // Only ever send guests to a path on this site. ?next= comes from the URL bar,
+  // so without this check it is an open redirect to anywhere.
+  function safeNext() {
+    const raw = new URLSearchParams(location.search).get('next') || '/';
+    return /^\/(?!\/)/.test(raw) ? raw : '/';
+  }
+
+  // Already signed in? Don't make them do it twice.
+  if (AG.group()) location.replace(safeNext());
+
+  loginForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = loginForm.querySelector('button');
+    const value = document.getElementById('password').value;
+    if (!value.trim()) return say(loginMsg, 'Pop the password in first.', 'bad');
+
+    btn.disabled = true;
+    say(loginMsg, 'Checking…');
+    try {
+      const group = await AG.login(value);
+      if (!group) {
+        say(loginMsg, "That's not one we recognise. Check for stray spaces, or ask us for a new one.", 'bad');
+        btn.disabled = false;
+        return;
+      }
+      say(loginMsg, 'Lovely. One moment…', 'good');
+      location.replace(safeNext());
+    } catch (err) {
+      // The only throw is a non-secure context, where crypto.subtle is missing.
+      say(loginMsg, 'This page needs a secure (https) connection to sign you in.', 'bad');
+      btn.disabled = false;
+    }
+  });
+
+  document.getElementById('showRequest').addEventListener('click', () => {
+    signin.hidden = true; request.hidden = false;
+    document.getElementById('reqName').focus();
+  });
+  document.getElementById('showSignin').addEventListener('click', () => {
+    request.hidden = true; signin.hidden = false;
+    document.getElementById('password').focus();
+  });
+
+  reqForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = reqForm.querySelector('button');
+    const name = document.getElementById('reqName').value.trim();
+    const email = document.getElementById('reqEmail').value.trim();
+    if (!name || !email) return say(reqMsg, 'We need both, sorry.', 'bad');
+
+    btn.disabled = true;
+    say(reqMsg, 'Sending…');
+    try {
+      const r = await fetch('/api/access-request', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, website: document.getElementById('website').value }),
+      });
+      const data = await r.json().catch(() => ({}));
+      if (!r.ok) throw new Error(data.error || 'failed');
+      say(reqMsg, "Got it. We'll send your password over shortly.", 'good');
+      reqForm.reset();
+    } catch (err) {
+      say(reqMsg, "That didn't go through. Give us a nudge on WhatsApp instead and we'll sort you out.", 'bad');
+      btn.disabled = false;
+    }
+  });
+})();
+</script>
+
+</body>
+</html>

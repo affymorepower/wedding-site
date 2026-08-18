@@ -6,6 +6,10 @@
 <title>RSVP &middot; Affy &amp; Gabby</title>
 <meta name="robots" content="noindex">
 
+
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <!--
   SKELETON. Shares the token block with index.html. Keep the two in sync, or
   pull :root into a shared stylesheet once the theme lands.
@@ -116,7 +120,7 @@ a.back { color:var(--muted); font-size:.875rem; }
   <form id="rsvp">
     <h1>RSVP</h1>
     <p class="lede">Three events over a week: two in Cape Town, one in the Karoo.
-      Tell us which ones you're up for. Please reply by <strong>31 August 2026</strong>.</p>
+      Tell us which ones you're up for. Please reply by <strong>15 September 2026</strong>.</p>
 
     <h2>Who's replying</h2>
     <label for="partyName">Your name <span class="hint">(or family name, if you're answering for everyone)</span></label>
@@ -155,18 +159,125 @@ a.back { color:var(--muted); font-size:.875rem; }
       <p class="note">We're paying for the coach from Cape Town. Seats are per person.</p>
       <div id="travel"></div>
 
-      <h2>Staying over</h2>
-      <label for="accommodation">Where would you like to stay?</label>
-      <select id="accommodation" name="accommodation">
-        <option value="">Choose…</option>
-        <!-- TODO: replace with real options and per-night prices. Named choices with
-             prices beat asking people what they're willing to spend. -->
-        <option>On-site at the venue (price TBC)</option>
-        <option>Nearby guesthouse (price TBC)</option>
-        <option>Something cheaper, please suggest</option>
-        <option>We'll sort our own</option>
-        <option>Not staying over</option>
-      </select>
+      <!-- =================================================================
+           STAYING OVER — three variants, one per group. js/gate.js deletes the
+           two that don't apply, so only one <select id="accommodation"> ever
+           reaches the DOM and the submit code doesn't need to know which.
+
+             family   no question at all; their room is covered
+             friends  on-reserve rooms, which they pay for
+             town     Oudtshoorn guesthouses
+
+           Group also rides along on every row (see payload below) so the base
+           can be reconciled against who is being billed for what.
+           ================================================================= -->
+
+      <!-- ---------- family: no money, but we still have to place them ----------
+           Neither reserve group picks a room. There are 76 guest beds for very
+           nearly 76 people and the four-sleepers have to go four-up for everyone
+           to fit, so a free choice could not be honoured.
+
+           We don't ask who they'd like to share with either: there are only five
+           four-sleepers, so the matchmaking is small enough to do by hand from the
+           "happy to share" ticks. What we ask for is what we can't infer — whether
+           they'll take both nights, who is small enough to share a bed, and who
+           wants the Sunday.
+
+           family and friends use the SAME four ids. gate.js deletes whichever
+           block doesn't apply, so only one of each ever reaches the DOM — the
+           same trick the accommodation select already relied on. -->
+      <div data-group="family">
+        <h2>Staying over</h2>
+        <p class="note">You&rsquo;re with us at Buffelsdrift on the reserve and we&rsquo;re
+          taking care of the room, so there&rsquo;s nothing to pay for here. A game drive
+          is included too &mdash; we&rsquo;ll be in touch about slots. We just need a few
+          things to work out who sleeps where.</p>
+
+        <label for="nights">Are you happy to stay on the game reserve for both the Friday
+          and Saturday nights?</label>
+        <select id="nights" name="nights">
+          <option value="">Choose…</option>
+          <option>Yes, both nights</option>
+          <option>No</option>
+        </select>
+
+        <label for="children">Any children with you?
+          <span class="hint">names and ages &mdash; under 3s share with you, 4 to 12 get
+          their own bed</span></label>
+        <textarea id="children" name="children"></textarea>
+
+        <div class="checks">
+          <label><input type="checkbox" id="shareFamily"> Happy to share a four-sleeper
+            family tent with another couple</label>
+        </div>
+
+        <label for="thirdNight">Would you like to stay an extra night, the Sunday?
+          <span class="hint">the safari runs again on the Sunday morning &mdash; we&rsquo;ll
+          confirm the rate once we know how many of you want it</span></label>
+        <select id="thirdNight" name="thirdNight">
+          <option value="">Choose…</option>
+          <option>Yes please</option>
+          <option>No</option>
+          <option>Maybe, tell us more</option>
+        </select>
+      </div>
+
+      <!-- ---------- friends: on the reserve, paying ---------- -->
+      <div data-group="friends">
+        <h2>Staying over</h2>
+        <p class="note">You&rsquo;re at Buffelsdrift on the reserve. Rooms are booked through
+          us and you&rsquo;ll settle up for yours &mdash; R4 887 to R6 615 per person for
+          both nights depending on the tent, with breakfasts and a game drive included.
+          Photographs and prices are on the <a href="/#stay">website</a>. We&rsquo;ll match
+          you to a tent, and the lodge emails you a payment link with the exact amount.</p>
+
+        <label for="nights">Are you happy to stay on the game reserve for both the Friday
+          and Saturday nights?</label>
+        <select id="nights" name="nights">
+          <option value="">Choose…</option>
+          <option>Yes, both nights</option>
+          <option>No</option>
+        </select>
+
+        <label for="children">Any children with you?
+          <span class="hint">names and ages &mdash; under 3s stay free, 4 to 12 are half
+          price</span></label>
+        <textarea id="children" name="children"></textarea>
+
+        <div class="checks">
+          <label><input type="checkbox" id="shareFamily"> Happy to share a four-sleeper
+            family tent with another couple <span class="hint">&mdash; it works out
+            cheapest per person</span></label>
+        </div>
+
+        <label for="thirdNight">Would you like to stay an extra night, the Sunday?
+          <span class="hint">the safari runs again on the Sunday morning &mdash; we&rsquo;ll
+          confirm the rate once we know how many of you want it</span></label>
+        <select id="thirdNight" name="thirdNight">
+          <option value="">Choose…</option>
+          <option>Yes please</option>
+          <option>No</option>
+          <option>Maybe, tell us more</option>
+        </select>
+      </div>
+
+      <!-- ---------- town: Oudtshoorn ---------- -->
+      <div data-group="town">
+        <h2>Staying over</h2>
+        <p class="note">Oudtshoorn fills up over the wedding weekend, so book early. The
+          three we&rsquo;d point you at are on the <a href="/#stay">website</a>, with
+          prices.</p>
+        <label for="accommodation">Where are you staying?</label>
+        <select id="accommodation" name="accommodation">
+          <option value="">Choose…</option>
+          <option>Old Mill Lodge</option>
+          <option>De Zeekoe Guest Farm</option>
+          <option>La Pension Guest House</option>
+          <option>Somewhere else in Oudtshoorn</option>
+          <option>Haven&rsquo;t booked yet</option>
+          <option>Not staying over</option>
+        </select>
+      </div>
 
       <h2>Anything else</h2>
       <label for="song">A song that will get you dancing</label>
@@ -186,9 +297,29 @@ a.back { color:var(--muted); font-size:.875rem; }
   </form>
 </div>
 
+<script src="js/gate.js"></script>
 <script>
-// TODO: replace with the real safari options once confirmed with the operator.
-// Spots are limited, so these need to match what can actually be booked.
+// ---- the gate ----
+// This page is group-specific end to end, so a visitor without one gets sent to
+// sign in rather than shown a form that would ask the wrong questions.
+// requireGroup() redirects and returns null; bail out rather than carry on
+// building a form nobody will see.
+const GROUP = AG.requireGroup();
+if (GROUP) {
+  AG.applyTo();
+}
+
+// Airtable wants a human label, not our internal key. These strings MUST match
+// the existing choices on the Group field exactly — `typecast: true` silently
+// creates a new option rather than erroring, so a mismatch shows up as a
+// duplicate choice in the base weeks later rather than as a failure now.
+// Current choices: Family / Game Reserve Friends / In Town.
+const GROUP_LABEL = {
+  family: 'Family',
+  friends: 'Game Reserve Friends',
+  town: 'In Town',
+}[GROUP] || '';
+
 // Buffelsdrift's activity list. Prices deliberately NOT baked into these strings —
 // they live once, in the rate table on the site, so a price change is a one-place edit
 // and Airtable doesn't fill with stale amounts inside option names.
@@ -201,8 +332,56 @@ const SAFARI_OPTIONS = [
   'Meerkat safari',
   'Elephant observation',
   'Cheetah experience',
+  'Will decide later',
   'Not interested',
 ];
+
+/* Adult prices, shown to TOWN guests only.
+
+   Reserve guests have one activity included with their stay, so a price against
+   every line would tell them the wrong thing — they get the plain list, and the
+   rate table in the site's safari FAQ if they want the paid extras.
+
+   These are DUPLICATED from that table in index.html. The strings above are
+   deliberately price-free because they are the Airtable "Safari" select values
+   and `typecast: true` would mint a new choice on every repricing; the price
+   belongs to the label and nowhere else. If Buffelsdrift reprices, this map and
+   the table in index.html move together — there is no third copy. */
+const SAFARI_PRICES = {
+  'Bush safari': 'R870',
+  'Night drive': 'R870',
+  'Lion feeding': 'R870',
+  'Meerkat safari': 'R1 030',
+  'Elephant experience': 'R590',
+  'Elephant observation': 'R1 135',
+  'Cheetah experience': 'R1 665',
+};
+
+/* What a reserve guest gets free with their stay. These two are the choice, so
+   for family and friends they must read "included" — putting R870 next to a bush
+   safari they are not being charged for would be worse than showing nothing. */
+const SAFARI_INCLUDED = new Set(['Bush safari', 'Elephant experience']);
+
+/* Town guests aren't staying at the lodge, so the reserve framing ("one is
+   included") is not just irrelevant to them, it is wrong. */
+const SAFARI_HINT = GROUP === 'town'
+  ? 'not included with a room in town. These are the lodge&rsquo;s published adult '
+    + 'prices; children 4 to 12 are half, under 3s free. We&rsquo;ve arranged a reduced '
+    + 'rate on the bush safari for our guests &mdash; details nearer the time'
+  : 'one is included with your stay &mdash; the bush safari or the elephant experience. '
+    + 'Anything else is a paid extra at the price shown, and children 4 to 12 are half';
+
+/* Price in the label, never in the value — see SAFARI_PRICES. */
+const safariOpts = () => SAFARI_OPTIONS.map((o) => {
+  const price = SAFARI_PRICES[o];
+  let suffix = '';
+  if (price) {
+    suffix = (GROUP !== 'town' && SAFARI_INCLUDED.has(o))
+      ? ' &mdash; included'
+      : ` &mdash; ${price}`;
+  }
+  return `<option value="${o}">${o}${suffix}</option>`;
+}).join('');
 const SIZES = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'Not sure, measure me'];
 // Pink for the girls, green for the boys, as the Holud section on the site says.
 // These strings are the Airtable "Holud outfit" select options: change them here and
@@ -246,9 +425,8 @@ function guestBlock(i) {
       <input id="g${i}diet" data-field="dietary">
 
       <label for="g${i}safari">Game activity
-        <span class="hint">staying at Buffelsdrift? one is included, and it's bush safari
-        or elephant experience. Anything else is a paid extra, prices on the site</span></label>
-      <select id="g${i}safari" data-field="safari"><option value="">Choose…</option>${opts(SAFARI_OPTIONS)}</select>
+        <span class="hint">${SAFARI_HINT}</span></label>
+      <select id="g${i}safari" data-field="safari"><option value="">Choose…</option>${safariOpts()}</select>
     </fieldset>`;
 }
 
@@ -304,6 +482,18 @@ form.addEventListener('submit', async (e) => {
   const attending = coming.value === 'Yes';
   const seats = [...travel.querySelectorAll('[data-seat]')].map(el => el.checked);
 
+  // gate.js has already deleted the two staying-over blocks that don't apply, so
+  // every one of these is a read on an element that may legitimately be absent
+  // rather than empty. Optional chaining, not a value read.
+  //   accommodation  town only
+  //   the other four family + friends
+  const el = (id) => document.getElementById(id);
+  const accommodation = el('accommodation')?.value || '';
+  const nights        = el('nights')?.value || '';
+  const children      = el('children')?.value || '';
+  const thirdNight    = el('thirdNight')?.value || '';
+  const shareFamily   = !!el('shareFamily')?.checked;
+
   const payload = {
     website: document.getElementById('website').value,   // honeypot
     party: {
@@ -311,7 +501,12 @@ form.addEventListener('submit', async (e) => {
       email: document.getElementById('email').value,
       phone: document.getElementById('phone').value,
       attending: coming.value,
-      accommodation: attending ? document.getElementById('accommodation').value : '',
+      group: GROUP_LABEL,
+      accommodation: attending ? accommodation : '',
+      nights: attending ? nights : '',
+      children: attending ? children : '',
+      thirdNight: attending ? thirdNight : '',
+      shareFamily: attending ? shareFamily : false,
       song: attending ? document.getElementById('song').value : '',
       message: document.getElementById('message').value,
     },

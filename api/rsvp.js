@@ -45,9 +45,22 @@ export default async function handler(req, res) {
   const shared = {
     Party: partyName,
     Attending: party.attending,
+    // Which of the three guest groups they signed in as: Family (room covered),
+    // Friends (room on the reserve, paying) or Other (own place in town). Comes
+    // from the browser, so it is a convenience for reconciling the base — never
+    // treat it as proof of entitlement. Anyone can post whatever they like here.
+    Group: text(party.group),
     Email: text(party.email),
     Phone: text(party.phone),
     Accommodation: text(party.accommodation),
+    // Reserve guests (family + friends) answer these instead of Accommodation;
+    // town guests answer Accommodation and none of these. Nights uses the same
+    // three strings as the Nights dropdown in the Buffelsdrift Rates sheet, so
+    // the column pastes straight into the room allocation table.
+    Nights: text(party.nights),
+    Children: text(party.children),
+    'Third night': text(party.thirdNight),
+    'Share family tent': !!party.shareFamily,
     'Song request': text(party.song),
     Message: text(party.message),
   };

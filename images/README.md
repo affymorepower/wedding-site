@@ -9,12 +9,22 @@ Until it exists the hero falls back to a gradient, so nothing looks broken.
 
 ```
 hero.jpg          the dam and the snow-capped Swartberg, behind the hero
+tent-*.webp       the three Buffelsdrift tent types, in "Where to stay"
 flowers/          web-ready cut-outs, 256px webp, transparent, what the page loads
 source/           full-resolution transparent PNGs of the same flowers
 photos/           photographs of the two of us
 photos/venue/     Buffelsdrift, alternative heroes, all unused
 *.png (loose)     the original flower renders, on their baked-in dark backgrounds
 ```
+
+**tent-family / tent-horizon / tent-waterhole** are the lodge's own photographs,
+taken from `buffelsdrift.com/luxury-tents` and stored here rather than hotlinked,
+so the accommodation cards don't go blank if that site is redesigned. 900x600
+webp at q80, roughly 60–110KB each, which suits the `4/3` `object-fit: cover`
+crop the `.stay` cards apply. They map to the rate table in the *Buffelsdrift
+Rates* tab of the Wedding Details sheet: family = tents 26–29 and 33, horizon =
+10–25, 30–32 and 34, waterhole = 1–9. If room types change, the prices in
+`index.html` and that sheet have to move together.
 
 **Swapping the hero** is a file swap, not a code change: copy something out of
 `photos/venue/` over `hero.jpg`. Two things decide whether a photo works there.
