@@ -101,6 +101,12 @@ a { color: inherit; }
   color: var(--muted); text-decoration: none;
 }
 .back:hover { color: var(--fg); }
+/* Three items in a 350px bar is 3px too many, which wrapped Dress code onto its
+   own line and made the header 74px tall on a 390px phone. The label loses its
+   tail rather than the bar losing a row — "Back" still says where it goes, and
+   the arrow carries the rest. nowrap so the label never breaks mid-phrase. */
+.back { white-space: nowrap; }
+@media (max-width: 30rem) { .back__long { display: none; } }
 .kicker {
   font: 600 .78rem/1 var(--font-body); letter-spacing: 1.8px; text-transform: uppercase;
   color: var(--accent); margin: 0 0 .75rem;
@@ -182,7 +188,7 @@ footer.foot button {
 <div class="page">
   <header class="top">
     <div class="wrap">
-      <a class="back" href="/#travel">&larr; Back to the website</a>
+      <a class="back" href="/#travel">&larr; Back<span class="back__long"> to the website</span></a>
       <nav class="topnav">
         <a class="back" href="/#wear">Dress code</a>
         <a class="back" href="/rsvp">RSVP</a>

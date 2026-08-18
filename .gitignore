@@ -22,3 +22,6 @@ website-plan.md
 # would otherwise serve them at a public URL.
 *.csv
 .env*
+
+# Claude Code agent worktrees — throwaway checkouts, never part of the site.
+.claude/worktrees/
