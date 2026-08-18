@@ -657,6 +657,20 @@ a:hover, a:focus-visible { color: var(--pane-fg, var(--ink)); }
 }
 .stay .price span { font-family: var(--font-body); font-size: var(--text-xs); font-weight: 400; color: var(--pane-mute); }
 
+/* Accommodation, on the reserve: copy and a stamp rail side by side above
+   52rem, stacked below. Deliberately the same two-up as .story__grid rather
+   than a shared class — that one is in the story pane's block and this needs
+   its own top margin, since it follows a lede instead of opening a section. */
+.stay__grid {
+  display: grid; gap: clamp(2rem, 5vw, 3.5rem); align-items: center;
+  margin-top: 2.6rem;
+}
+@media (min-width: 52rem) { .stay__grid { grid-template-columns: 1fr 1fr; } }
+/* The rail is the last thing in the grid, so its own bottom margin would show
+   up as a gap above the friends' money paragraphs on a phone. */
+.stay__copy > :last-child { margin-bottom: 0; }
+.stay__grid + .lede { margin-top: 2.6rem; }
+
 /* ---- the locked state ----
    What a signed-out visitor sees where their accommodation would be. It has to
    explain itself without naming the groups: "sign in to see yours", never
@@ -715,6 +729,11 @@ a:hover, a:focus-visible { color: var(--pane-fg, var(--ink)); }
    summary row and its rule still run the full wrap. */
 .faq details p { max-width: var(--measure); }
 .faq details[open] { padding-bottom: .6rem; }
+/* The Life Fund account details. Reuses the event .spec rows so the labels and
+   values line up the way every other pair on the page does; only the margins
+   change, because this one sits inside an answer, not under a lede. */
+.bank { margin: .2rem 0 1.2rem; }
+.bank dd { overflow-wrap: anywhere; }
 .faq strong { color: var(--pane-fg); }
 
 /* Buffelsdrift's published rates. Wide table, narrow phone: it scrolls inside
@@ -1157,81 +1176,68 @@ footer p + p { margin-top: .5rem; }
       accommodation page</a>.</strong> What follows is the short version.</p>
 
     <!-- ---------- family + friends: on the reserve ----------
-         KEEP UNTIL THE /stay PAGES CARRY THE REAL CONTENT. These two blocks are
-         the detail Gabby's three pages are replacing; deleting them now would
-         lose it while those pages are still placeholders. Once /stay/group-1..3
-         are written, cut both variants and leave the link above. -->
+         Copy on the left, a stamp rail of the lodge on the right: the same
+         two-up as Our story, and the same stamps, so the accommodation reads as
+         part of the same album rather than a product listing.
+
+         The three tent cards that used to sit here are gone (2026-08-18).
+         Allocation happens after the RSVPs are in — 76 beds for very nearly 76
+         people — so naming three tent types up front invited a choice we can't
+         honour. The rail says what the place is like instead, and the tent a
+         given guest actually gets is on their own /stay page.
+
+         Family and friends SHARE this block, so anything about who pays is
+         tagged data-group. Untagged paragraphs are read by both. -->
     <div data-stay="reserve">
-      <p class="lede">You&rsquo;re staying with us at Buffelsdrift, right on the game
-        reserve, so you don&rsquo;t have to think about getting anywhere on the day. The
-        giraffes wander past the waterhole at breakfast and nobody drives home afterwards.</p>
+      <div class="stay__grid">
+        <div class="stay__copy">
+          <p class="lede" data-group="family"><strong>Our beloved family! Accommodation is on
+            us for the wedding weekend!</strong> We&rsquo;ll be hosting you at Buffelsdrift
+            (the venue) for Friday and Saturday night, and you&rsquo;ll have the option to
+            extend to Sunday night as well to soak up more of the bush before heading
+            home.</p>
 
-      <p class="lede"><strong>A game drive is included with your stay.</strong> One safari
-        or elephant experience per person, on us to arrange &mdash; we&rsquo;ll be running
-        them across several days because everyone can&rsquo;t go at once, so we&rsquo;ll
-        tell you your slot nearer the time rather than asking you to pick now.</p>
+          <!-- Friends' opener. They are in the same tents on the same nights, so
+               they need the same orientation without the line about it being on us;
+               their money paragraphs follow below the rail. -->
+          <p class="lede" data-group="friends">You&rsquo;re staying with us at Buffelsdrift,
+            right on the game reserve, so you don&rsquo;t have to think about getting
+            anywhere on the day. The giraffes wander past the waterhole at breakfast and
+            nobody drives home afterwards.</p>
 
-      <!-- Group B only, and it sits ABOVE the cards: someone who is paying should
-           know that before they look at the rooms, not after. -->
+          <p class="lede">Saturday is the big day, so we will host a relaxed braai on the
+            Friday evening for all those staying at the venue. A safari is included in your
+            stay, and the lodge also has a spa and a few extra wildlife experiences if
+            you&rsquo;d rather swap out the standard safari for something else (like an
+            elephant or lion experience).</p>
+        </div>
+
+        <!-- Photographs are the lodge's own, from buffelsdrift.com, framed as
+             stamps to match Our story and served locally so they don't vanish if
+             that site is redesigned. Same markup as #rail; the script below picks
+             up every .rail on the page, and gate.js has already removed this one
+             for town guests by the time it runs. -->
+        <div class="rail" tabindex="0" role="group" aria-roledescription="carousel"
+             aria-label="Photographs of Buffelsdrift, the game lodge">
+          <figure class="stamp"><img loading="lazy" width="500" height="500" src="images/stamps-lodge/12.webp" alt="A luxury tent at dusk, aloes and red flowers on the slope below it"></figure>
+          <figure class="stamp"><img loading="lazy" width="500" height="500" src="images/stamps-lodge/13.webp" alt="Inside a tent: bed, patterned cushions and an armchair by the window"></figure>
+          <figure class="stamp"><img loading="lazy" width="500" height="500" src="images/stamps-lodge/14.webp" alt="A tent bedroom with the deck door open onto the reserve"></figure>
+          <figure class="stamp"><img loading="lazy" width="500" height="500" src="images/stamps-lodge/15.webp" alt="A tent bathroom: stone basin, mirror lights and a freestanding bath by the window"></figure>
+          <figure class="stamp"><img loading="lazy" width="500" height="500" src="images/stamps-lodge/16.webp" alt="The view from a shaded deck across the waterhole to the Swartberg"></figure>
+          <figure class="stamp"><img loading="lazy" width="500" height="500" src="images/stamps-lodge/17.webp" alt="Five meerkats standing on a sandy bank"></figure>
+          <figure class="stamp"><img loading="lazy" width="500" height="500" src="images/stamps-lodge/18.webp" alt="The thatched main lodge on stilts, reflected in the waterhole"></figure>
+        </div>
+      </div>
+
+      <!-- Friends only, and it stays full width under the two-up: these are the
+           numbers someone budgets from, and they read better as prose than
+           squeezed into half a column. -->
       <p class="lede" data-group="friends"><strong>Rooms are booked through us, and
         you&rsquo;ll settle up for yours.</strong> Two nights, Friday and Saturday, covering
         the bed, both breakfasts and the game drive. For planning, budget
         <strong>&euro;265 to &euro;360 per person</strong> for the two nights, depending on
-        the tent &mdash; children 4 to 12 are half that, and under 3s are free. These are
-        the three tent types; we&rsquo;ll confirm your exact amount once everyone is
-        placed.</p>
-
-      <!-- The three tent types, cheapest per person first. Photographs are the
-           lodge's own, taken from buffelsdrift.com/luxury-tents and served locally
-           so they don't vanish if that site is redesigned.
-
-           No prices on the cards, for either group. Allocation happens after the
-           RSVPs are in — there are 76 beds for very nearly 76 people, so what a
-           given guest ends up paying depends on the tent we can fit them in, and
-           quoting three numbers up front invites a choice we can't honour. The
-           confirmed per-person rates live in the Buffelsdrift Rates tab of the
-           Wedding Details sheet; the lodge bills each guest direct from the rooming
-           list. -->
-      <div class="stays">
-        <a class="stay" target="_blank" rel="noopener"
-           href="https://www.buffelsdrift.com/luxury-tents">
-          <img loading="lazy" src="images/tent-family.webp"
-               alt="A family on the wooden deck of a family tent, lawn and hills beyond">
-          <div class="stay__body">
-            <h4>Luxury Family Tent</h4>
-            <p class="meta">Two interleading bedrooms sharing a bathroom, and a deck
-              looking out over the reserve to the Swartberg. Sleeps four.</p>
-          </div>
-        </a>
-
-        <a class="stay" target="_blank" rel="noopener"
-           href="https://www.buffelsdrift.com/luxury-tents">
-          <img loading="lazy" src="images/tent-horizon.webp"
-               alt="A Horizon View tent at dusk, pink sky above the aloes and a footpath">
-          <div class="stay__body">
-            <h4>Luxury Horizon View</h4>
-            <p class="meta">Set back from the waterhole and raised up, with a long view
-              across the reserve. Sleeps two.</p>
-          </div>
-        </a>
-
-        <a class="stay" target="_blank" rel="noopener"
-           href="https://www.buffelsdrift.com/luxury-tents">
-          <img loading="lazy" src="images/tent-waterhole.webp"
-               alt="The view from bed in a waterhole tent: two chairs on a deck at the water&rsquo;s edge">
-          <div class="stay__body">
-            <h4>Luxury Waterhole Tent</h4>
-            <p class="meta">A private sundeck right at the edge of the main waterhole.
-              You wake up looking at it. Sleeps two.</p>
-          </div>
-        </a>
-      </div>
-
-      <!-- The lines that differ between family and friends. -->
-      <p class="lede" data-group="family"><strong>Yours is covered.</strong> We&rsquo;re
-        taking care of the room and the game drive &mdash; you just need to get yourself
-        to Cape Town. The RSVP won&rsquo;t ask you anything about paying for it. We&rsquo;ll
-        match you to a tent ourselves and tell you which one nearer the time.</p>
+        the tent &mdash; children 4 to 12 are half that, and under 3s are free. We&rsquo;ll
+        confirm your exact amount once everyone is placed.</p>
 
       <p class="lede" data-group="friends">We&rsquo;ll match you to a tent rather than ask
         you to choose one. There are 76 guest beds on the reserve and close to that many
@@ -1370,12 +1376,21 @@ footer p + p { margin-top: .5rem; }
         accordingly.</p></details>
 
 
-    <details><summary>Are you doing gifts or a registry?</summary>
-      <p>You&rsquo;ve probably flown half way around the world to be at the wedding. That&rsquo;s
-        our gift, and we don&rsquo;t expect anything else from you.</p>
-      <p>That said, we know some people are adamant &mdash; and we genuinely can&rsquo;t
-        carry anything physical back. So if you&rsquo;d really like to contribute, you can
-        pay into <a href="#"><span class="todo">Revolut link needed</span></a>.</p></details>
+    <details><summary>Is there a gift registry?</summary>
+      <p>We know this entire wedding week is a big adventure and honestly, your presence is
+        the best gift you can give us &mdash; we really don&rsquo;t expect anything
+        else!</p>
+      <p>That said, we know some people are adamant about these things, so if you would
+        really like to get us a gift then a contribution to our Life Fund would be very
+        appreciated!</p>
+      <dl class="spec bank">
+        <div><dt>Beneficiary</dt><dd>Gabriella Brigando &amp; Afnan Hannan</dd></div>
+        <div><dt>IBAN</dt><dd>LT67 3250 0324 6509 2890</dd></div>
+        <div><dt>BIC / SWIFT code</dt><dd>REVOLT21</dd></div>
+        <div><dt>Bank name and address</dt><dd>Revolut Bank UAB, Konstitucijos ave. 21B,
+          08130, Vilnius, Lithuania</dd></div>
+        <div><dt>Correspondent BIC</dt><dd>CHASDEFX</dd></div>
+      </dl></details>
 
 
     <details><summary>Do I need a visa to visit South Africa?</summary>
@@ -1538,10 +1553,12 @@ if ('IntersectionObserver' in window) {
 // index, so it stays in step with wherever a finger left the rail. It also
 // stands down whenever the visitor is plausibly looking: pointer over it,
 // keyboard focus inside it, a touch in progress, or the tab in the background.
-(() => {
-  const rail = document.getElementById('rail');
-  if (!rail) return;
-
+// Two rails now — the travel stamps in Our story and the lodge stamps in Where
+// to stay — so this runs per .rail rather than on a single id. Each keeps its
+// own timer and its own held flag; nothing is shared. gate.js has already
+// removed the accommodation block for anyone it doesn't apply to by the time
+// this runs, so there is no rail to wind up for a town guest.
+document.querySelectorAll('.rail').forEach((rail) => {
   const DWELL = 4000;
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   let timer = null, held = false;
@@ -1577,7 +1594,7 @@ if ('IntersectionObserver' in window) {
   } else {
     start();
   }
-})();
+});
 </script>
 
 </body>
