@@ -1172,12 +1172,15 @@ footer p + p { margin-top: .5rem; }
     </div>
 
     <!-- ---------- signed in: their own page ----------
-         The href differs by group, so gate.js fills it (data-stay-link) rather
-         than the HTML carrying all three. Signed out, this line is removed with
-         the other locked bits. -->
-    <p class="lede" data-group="family friends town"><strong>Your rooms, rates and
-      what happens on each night are on <a data-stay-link href="/login">your own
-      accommodation page</a>.</strong> What follows is the short version.</p>
+         The "your own accommodation page / what follows is the short version"
+         line that used to sit here is gone (Affy, 2026-08-18). It was a signpost
+         to a page the guest had usually just come FROM — every group's link into
+         this site now lands on their accommodation page first — and calling this
+         section the short version undersold it while sending people away from it.
+
+         gate.js still fills [data-stay-link] hrefs, so the pattern is there for
+         any anchor that does want to point at the visitor's own page. Nothing
+         uses it at the moment. -->
 
     <!-- ---------- family + friends: on the reserve ----------
          Copy on the left, a stamp rail of the lodge on the right: the same

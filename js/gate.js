@@ -209,7 +209,11 @@
       /* Anchors that should point at the visitor's own accommodation page. The
          href can't be written into the HTML because it differs by group, and
          hard-coding all three would put the other two in view-source for no
-         reason. Signed out, the anchor goes with the rest of the locked bits. */
+         reason. Signed out, the anchor goes with the rest of the locked bits.
+
+         NOTHING USES THIS RIGHT NOW — index.html's one signpost line came out on
+         2026-08-18. Kept because the group 2 and 3 page updates are next and this
+         is the only correct way for an anchor to reach the visitor's own page. */
       root.querySelectorAll('[data-stay-link]').forEach((el) => {
         if (group) el.href = PAGE[group];
         else el.remove();
