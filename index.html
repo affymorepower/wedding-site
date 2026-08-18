@@ -7,6 +7,30 @@
 <meta name="description" content="Affy &amp; Gabby are getting married in the Little Karoo, 14–20 March 2027.">
 <meta name="robots" content="noindex">
 
+<!-- ============================ THE FRONT DOOR ============================
+     The whole site is behind the password now (Affy, 2026-08-18). It used to be
+     open to anyone with the link, with only Where to stay gated; a visitor
+     without a group is sent to /login instead.
+
+     No ?next=, on purpose. login.html falls back to AG.stayPath() when there is
+     no explicit next, so the first thing anyone sees after typing the password
+     is their OWN accommodation page rather than the top of this one. The three
+     password-path links (/zebracrossing, /hippoproblems, /marriedtothestars)
+     sign a guest in on arrival, so anyone who got their link never sees /login
+     at all — this only catches people who came to the bare domain.
+
+     It sits in <head> and BEFORE the stylesheet so nothing paints first: gate.js
+     touches no DOM, so it is safe this high up, and the check it runs is a
+     synchronous localStorage read. Loaded here rather than at the foot, which is
+     where it used to be.
+
+     Same standing rule as everything else here: this is a polite gate. With
+     JavaScript off the page renders as it always did, and every group's content
+     is still in view-source. See the header of js/gate.js.
+     ==================================================================== -->
+<script src="js/gate.js"></script>
+<script>if (!AG.group()) location.replace('/login');</script>
+
 <!-- Tab icon: the elephant emoji, rendered out of Apple Color Emoji into real
      files rather than left as an SVG <text> glyph, so Windows and Android show
      the same elephant instead of each drawing their own. The .ico carries 16,
@@ -1158,7 +1182,10 @@ footer p + p { margin-top: .5rem; }
     <p class="kicker">Wedding logistics</p>
     <h2>Where to stay</h2>
 
-    <!-- ---------- signed out ---------- -->
+    <!-- ---------- signed out ----------
+         Only reachable with JavaScript off now that the front door in <head>
+         turns a signed-out visitor away. Kept as the no-JS fallback: without it
+         that visitor gets a Where to stay heading and nothing under it. -->
     <div data-locked>
       <p class="lede">Beds are arranged differently depending on your invitation, so
         this bit sits behind a password. Pop in the one we sent you and we&rsquo;ll show
@@ -1489,7 +1516,6 @@ footer p + p { margin-top: .5rem; }
 </footer>
 
 
-<script src="js/gate.js"></script>
 <script>
 document.documentElement.classList.add('js');
 
