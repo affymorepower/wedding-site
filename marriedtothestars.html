@@ -6,9 +6,9 @@
 <title>Where to stay in Oudtshoorn &middot; Affy &amp; Gabby</title>
 <meta name="robots" content="noindex, nofollow">
 
-<link rel="icon" href="/favicon.ico" sizes="any">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <!--
   ACCOMMODATION PAGE — group 3, everyone else &mdash; guesthouses in and around
   Oudtshoorn. Served at /marriedtothestars. This replaces stay/group-3.html,
@@ -17,10 +17,10 @@
   THE FILENAME IS THE PASSWORD, same as /hippoproblems (Affy, 2026-08-18): the
   link can be pasted straight into a WhatsApp thread and the guest never sees
   /login. The script at the foot hashes the last segment of its own URL and
-  checks it against GROUPS in /js/gate.js, exactly as a typed password is
+  checks it against GROUPS in js/gate.js, exactly as a typed password is
   checked — so the plain password is NOT written anywhere in this file, a
   guessed URL still fails, and RENAMING THIS FILE CHANGES THE PASSWORD WITH IT.
-  If you rename it, update PAGE.town in /js/gate.js and the hash beside it.
+  If you rename it, update PAGE.town in js/gate.js and the hash beside it.
 
   It is weaker than typing a password, because a URL leaks in ways a typed
   string doesn't — browser history, link previews, a forwarded screenshot. That
@@ -44,7 +44,7 @@
   open by double-click as well as over http — an absolute /js/gate.js resolves to
   file:///js/gate.js, and since the page stays hidden until the gate has run, a
   missing gate.js renders a BLANK PAGE rather than an obviously broken one. Route
-  links (/rsvp, /login) stay absolute; they are routes, not files. If this file
+  links (/rsvp, /#wear) stay absolute; they are routes, not files. If this file
   ever moves into a folder, the asset paths have to go absolute with it.
 
   THE FORM: the slot at the foot is where this group's questions go. Empty for
@@ -58,14 +58,14 @@
 <style>
 @font-face {
   font-family: 'Fraunces';
-  src: url('/fonts/fraunces-var.woff2') format('woff2-variations'),
-       url('/fonts/fraunces-var.woff2') format('woff2');
+  src: url('fonts/fraunces-var.woff2') format('woff2-variations'),
+       url('fonts/fraunces-var.woff2') format('woff2');
   font-weight: 100 900; font-style: normal; font-display: swap;
 }
 @font-face {
   font-family: 'Inter';
-  src: url('/fonts/inter-var.woff2') format('woff2-variations'),
-       url('/fonts/inter-var.woff2') format('woff2');
+  src: url('fonts/inter-var.woff2') format('woff2-variations'),
+       url('fonts/inter-var.woff2') format('woff2');
   font-weight: 100 900; font-style: normal; font-display: swap;
 }
 
@@ -102,6 +102,10 @@ header.top {
   padding: 1rem 0; margin-bottom: 2.5rem;
 }
 header.top .wrap { display: flex; gap: 1rem; align-items: baseline; justify-content: space-between; }
+/* Two links on the right of the bar rather than one. Dress code goes to the
+   front page's What to wear section — it is the question this page gets asked
+   next, and it was a scroll away on the main site with nothing pointing at it. */
+.topnav { display: flex; gap: clamp(1rem, 4vw, 1.75rem); flex-wrap: wrap; }
 a { color: inherit; }
 .back {
   font: 600 .78rem/1 var(--font-body); letter-spacing: 1.6px; text-transform: uppercase;
@@ -189,7 +193,10 @@ footer.foot button {
   <header class="top">
     <div class="wrap">
       <a class="back" href="/#travel">&larr; Back to the website</a>
-      <a class="back" href="/rsvp">RSVP</a>
+      <nav class="topnav">
+        <a class="back" href="/#wear">Dress code</a>
+        <a class="back" href="/rsvp">RSVP</a>
+      </nav>
     </div>
   </header>
 
@@ -305,7 +312,7 @@ footer.foot button {
 
   // Signed out, this page's own URL signs the visitor in: its last path segment
   // is this group's password, hashed and checked like any typed one
-  // (AG.enterFromPath — read its comment in /js/gate.js).
+  // (AG.enterFromPath — read its comment in js/gate.js).
   //
   // Already signed in as ANOTHER group, we deliberately do not reclassify them.
   // A forwarded link is a mis-sent link, and quietly moving a family guest into
