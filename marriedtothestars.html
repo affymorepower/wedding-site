@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Where to stay in Oudtshoorn &middot; Affy &amp; Gabby</title>
+<meta name="robots" content="noindex, nofollow">
+
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<!--
+  ACCOMMODATION PAGE — group 3, everyone else &mdash; guesthouses in and around
+  Oudtshoorn. Served at /marriedtothestars. This replaces stay/group-3.html,
+  which is now a redirect to here.
+
+  THE FILENAME IS THE PASSWORD, same as /hippoproblems (Affy, 2026-08-18): the
+  link can be pasted straight into a WhatsApp thread and the guest never sees
+  /login. The script at the foot hashes the last segment of its own URL and
+  checks it against GROUPS in /js/gate.js, exactly as a typed password is
+  checked — so the plain password is NOT written anywhere in this file, a
+  guessed URL still fails, and RENAMING THIS FILE CHANGES THE PASSWORD WITH IT.
+  If you rename it, update PAGE.town in /js/gate.js and the hash beside it.
+
+  It is weaker than typing a password, because a URL leaks in ways a typed
+  string doesn't — browser history, link previews, a forwarded screenshot. That
+  was an accepted trade, not an oversight. Same standing rule as the rest of the
+  gate: don't put anything here that would genuinely harm someone if it leaked,
+  and DON'T write what the other groups are paying.
+
+  WHY THIS ONE LOOKS DIFFERENT to groups 1 and 2 (Affy, 2026-08-18): they are
+  sleeping at Buffelsdrift, so their pages carry the lodge's own stamp rail —
+  it is a picture of where they will wake up. This group is booking their own
+  room in town, so the useful thing on the page is the three Booking.com
+  options, not photographs of a lodge they aren't staying at. No rail here on
+  purpose; don't add one back.
+
+  EDITING IT: everything between CONTENT STARTS and CONTENT ENDS is yours.
+  Colours, fonts and spacing are tokens in the :root block below, same names as
+  index.html. Absolute paths (/fonts/…, /images/…, /js/…) so this keeps working
+  if the file ever moves into a folder.
+
+  THE FORM: the slot at the foot is where this group's questions go. Empty for
+  now — the RSVP at /rsvp still carries its own staying-over block, so nothing
+  is missing while this is being written.
+-->
+
+<link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
+
+<style>
+@font-face {
+  font-family: 'Fraunces';
+  src: url('/fonts/fraunces-var.woff2') format('woff2-variations'),
+       url('/fonts/fraunces-var.woff2') format('woff2');
+  font-weight: 100 900; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/inter-var.woff2') format('woff2-variations'),
+       url('/fonts/inter-var.woff2') format('woff2');
+  font-weight: 100 900; font-style: normal; font-display: swap;
+}
+
+:root {
+  /* Keep in sync with index.html and rsvp.html. */
+  --bg:#f4efe6; --surface:#fbf8f2; --fg:#3a2e24; --muted:#6e6055;
+  --line:#e2d8c9; --accent:#b0802c; --accent-fg:#fff; --error:#6e1f27;
+  --cta:#46603f; --cta-fg:#ffffff;
+  --card-bg:#fffaf0;
+  --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
+  --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --measure: 34rem; --gutter: 1.25rem; --radius: 4px;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { color-scheme: light; }
+body {
+  margin: 0; background: var(--bg); color: var(--fg);
+  font: 1rem/1.65 var(--font-body); font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+}
+/* The page is hidden until the guard has run, so a mis-sent link never flashes
+   another group's page before redirecting. .ready is set by the script at the
+   foot; without JS the <noscript> below explains why nothing is here. */
+.page { visibility: hidden; }
+html.ready .page { visibility: visible; }
+.wrap { max-width: var(--measure); margin: 0 auto; padding: 0 var(--gutter); }
+/* The three cards only. Everything else on the page holds the 34rem reading
+   measure; three cards squeezed into it wrap 2 + 1 and read as a mistake, so
+   this one block breaks out wide enough to sit them in a row on a laptop. It
+   still collapses to a single column on a phone, where auto-fit does the work. */
+.wrap--wide { max-width: 58rem; margin: 0 auto; padding: 0 var(--gutter); }
+header.top {
+  border-bottom: 1px solid var(--line); background: var(--surface);
+  padding: 1rem 0; margin-bottom: 2.5rem;
+}
+header.top .wrap { display: flex; gap: 1rem; align-items: baseline; justify-content: space-between; }
+a { color: inherit; }
+.back {
+  font: 600 .78rem/1 var(--font-body); letter-spacing: 1.6px; text-transform: uppercase;
+  color: var(--muted); text-decoration: none;
+}
+.back:hover { color: var(--fg); }
+.kicker {
+  font: 600 .78rem/1 var(--font-body); letter-spacing: 1.8px; text-transform: uppercase;
+  color: var(--accent); margin: 0 0 .75rem;
+}
+h1 {
+  font-family: var(--font-display); font-weight: 600; font-size: clamp(2rem, 6vw, 2.9rem);
+  line-height: 1.08; letter-spacing: -.5px; margin: 0 0 1rem;
+}
+h2 {
+  font-family: var(--font-display); font-weight: 600; font-size: 1.4rem;
+  letter-spacing: -.3px; margin: 2.5rem 0 .75rem;
+}
+p { margin: 0 0 1.1rem; }
+.lede { font-size: 1.06rem; color: var(--fg); }
+.note { color: var(--muted); }
+/* Same red dotted marker index.html uses for anything still to be written. */
+.todo {
+  font: 600 .72rem/1 var(--font-body); letter-spacing: 1.2px; text-transform: uppercase;
+  color: var(--error); border-bottom: 1px dotted currentColor;
+}
+
+/* ---- the Booking.com panel ----
+   Lifted from the Where to stay pane in index.html, where the same three cards
+   run for this group. Photo on top, price last and largest — it is the only
+   number anyone is actually comparing. The token names differ from the front
+   page (--surface/--line/--muted rather than --pane-*), so the values are
+   mapped here rather than the rules copied verbatim. */
+.stays {
+  display: grid; gap: clamp(1.25rem, 3vw, 2rem); margin: 2.6rem 0;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+}
+.stay {
+  display: block; text-decoration: none; color: inherit;
+  background: var(--card-bg); border: 1px solid var(--line);
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+.stay:hover { transform: translateY(-4px); box-shadow: 0 14px 34px rgba(55, 11, 11, .13); }
+.stay:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+.stay img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; display: block; }
+.stay__body { padding: 1.1rem 1.2rem 1.4rem; }
+.stay h4 { margin: 0 0 .35rem; font-family: var(--font-display); font-size: 1.2rem; font-weight: 600; }
+.stay .meta { margin: 0; font-size: 14px; line-height: 1.5; color: var(--muted); }
+.stay .price {
+  margin: .8rem 0 0; font-family: var(--font-display); font-size: 1.35rem; font-weight: 600;
+}
+.stay .price span { font-family: var(--font-body); font-size: 13px; font-weight: 400; color: var(--muted); }
+.fineprint { margin-top: 1.4rem; font-size: 13px; line-height: 1.65; color: var(--muted); }
+@media (prefers-reduced-motion: reduce) {
+  .stay { transition: none; }
+  .stay:hover { transform: none; }
+}
+
+.slot {
+  border: 1px dashed var(--line); border-radius: var(--radius);
+  background: var(--surface); padding: 1.25rem; margin: 1.5rem 0;
+}
+.slot h2 { margin-top: 0; }
+footer.foot {
+  border-top: 1px solid var(--line); margin-top: 3.5rem; padding: 1.5rem 0 3rem;
+  color: var(--muted); font-size: .9rem;
+}
+footer.foot button {
+  font: inherit; color: inherit; background: none; border: 0; padding: 0;
+  text-decoration: underline; cursor: pointer;
+}
+</style>
+</head>
+<body>
+
+<noscript>
+  <div class="wrap" style="padding-top:2rem">
+    <p>This page needs JavaScript, because it works out which version of the
+      accommodation details to show you. Turn it on and reload, or send us a
+      message and we&rsquo;ll tell you where you&rsquo;re staying.</p>
+  </div>
+</noscript>
+
+<div class="page">
+  <header class="top">
+    <div class="wrap">
+      <a class="back" href="/#travel">&larr; Back to the website</a>
+      <a class="back" href="/rsvp">RSVP</a>
+    </div>
+  </header>
+
+  <main>
+    <div class="wrap">
+      <p class="kicker">Where to stay</p>
+
+      <!-- ============================ CONTENT STARTS ============================
+           Affy's words, as sent 2026-08-18. Replace everything down to CONTENT ENDS.
+           ===================================================================== -->
+
+      <h1>Staying in Oudtshoorn</h1>
+
+      <p class="lede">We highly recommend staying in Oudtshoorn or the surrounding area for
+        the wedding weekend. Oudtshoorn itself is a 9-minute drive from Buffelsdrift, and we
+        will also arrange transfers there and back on the wedding day.</p>
+    </div>
+
+    <!-- The three Booking.com options, wider than the reading measure so they sit
+         in a row. Images are hotlinked from Booking.com's CDN, as they are on the
+         front page — the same three cards, kept identical on purpose so a guest
+         who saw them there recognises them here. -->
+    <div class="wrap--wide">
+      <div class="stays">
+        <a class="stay" target="_blank" rel="noopener"
+           href="https://www.booking.com/hotel/za/old-mill-lodge-a-la-carte-restaurant.en-gb.html">
+          <img loading="lazy" alt="Poplars and a still dam below the mountain at Old Mill Lodge"
+               src="https://cf.bstatic.com/xdata/images/hotel/square600/198889117.webp?k=19f69644a24c999d954853656caf35c422f13b9f40ddb8f109ebaac831f67a58&amp;o=">
+          <div class="stay__body">
+            <h4>Old Mill Lodge</h4>
+            <p class="meta">A working ostrich farm, 14 km out of town. Scored 8.5 across
+              2,989 reviews.</p>
+            <p class="price">R1 762 <span>for the two nights</span></p>
+          </div>
+        </a>
+
+        <a class="stay" target="_blank" rel="noopener"
+           href="https://www.booking.com/hotel/za/de-zeekoe-guest-farm.en-gb.html">
+          <img loading="lazy" alt="A windmill and palms at sunset on De Zeekoe Guest Farm"
+               src="https://cf.bstatic.com/xdata/images/hotel/square600/225418475.webp?k=11b2804ca2a93e16acf6a8327c82f0e795242df94a0437239d714a8c8eaf6ca9&amp;o=">
+          <div class="stay__body">
+            <h4>De Zeekoe Guest Farm</h4>
+            <p class="meta">A guest farm 7 km out, breakfast included. Scored 8.9 across
+              738 reviews.</p>
+            <p class="price">R4 068 <span>for the two nights</span></p>
+          </div>
+        </a>
+
+        <a class="stay" target="_blank" rel="noopener"
+           href="https://www.booking.com/hotel/za/la-pension-guest-house.en-gb.html">
+          <img loading="lazy" alt="Pool and shaded terrace at La Pension Guest House"
+               src="https://cf.bstatic.com/xdata/images/hotel/square600/411756616.webp?k=3468da1580ca40cabd99632909ceb5d24f584da4351db9eafb702a07d38df8a4&amp;o=">
+          <div class="stay__body">
+            <h4>La Pension Guest House</h4>
+            <p class="meta">In town, a ten minute walk from the centre, breakfast included.
+              Scored 9.8 across 755 reviews.</p>
+            <p class="price">R4 800 <span>for the two nights</span></p>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <div class="wrap">
+      <p class="lede">Unfortunately, the wedding venue can&rsquo;t accommodate all our
+        guests, but they are very happy to organise safari drives for any day visitors. If
+        you are interested in this, let us know in the RSVP, and we will share pricing and
+        options.</p>
+
+      <p class="fineprint">Prices are what Booking.com showed for a double room for two
+        adults over the wedding weekend, Friday 19 to Sunday 21 March 2027, and they move.
+        Book it yourself, and book it early.</p>
+
+      <!-- ============================= CONTENT ENDS ============================= -->
+
+      <div class="slot">
+        <h2>Your details</h2>
+        <p class="note"><span class="todo">Form to come</span> &mdash; this group&rsquo;s
+          questions land here. Until then, the staying-over questions on the
+          <a href="/rsvp">RSVP</a> still cover it, so nobody is stuck.</p>
+      </div>
+    </div>
+  </main>
+
+  <footer class="foot">
+    <div class="wrap">
+      <p>Anything unclear, just message us.<br>
+        Not your details? <button type="button" id="signout">Sign out</button></p>
+    </div>
+  </footer>
+</div>
+
+<script src="/js/gate.js"></script>
+<script>
+(async () => {
+  // Signed out, this page's own URL signs the visitor in: its last path segment
+  // is this group's password, hashed and checked like any typed one
+  // (AG.enterFromPath — read its comment in /js/gate.js).
+  //
+  // Already signed in as ANOTHER group, we deliberately do not reclassify them.
+  // A forwarded link is a mis-sent link, and quietly moving a family guest into
+  // this group would change what their RSVP records them as owing. The ordinary
+  // guard takes them to their own page instead — and the Sign out button in the
+  // footer is there for anyone who really is in this group.
+  if (!AG.group()) await AG.enterFromPath();
+  if (!AG.guardPage('town')) return;
+
+  document.documentElement.classList.add('ready');
+  AG.applyTo();
+  document.getElementById('signout')?.addEventListener('click', () => {
+    AG.forget();
+    location.replace('/');
+  });
+})();
+</script>
+
+</body>
+</html>

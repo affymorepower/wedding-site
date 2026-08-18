@@ -42,10 +42,17 @@
   // family and friends share a section but not a form.
   const STAY = { family: 'reserve', friends: 'reserve', town: 'town' };
 
-  // Each group's own accommodation page. Group numbers are Affy and Gabby's
-  // shorthand — 1 family, 2 friends, 3 everyone else — and they are what the
-  // URLs use, so a link can be pasted into WhatsApp without naming the tier.
-  const PAGE = { family: '/stay/group-1', friends: '/stay/group-2', town: '/stay/group-3' };
+  // Each group's own accommodation page.
+  //
+  // Group 1 still uses Affy and Gabby's sheet shorthand — 1 family — so a link
+  // can be pasted into WhatsApp without naming the tier.
+  //
+  // Groups 2 and 3 are different on purpose (Affy, 2026-08-18): their path IS
+  // their password, so the one link both signs the guest in and lands them on
+  // their own page, and /login never has to come up. See enterFromPath below for
+  // what that costs. If either path changes, that group's password changes with
+  // it, so keep each equal to the plain string behind its hash above.
+  const PAGE = { family: '/stay/group-1', friends: '/hippoproblems', town: '/marriedtothestars' };
 
   async function sha256(text) {
     const bytes = new TextEncoder().encode(text);
@@ -81,6 +88,38 @@
         /* private mode: they stay logged in for this page only */
       }
       return group;
+    },
+
+    /* Sign in from a page's own URL, for a page whose last path segment IS the
+       group's password (/hippoproblems, /marriedtothestars). The point is that
+       the link can be
+       pasted straight into a WhatsApp thread: the guest never sees /login, and
+       there is one link to send rather than a link plus a password.
+
+       The slug is hashed and checked against GROUPS exactly as a typed password
+       is, so two useful things hold: the plain password is never written into
+       the page, and a guessed URL still fails. It also means renaming such a
+       file changes its password — update PAGE above if you do.
+
+       This is WEAKER than typing the password, because a URL leaks in ways a
+       typed string does not: browser history, link previews, a Referer header, a
+       forwarded screenshot of the address bar. That was an accepted trade, not an
+       oversight. It changes nothing about the standing rule in the header — this
+       is a polite gate either way, and nothing behind it should be able to harm
+       someone if it leaked.
+
+       Returns the group on success, or null. Callers should follow it with the
+       ordinary guardPage(), so a slug that resolves to nothing still sends the
+       visitor to /login rather than leaving them on a blank page. */
+    async enterFromPath(path = location.pathname) {
+      const slug = path.replace(/\.html?$/i, '').split('/').filter(Boolean).pop() || '';
+      try {
+        return await AG.login(slug);
+      } catch {
+        // insecure-context: crypto.subtle is missing, so no hash can be made.
+        // Fall through to the caller's guard, which will offer /login.
+        return null;
+      }
     },
 
     group: current,

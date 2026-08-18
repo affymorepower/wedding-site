@@ -4,182 +4,28 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Where you&rsquo;re staying &middot; Affy &amp; Gabby</title>
-<meta name="robots" content="noindex">
-
-<link rel="icon" href="/favicon.ico" sizes="any">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="robots" content="noindex, nofollow">
+<link rel="canonical" href="/hippoproblems">
+<meta http-equiv="refresh" content="0; url=/hippoproblems">
 <!--
-  ACCOMMODATION PAGE — group 2, friends &mdash; on the reserve, paying their own way.
+  MOVED — group 2's accommodation page now lives at /hippoproblems (2026-08-18).
 
-  ONE OF THREE. The others are group-1.html and group-3.html. They are separate
-  files on purpose: Gabby can rewrite this one without touching the other two,
-  and each group gets a URL that can be pasted into a WhatsApp thread.
+  The path is the password there, so friends get one link that both signs them in
+  and lands them on their page. This file stays behind as a redirect because the
+  old /stay/group-2 link may already be in a WhatsApp thread; there is no content
+  here to keep in sync, and nothing to edit. Edit /hippoproblems.html instead.
 
-  WHO SEES IT: group 2, friends &mdash; on the reserve, paying their own way. The guard below sends a signed-out visitor to /login and
-  moves a signed-in visitor on the wrong page to their own. That is a courtesy,
-  not a lock — the check runs in the browser and this file is readable by anyone
-  who knows the URL. See the header of /js/gate.js before putting anything here
-  that would embarrass someone if it leaked. In particular: DON'T write what the
-  other groups are paying.
+  Groups 1 and 3 are unchanged: stay/group-1.html and stay/group-3.html.
 
-  EDITING IT: everything between CONTENT STARTS and CONTENT ENDS is yours. Colours,
-  fonts and spacing are tokens in the :root block below, same names as index.html.
-  Absolute paths (/fonts/…, /images/…, /js/…) because this page sits one folder
-  down; a relative path breaks here.
-
-  THE FORM: the slot at the foot of the page is where this group's questions go.
-  Empty for now — the RSVP at /rsvp still carries its own staying-over block, so
-  nothing is missing while this is being written.
+  The redirect is done twice — a <meta refresh> that works without JavaScript,
+  and location.replace() below, which is faster and leaves no entry in the back
+  button's history. Whichever fires first wins.
 -->
-
-<link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
-
-<style>
-@font-face {
-  font-family: 'Fraunces';
-  src: url('/fonts/fraunces-var.woff2') format('woff2-variations'),
-       url('/fonts/fraunces-var.woff2') format('woff2');
-  font-weight: 100 900; font-style: normal; font-display: swap;
-}
-@font-face {
-  font-family: 'Inter';
-  src: url('/fonts/inter-var.woff2') format('woff2-variations'),
-       url('/fonts/inter-var.woff2') format('woff2');
-  font-weight: 100 900; font-style: normal; font-display: swap;
-}
-
-:root {
-  /* Keep in sync with index.html and rsvp.html. */
-  --bg:#f4efe6; --surface:#fbf8f2; --fg:#3a2e24; --muted:#6e6055;
-  --line:#e2d8c9; --accent:#b0802c; --accent-fg:#fff; --error:#6e1f27;
-  --cta:#46603f; --cta-fg:#ffffff;
-  --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
-  --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --measure: 34rem; --gutter: 1.25rem; --radius: 4px;
-}
-*, *::before, *::after { box-sizing: border-box; }
-html { color-scheme: light; }
-body {
-  margin: 0; background: var(--bg); color: var(--fg);
-  font: 1rem/1.65 var(--font-body); font-optical-sizing: auto;
-  -webkit-font-smoothing: antialiased;
-}
-/* The page is hidden until the guard has run, so a mis-sent link never flashes
-   another group's page before redirecting. .ready is set by the script at the
-   foot; without JS the <noscript> below explains why nothing is here. */
-.page { visibility: hidden; }
-html.ready .page { visibility: visible; }
-.wrap { max-width: var(--measure); margin: 0 auto; padding: 0 var(--gutter); }
-header.top {
-  border-bottom: 1px solid var(--line); background: var(--surface);
-  padding: 1rem 0; margin-bottom: 2.5rem;
-}
-header.top .wrap { display: flex; gap: 1rem; align-items: baseline; justify-content: space-between; }
-a { color: inherit; }
-.back {
-  font: 600 .78rem/1 var(--font-body); letter-spacing: 1.6px; text-transform: uppercase;
-  color: var(--muted); text-decoration: none;
-}
-.back:hover { color: var(--fg); }
-.kicker {
-  font: 600 .78rem/1 var(--font-body); letter-spacing: 1.8px; text-transform: uppercase;
-  color: var(--accent); margin: 0 0 .75rem;
-}
-h1 {
-  font-family: var(--font-display); font-weight: 600; font-size: clamp(2rem, 6vw, 2.9rem);
-  line-height: 1.08; letter-spacing: -.5px; margin: 0 0 1rem;
-}
-h2 {
-  font-family: var(--font-display); font-weight: 600; font-size: 1.4rem;
-  letter-spacing: -.3px; margin: 2.5rem 0 .75rem;
-}
-p { margin: 0 0 1.1rem; }
-.lede { font-size: 1.06rem; color: var(--fg); }
-.note { color: var(--muted); }
-/* Same red dotted marker index.html uses for anything still to be written. */
-.todo {
-  font: 600 .72rem/1 var(--font-body); letter-spacing: 1.2px; text-transform: uppercase;
-  color: var(--error); border-bottom: 1px dotted currentColor;
-}
-.slot {
-  border: 1px dashed var(--line); border-radius: var(--radius);
-  background: var(--surface); padding: 1.25rem; margin: 1.5rem 0;
-}
-.slot h2 { margin-top: 0; }
-footer.foot {
-  border-top: 1px solid var(--line); margin-top: 3.5rem; padding: 1.5rem 0 3rem;
-  color: var(--muted); font-size: .9rem;
-}
-footer.foot button {
-  font: inherit; color: inherit; background: none; border: 0; padding: 0;
-  text-decoration: underline; cursor: pointer;
-}
-</style>
+<script>location.replace('/hippoproblems' + location.search + location.hash);</script>
 </head>
 <body>
-
-<noscript>
-  <div class="wrap" style="padding-top:2rem">
-    <p>This page needs JavaScript, because it works out which version of the
-      accommodation details to show you. Turn it on and reload, or send us a
-      message and we&rsquo;ll tell you where you&rsquo;re staying.</p>
-  </div>
-</noscript>
-
-<div class="page">
-  <header class="top">
-    <div class="wrap">
-      <a class="back" href="/#travel">&larr; Back to the website</a>
-      <a class="back" href="/rsvp">RSVP</a>
-    </div>
-  </header>
-
-  <main class="wrap">
-    <p class="kicker">Where to stay</p>
-
-    <!-- ============================ CONTENT STARTS ============================
-         Gabby's page. Replace everything down to CONTENT ENDS.
-         ===================================================================== -->
-
-    <h1>You&rsquo;re on the reserve at Buffelsdrift</h1>
-
-    <p class="lede"><span class="todo">Words needed</span> &mdash; Gabby is writing this one. Tent types, what a bed costs per person, what&rsquo;s included, and how the lodge bills you.</p>
-
-    <p class="note">Your bed, our table: the room is yours to settle, and the Friday braai, Saturday lunch and all the wedding food stay on our bill.</p>
-
-    <!-- ============================= CONTENT ENDS ============================= -->
-
-    <div class="slot">
-      <h2>Your details</h2>
-      <p class="note"><span class="todo">Form to come</span> &mdash; this group&rsquo;s
-        questions land here. Until then, the staying-over questions on the
-        <a href="/rsvp">RSVP</a> still cover it, so nobody is stuck.</p>
-    </div>
-  </main>
-
-  <footer class="foot">
-    <div class="wrap">
-      <p>Anything unclear, just message us.<br>
-        Not your details? <button type="button" id="signout">Sign out</button></p>
-    </div>
-  </footer>
-</div>
-
-<script src="/js/gate.js"></script>
-<script>
-// Signed out → /login, coming back here afterwards. Signed in on someone else's
-// page → moved to their own. Only reveal the page once neither applies.
-if (AG.guardPage('friends')) {
-  document.documentElement.classList.add('ready');
-  AG.applyTo();
-  document.getElementById('signout')?.addEventListener('click', () => {
-    AG.forget();
-    location.replace('/');
-  });
-}
-</script>
-
+  <p style="font:1rem/1.6 system-ui,sans-serif;margin:2rem">
+    This page has moved. <a href="/hippoproblems">Where you&rsquo;re staying &rarr;</a>
+  </p>
 </body>
 </html>

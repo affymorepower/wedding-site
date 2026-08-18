@@ -88,6 +88,11 @@ legend { font-family:var(--font-display); font-size:1.125rem; padding:0 .5rem; }
 .row { display:grid; gap:1rem; grid-template-columns:1fr 1fr; }
 @media (max-width:30rem) { .row { grid-template-columns:1fr; } }
 
+button.minor {
+  font:inherit; font-weight:500; width:auto; margin:.75rem 0 0; padding:.5rem .8rem;
+  background:none; color:var(--fg); border:1px solid var(--line);
+  border-radius:var(--radius); cursor:pointer;
+}
 button {
   font:inherit; font-weight:600; width:100%; margin-top:2rem; padding:.85rem;
   background:var(--cta); color:var(--cta-fg);
@@ -122,9 +127,12 @@ a.back { color:var(--muted); font-size:.875rem; }
     <p class="lede">Three events over a week: two in Cape Town, one in the Karoo.
       Tell us which ones you're up for. Please reply by <strong>15 October 2026</strong>.</p>
 
-    <h2>Who's replying</h2>
-    <label for="partyName">Your name <span class="hint">(or family name, if you're answering for everyone)</span></label>
-    <input id="partyName" name="partyName" required autocomplete="name">
+    <h2>You</h2>
+    <p class="note">One form each &mdash; your partner gets their own, so you only answer
+      for yourself and any children with you.</p>
+
+    <label for="guestName">Your name</label>
+    <input id="guestName" name="guestName" required autocomplete="name">
 
     <div class="row">
       <div>
@@ -132,32 +140,63 @@ a.back { color:var(--muted); font-size:.875rem; }
         <input id="email" name="email" type="email" required autocomplete="email">
       </div>
       <div>
-        <label for="phone">Phone <span class="hint">(for the group)</span></label>
+        <label for="phone">Phone</label>
         <input id="phone" name="phone" type="tel" autocomplete="tel">
       </div>
     </div>
 
     <label for="coming">Can you make it?</label>
     <select id="coming" name="coming" required>
-      <option value="">Choose…</option>
-      <option value="Yes">Yes, we'll be there</option>
+      <option value="">Choose&hellip;</option>
+      <option value="Yes">Yes, I&rsquo;ll be there</option>
       <option value="No">Sadly not</option>
     </select>
 
     <!-- ===== everything below only applies to a yes ===== -->
     <div id="yesOnly" hidden>
 
-      <label for="headcount">How many of you, including yourself?</label>
-      <input id="headcount" type="number" min="1" max="10" value="1">
+      <label>Which events?</label>
+      <div class="checks">
+        <label><input type="checkbox" id="evPicnic" checked> Welcome picnic &middot; Sun 14, Cape Town</label>
+        <label><input type="checkbox" id="evHolud" checked> Holud &middot; Tue 16, Cape Town</label>
+        <label><input type="checkbox" id="evWedding" checked> Wedding &middot; Sat 20, Oudtshoorn</label>
+      </div>
 
-      <h2>Each of you</h2>
-      <p class="note">Outfit sizes and safari spots are per person, so we need everyone
-        separately. Sorry. It saves a lot of chasing later.</p>
-      <div id="guests"></div>
+      <label for="outfit">Holud outfit
+        <span class="hint">we&rsquo;re providing these, handed out at the picnic</span></label>
+      <p class="note">Ladies pick one. Men automatically get a kurta.</p>
+      <select id="outfit" name="outfit"></select>
+
+      <label for="size">Outfit size</label>
+      <select id="size" name="size"></select>
+
+      <label for="dietary">Dietary requirements <span class="hint">(allergies too)</span></label>
+      <input id="dietary" name="dietary">
+
+      <!-- Game activities. A tick list, not a dropdown: guests may want several, and a
+           multiple <select> is close to unusable on a phone. NO PRICES — the 2027 rates
+           aren't published anywhere citable, so we quote on request. See the ACTIVITIES
+           comment in the script. -->
+      <h2>Game activities</h2>
+      <p class="note" id="activityNote"></p>
+      <div class="checks" id="activities"></div>
 
       <h2>Getting there</h2>
-      <p class="note">We're paying for the coach from Cape Town. Seats are per person.</p>
-      <div id="travel"></div>
+      <div class="checks">
+        <label><input type="checkbox" id="coach" checked> Save me a coach seat</label>
+      </div>
+      <p class="note" id="coachNote"></p>
+
+      <!-- Children. Their own blocks rather than a free-text box: the rooming list needs
+           a bed count and an age band per child (under 3s free and share, 4 to 12 are
+           half rate and can take one of the six extra beds), and prose can't be counted.
+           Partners each get a form, so the same child can arrive twice — deliberately
+           handled by hand rather than by asking who else listed them. -->
+      <h2>Children</h2>
+      <p class="note">Add any children coming with you. If your partner has already filled
+        this in, don&rsquo;t worry &mdash; once is enough.</p>
+      <div id="children"></div>
+      <button type="button" class="minor" id="addChild">Add a child</button>
 
       <!-- =================================================================
            STAYING OVER — three variants, one per group. js/gate.js deletes the
@@ -201,10 +240,6 @@ a.back { color:var(--muted); font-size:.875rem; }
           <option>No</option>
         </select>
 
-        <label for="children">Any children with you?
-          <span class="hint">names and ages &mdash; under 3s share with you, 4 to 12 get
-          their own bed</span></label>
-        <textarea id="children" name="children"></textarea>
 
         <div class="checks">
           <label><input type="checkbox" id="shareFamily"> Happy to share a four-sleeper
@@ -239,10 +274,6 @@ a.back { color:var(--muted); font-size:.875rem; }
           <option>No</option>
         </select>
 
-        <label for="children">Any children with you?
-          <span class="hint">names and ages &mdash; under 3s stay free, 4 to 12 are half
-          price</span></label>
-        <textarea id="children" name="children"></textarea>
 
         <div class="checks">
           <label><input type="checkbox" id="shareFamily"> Happy to share a four-sleeper
@@ -320,157 +351,160 @@ const GROUP_LABEL = {
   town: 'In Town',
 }[GROUP] || '';
 
-// Buffelsdrift's activity list. Prices deliberately NOT baked into these strings —
-// they live once, in the rate table on the site, so a price change is a one-place edit
-// and Airtable doesn't fill with stale amounts inside option names.
-// The first two are the pair an in-house guest can take as their included activity.
-const SAFARI_OPTIONS = [
-  'Bush safari',
-  'Elephant experience',
-  'Night drive',
-  'Lion feeding',
-  'Meerkat safari',
-  'Elephant observation',
-  'Cheetah experience',
-  'Will decide later',
-  'Not interested',
+const onReserve = GROUP === 'family' || GROUP === 'friends';
+
+/* Buffelsdrift's activity list. DELIBERATELY NO PRICES.
+   The 2027 rates are not citable: only the bush safari (R870) appears in
+   Beadri's quote, and the venue's own site publishes 2026 prices about 8%
+   lower. Guests tick what appeals and we quote them individually — which also
+   stops a ticked list reading like a basket they owe money on.
+
+   The values MUST match the choices on the Airtable Safari field, which is now
+   a MULTIPLE select. Labels and meta can be reworded freely; values can't.
+   Age limits are the venue's own, from buffelsdrift.com, checked 18 Aug 2026 —
+   they matter more than prices here because children are now on this form. */
+const ACTIVITIES = [
+  { v: 'Bush safari',          meta: '2 hours, 4 and up' },
+  { v: 'Elephant experience',  meta: '30 minutes at the feeding deck' },
+  { v: 'Night drive',          meta: '2 hours, 4 and up, small groups' },
+  { v: 'Lion feeding',         meta: '4 and up' },
+  { v: 'Meerkat safari',       meta: 'at dawn, 8 and up' },
+  { v: 'Elephant observation', meta: '45 minutes, 1.2m and up' },
+  { v: 'Cheetah experience',   meta: 'half a day, 12 and up' },
 ];
 
-/* Adult prices, shown to TOWN guests only.
+/* One activity comes with a stay on the reserve — the venue's "Complete Wedding
+   Package" is B&B plus a bush safari OR an elephant experience, confirmed both
+   in Beadri's rate sheet and on buffelsdrift.com/pricing. Town guests get
+   neither, so nothing is marked included for them. */
+const INCLUDED = new Set(['Bush safari', 'Elephant experience']);
 
-   Reserve guests have one activity included with their stay, so a price against
-   every line would tell them the wrong thing — they get the plain list, and the
-   rate table in the site's safari FAQ if they want the paid extras.
+const ACTIVITY_NOTE = onReserve
+  ? 'Tick whatever appeals. One is included with your stay &mdash; the bush safari or the '
+    + 'elephant experience. Anything else is a paid extra; tick it and we&rsquo;ll come '
+    + 'back to you with the price.'
+  : 'None of these come with a room in town, but you&rsquo;re very welcome to join. Tick '
+    + 'whatever appeals and we&rsquo;ll come back to you with prices and a slot.';
 
-   These are DUPLICATED from that table in index.html. The strings above are
-   deliberately price-free because they are the Airtable "Safari" select values
-   and `typecast: true` would mint a new choice on every repricing; the price
-   belongs to the label and nowhere else. If Buffelsdrift reprices, this map and
-   the table in index.html move together — there is no third copy. */
-const SAFARI_PRICES = {
-  'Bush safari': 'R870',
-  'Night drive': 'R870',
-  'Lion feeding': 'R870',
-  'Meerkat safari': 'R1 030',
-  'Elephant experience': 'R590',
-  'Elephant observation': 'R1 135',
-  'Cheetah experience': 'R1 665',
-};
+/* The coach is on us. Reserve guests are dropped at the lodge, town guests in
+   Oudtshoorn — same bus, different stop, and saying which one stops a town
+   guest wondering whether this is the local hop on the wedding day. */
+const COACH_NOTE = onReserve
+  ? 'Covered by us &mdash; Cape Town to Buffelsdrift on the Friday, back on the Sunday. '
+    + 'We just need to know who wants a seat.'
+  : 'Covered by us &mdash; Cape Town to Oudtshoorn on the Friday, back on the Sunday. '
+    + 'We just need to know who wants a seat.';
 
-/* What a reserve guest gets free with their stay. These two are the choice, so
-   for family and friends they must read "included" — putting R870 next to a bush
-   safari they are not being charged for would be worse than showing nothing. */
-const SAFARI_INCLUDED = new Set(['Bush safari', 'Elephant experience']);
-
-/* Town guests aren't staying at the lodge, so the reserve framing ("one is
-   included") is not just irrelevant to them, it is wrong. */
-const SAFARI_HINT = GROUP === 'town'
-  ? 'not included with a room in town. These are the lodge&rsquo;s published adult '
-    + 'prices; children 4 to 12 are half, under 3s free. We&rsquo;ve arranged a reduced '
-    + 'rate on the bush safari for our guests &mdash; details nearer the time'
-  : 'one is included with your stay &mdash; the bush safari or the elephant experience. '
-    + 'Anything else is a paid extra at the price shown, and children 4 to 12 are half';
-
-/* Price in the label, never in the value — see SAFARI_PRICES. */
-const safariOpts = () => SAFARI_OPTIONS.map((o) => {
-  const price = SAFARI_PRICES[o];
-  let suffix = '';
-  if (price) {
-    suffix = (GROUP !== 'town' && SAFARI_INCLUDED.has(o))
-      ? ' &mdash; included'
-      : ` &mdash; ${price}`;
-  }
-  return `<option value="${o}">${o}${suffix}</option>`;
-}).join('');
 const SIZES = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'Not sure, measure me'];
-// Pink for the girls, green for the boys, as the Holud section on the site says.
-// These strings are the Airtable "Holud outfit" select options: change them here and
-// the base picks up a new option rather than erroring, so keep README.md in step.
-const OUTFITS = ['Sari, shades of pink (girls)', 'Kurta, shades of green (boys)', 'Either, surprise me'];
 
-const form   = document.getElementById('rsvp');
-const coming = document.getElementById('coming');
-const yesOnly= document.getElementById('yesOnly');
-const count  = document.getElementById('headcount');
-const guests = document.getElementById('guests');
-const travel = document.getElementById('travel');
-const status = document.getElementById('status');
-const button = form.querySelector('button');
+// Pink for the women, green for the men, as the Holud section on the site says.
+// Women choose between the two pink options; men are getting a kurta either way,
+// which is what the note above the field says rather than a third "either".
+// These strings are the Airtable "Holud outfit" select options.
+const OUTFITS = [
+  'Sari, shades of pink',
+  'Seluar kameez, shades of pink',
+  'Kurta, shades of green',
+];
+
+// Age bands, not birthdays: these are the venue's billing bands. Under 3s are
+// free and share a bed, 4 to 12 are half rate and can take one of the six extra
+// child beds, 13 and over are charged as adults.
+const AGES = ['Under 3', '4 to 12', '13 or older'];
+const BEDS = ['In our tent', 'Needs their own bed'];
+
+const form     = document.getElementById('rsvp');
+const coming   = document.getElementById('coming');
+const yesOnly  = document.getElementById('yesOnly');
+const children = document.getElementById('children');
+const status   = document.getElementById('status');
+const button   = form.querySelector('button[type="submit"]');
 
 const opts = (list) => list.map(o => `<option>${o}</option>`).join('');
+const choose = (list) => `<option value="">Choose&hellip;</option>${opts(list)}`;
 
-function guestBlock(i) {
-  const n = i + 1;
-  return `
-    <fieldset data-guest="${i}">
-      <legend>${n === 1 ? 'You' : 'Guest ' + n}</legend>
+document.getElementById('outfit').innerHTML = choose(OUTFITS);
+document.getElementById('size').innerHTML = choose(SIZES);
+document.getElementById('activityNote').innerHTML = ACTIVITY_NOTE;
+document.getElementById('coachNote').innerHTML = COACH_NOTE;
 
-      <label for="g${i}name">Name</label>
-      <input id="g${i}name" data-field="name" required>
-
-      <label>Which events?</label>
-      <div class="checks">
-        <label><input type="checkbox" data-field="picnic" checked> Welcome picnic &middot; Sun 14, Cape Town</label>
-        <label><input type="checkbox" data-field="holud"  checked> Holud &middot; Tue 16, Cape Town</label>
-        <label><input type="checkbox" data-field="wedding" checked> Wedding &middot; Sat 20, Oudtshoorn</label>
-      </div>
-
-      <label for="g${i}outfit">Holud outfit <span class="hint">(we're providing these, handed out at the picnic)</span></label>
-      <select id="g${i}outfit" data-field="outfit"><option value="">Choose…</option>${opts(OUTFITS)}</select>
-
-      <label for="g${i}size">Outfit size</label>
-      <select id="g${i}size" data-field="size"><option value="">Choose…</option>${opts(SIZES)}</select>
-
-      <label for="g${i}diet">Dietary requirements <span class="hint">(allergies too)</span></label>
-      <input id="g${i}diet" data-field="dietary">
-
-      <label for="g${i}safari">Game activity
-        <span class="hint">${SAFARI_HINT}</span></label>
-      <select id="g${i}safari" data-field="safari"><option value="">Choose…</option>${safariOpts()}</select>
-    </fieldset>`;
+/* One tick list, used for the guest and again inside every child block. */
+function activityChecks() {
+  return ACTIVITIES.map((a) => {
+    const meta = onReserve && INCLUDED.has(a.v) ? `included &mdash; ${a.meta}` : a.meta;
+    return `<label><input type="checkbox" data-activity="${a.v}"> ${a.v}
+      <span class="hint">${meta}</span></label>`;
+  }).join('');
 }
+document.getElementById('activities').innerHTML = activityChecks();
 
-function travelBlock(i) {
-  const n = i + 1;
-  return `<label><input type="checkbox" data-seat="${i}" checked>
-    Coach seat for ${n === 1 ? 'me' : 'guest ' + n}</label>`;
+/* A child block. Added on demand and removable, so a couple with no children
+   never sees an empty fieldset and a couple with three isn't capped.
+   No outfit or size: the Holud outfits are made for adults. Town children get
+   no bed question — their parents book their own rooms. */
+let childCount = 0;
+function addChild() {
+  const i = childCount++;
+  const fs = document.createElement('fieldset');
+  fs.dataset.child = String(i);
+  fs.innerHTML = `
+    <legend>Child ${i + 1}</legend>
+
+    <label for="c${i}name">Their name</label>
+    <input id="c${i}name" data-field="name">
+
+    <label for="c${i}age">Age</label>
+    <select id="c${i}age" data-field="age">${choose(AGES)}</select>
+
+    <label>Which events?</label>
+    <div class="checks">
+      <label><input type="checkbox" data-field="picnic" checked> Welcome picnic</label>
+      <label><input type="checkbox" data-field="holud" checked> Holud</label>
+      <label><input type="checkbox" data-field="wedding" checked> Wedding</label>
+    </div>
+
+    <label for="c${i}diet">Dietary requirements</label>
+    <input id="c${i}diet" data-field="dietary">
+
+    <label>Game activities <span class="hint">same age limits apply</span></label>
+    <div class="checks">${activityChecks()}</div>
+    ${onReserve ? `
+    <label for="c${i}bed">Sleeping</label>
+    <select id="c${i}bed" data-field="sleeping">${choose(BEDS)}</select>` : ''}
+
+    <button type="button" class="minor" data-remove>Remove</button>`;
+  fs.querySelector('[data-remove]').addEventListener('click', () => fs.remove());
+  children.appendChild(fs);
 }
+document.getElementById('addChild').addEventListener('click', addChild);
 
-function render() {
-  const n = Math.max(1, Math.min(10, Number(count.value) || 1));
-  // Preserve what's already typed when the headcount changes.
-  const kept = readGuests();
-  guests.innerHTML = Array.from({ length: n }, (_, i) => guestBlock(i)).join('');
-  travel.innerHTML = `<div class="checks">${Array.from({ length: n }, (_, i) => travelBlock(i)).join('')}</div>`;
-  kept.slice(0, n).forEach((g, i) => {
-    const fs = guests.querySelector(`[data-guest="${i}"]`);
-    Object.entries(g).forEach(([k, v]) => {
-      const el = fs.querySelector(`[data-field="${k}"]`);
-      if (!el) return;
-      if (el.type === 'checkbox') el.checked = v; else el.value = v;
-    });
-  });
-}
+const ticked = (root) => [...root.querySelectorAll('[data-activity]')]
+  .filter(el => el.checked).map(el => el.dataset.activity);
 
-function readGuests() {
-  return [...guests.querySelectorAll('[data-guest]')].map(fs => {
-    const out = {};
-    fs.querySelectorAll('[data-field]').forEach(el => {
-      out[el.dataset.field] = el.type === 'checkbox' ? el.checked : el.value;
-    });
-    return out;
-  });
+function readChildren() {
+  return [...children.querySelectorAll('[data-child]')].map((fs) => {
+    const val = (f) => fs.querySelector(`[data-field="${f}"]`)?.value || '';
+    const chk = (f) => !!fs.querySelector(`[data-field="${f}"]`)?.checked;
+    return {
+      name: val('name'),
+      age: val('age'),
+      dietary: val('dietary'),
+      sleeping: val('sleeping'),
+      picnic: chk('picnic'),
+      holud: chk('holud'),
+      wedding: chk('wedding'),
+      activities: ticked(fs),
+    };
+  // A block someone opened and left blank is not a child.
+  }).filter(c => c.name.trim());
 }
 
 const toggle = () => {
   const yes = coming.value === 'Yes';
   yesOnly.hidden = !yes;
-  yesOnly.querySelectorAll('input,select').forEach(el => el.disabled = !yes);
-  if (yes && !guests.children.length) render();
+  yesOnly.querySelectorAll('input,select,button').forEach(el => el.disabled = !yes);
 };
-
 coming.addEventListener('change', toggle);
-count.addEventListener('input', render);
 toggle();
 
 form.addEventListener('submit', async (e) => {
@@ -480,39 +514,44 @@ form.addEventListener('submit', async (e) => {
   status.textContent = 'Sending…';
 
   const attending = coming.value === 'Yes';
-  const seats = [...travel.querySelectorAll('[data-seat]')].map(el => el.checked);
+  const el = (id) => document.getElementById(id);
 
   // gate.js has already deleted the two staying-over blocks that don't apply, so
   // every one of these is a read on an element that may legitimately be absent
   // rather than empty. Optional chaining, not a value read.
   //   accommodation  town only
   //   the other four family + friends
-  const el = (id) => document.getElementById(id);
   const accommodation = el('accommodation')?.value || '';
   const nights        = el('nights')?.value || '';
-  const children      = el('children')?.value || '';
   const thirdNight    = el('thirdNight')?.value || '';
   const shareFamily   = !!el('shareFamily')?.checked;
 
   const payload = {
-    website: document.getElementById('website').value,   // honeypot
-    party: {
-      partyName: document.getElementById('partyName').value,
-      email: document.getElementById('email').value,
-      phone: document.getElementById('phone').value,
+    website: el('website').value,   // honeypot
+    guest: {
+      name: el('guestName').value,
+      email: el('email').value,
+      phone: el('phone').value,
       attending: coming.value,
       group: GROUP_LABEL,
+      picnic: attending && el('evPicnic').checked,
+      holud: attending && el('evHolud').checked,
+      wedding: attending && el('evWedding').checked,
+      outfit: attending ? el('outfit').value : '',
+      size: attending ? el('size').value : '',
+      dietary: attending ? el('dietary').value : '',
+      activities: attending ? ticked(el('activities')) : [],
+      coach: attending && el('coach').checked,
       accommodation: attending ? accommodation : '',
       nights: attending ? nights : '',
-      children: attending ? children : '',
       thirdNight: attending ? thirdNight : '',
       shareFamily: attending ? shareFamily : false,
-      song: attending ? document.getElementById('song').value : '',
-      message: document.getElementById('message').value,
+      song: attending ? el('song').value : '',
+      message: el('message').value,
     },
-    guests: attending
-      ? readGuests().map((g, i) => ({ ...g, coach: !!seats[i] }))
-      : [],
+    // Children ride on the adult's answers for the things they can't answer
+    // themselves: the same coach, the same group, the same contact details.
+    children: attending ? readChildren() : [],
   };
 
   try {
