@@ -692,6 +692,13 @@ a:hover, a:focus-visible { color: var(--pane-fg, var(--ink)); }
   display: grid; gap: clamp(1.25rem, 3vw, 2rem); margin-top: 2.6rem;
   grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
 }
+/* Four properties, so the columns are named rather than left to auto-fit: at
+   minmax(15rem, 1fr) four of them need about 66rem and the wrap is 62rem, so
+   the fourth would drop to a row of its own and read as an afterthought.
+   Two-up, then four across once there is room. Margin matches the 1.4rem the
+   other two variants take under their opener. */
+.stays--town { grid-template-columns: repeat(2, 1fr); margin-top: 1.4rem; }
+@media (min-width: 58rem) { .stays--town { grid-template-columns: repeat(4, 1fr); } }
 .stay {
   display: block; text-decoration: none; color: inherit;
   background: var(--card-bg); border: 1px solid var(--pane-rule);
@@ -1385,32 +1392,77 @@ footer p + p { margin-top: .5rem; }
       </div>
     </div>
 
-    <!-- The $50 day-visitor figure that used to sit here is gone (2026-08-18).
-         The rate isn't settled, and a number on the front page that /marriedtothestars
-         doesn't repeat is the kind of thing a guest budgets from and then queries.
-         The RSVP collects interest instead, and we quote once we know numbers.
+    <!-- ---------- town: booking their own ----------
+         Rewritten 2026-08-19. This block used to be the two paragraphs below
+         and nothing else, untagged, so every group read them; they are town's
+         alone now.
 
-         Both paragraphs used to sit untagged as direct children of the wrap, so
-         every group read them — including family and friends, who are neither
-         day visitors nor booking anything on Booking.com. They are addressed to
-         people NOT sleeping at the reserve, so they are now tagged as exactly
-         that (Gabby, 2026-08-19): data-stay, not data-group, because the split
-         is about where a guest sleeps rather than which list they are on. That
-         also makes this the section's only real data-stay="town" block — until
-         now the town variant was these two untagged paragraphs and nothing
-         else. -->
+         The Booking.com panel runs on .rail, the same carousel as the lodge
+         stamps, so there is one rotation to maintain rather than two. Three
+         cards at a time on a wide screen, one on a phone.
+
+         NO PRICES on these cards, deliberately. The old grid carried "R1 762
+         for the two nights" and a fineprint saying the figures move — they were
+         a Booking.com snapshot taken in August 2026 for a March 2027 weekend,
+         and a stale number is the kind of thing a guest budgets from and then
+         queries. Name, place and the link; Booking.com quotes the price live.
+         The fineprint went with them.
+
+         PLACEHOLDER CONTENT: these three are the properties this section
+         carried before, recovered from 38ab7bc. Gabby's wishlist is the real
+         source and could not be read from here — Booking.com serves that page
+         behind a session, so it fetches as empty. Swap these for the wishlist's
+         properties; the rail rotates on any number of cards. -->
     <div data-stay="town">
-      <p class="lede" style="margin-top:2.4rem">Unfortunately, the wedding venue
-        can&rsquo;t accommodate all our guests, but they are very happy to organise safari
-        drives for any day visitors. If you are interested in this, let us know in the
-        RSVP, and we will share pricing and options.</p>
+      <p class="lede stay__intro">We highly recommend staying in Oudtshoorn or the
+        surrounding area for the wedding weekend. Oudtshoorn itself is a 9-minute drive
+        from Buffelsdrift, and we will also arrange transfers there and back on the
+        wedding day.</p>
 
-      <!-- Note this fineprint outlived the thing it annotates: the .stays price
-           cards it refers to came out on 2026-08-18. The only rates left are in
-           the FAQ table. -->
-      <p class="fineprint">Prices are what Booking.com showed for a double room for two
-        adults over the wedding weekend, Friday 19 to Sunday 21 March 2027, and they move.
-        Book it yourself, and book it early.</p>
+      <p class="lede stay__intro">Unfortunately, the wedding venue can&rsquo;t accommodate
+        all our guests, but they are very happy to organise safari drives for any day
+        visitors. If you are interested in this, let us know in the RSVP, and we will
+        share pricing and options.</p>
+
+      <!-- Gabby's four, 2026-08-19. The hrefs are her own Booking.com share
+           links, kept as sent rather than swapped for the canonical
+           /hotel/za/... URLs they resolve to: the share link carries her
+           affiliate and referral parameters, and the long URL does not.
+
+           NO PHOTOS AND NO DESCRIPTIONS YET, and that is a limitation rather
+           than a choice. Booking.com answers every automated request with a
+           202 and a JavaScript bot challenge — no property page, no image URL,
+           no review score — so the only facts available here are the names,
+           which come from the resolved slugs, and the links themselves. Writing
+           "a guest farm 7 km out, breakfast included" under any of these would
+           be invention. Awaiting a photo and a line each; .stay renders an
+           <img> above .stay__body when they arrive. -->
+      <div class="stays stays--town">
+        <a class="stay" target="_blank" rel="noopener" href="https://www.booking.com/Share-RXMrDuu">
+          <div class="stay__body">
+            <h4>Karoo Retreat</h4>
+            <p class="meta">View on Booking.com</p>
+          </div>
+        </a>
+        <a class="stay" target="_blank" rel="noopener" href="https://www.booking.com/Share-J95jMW4">
+          <div class="stay__body">
+            <h4>88 Baron van Reede Guesthouse</h4>
+            <p class="meta">View on Booking.com</p>
+          </div>
+        </a>
+        <a class="stay" target="_blank" rel="noopener" href="https://www.booking.com/Share-5Jumnp3">
+          <div class="stay__body">
+            <h4>Hlangana Lodge</h4>
+            <p class="meta">View on Booking.com</p>
+          </div>
+        </a>
+        <a class="stay" target="_blank" rel="noopener" href="https://www.booking.com/Share-8eUdj3">
+          <div class="stay__body">
+            <h4>La Pension Guest House</h4>
+            <p class="meta">View on Booking.com</p>
+          </div>
+        </a>
+      </div>
     </div>
 
   </div>
