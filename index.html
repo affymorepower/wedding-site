@@ -731,13 +731,16 @@ a:hover, a:focus-visible { color: var(--pane-fg, var(--ink)); }
   max-width: none; text-align: center;
 }
 .stay__intro + .stay__grid, .stay__intro + .stay__intro + .stay__grid { margin-top: 2.6rem; }
-/* Family's opener is a single line, where friends' is a full paragraph, so the
-   2.6rem above reads as far more air on /zebracrossing than it does on
-   /hippoproblems for the same number. Tightened for family only rather than
-   changing the shared number, which is correctly sized under a paragraph.
-   Scoped on the <html> element, which gate.js stamps with the signed-in group —
-   NOT on [data-group], which is also on the blocks themselves. */
-html[data-group="family"] .stay__intro + .stay__grid { margin-top: 1.3rem; }
+/* The family-only 1.3rem that briefly sat here is gone (Gabby, 2026-08-19):
+   the gap should match What to wear's byline-to-dress-code step, which is
+   .cards' 2.6rem — the same number the shared rule above already carries. So
+   there is nothing to override. Keep these two in step if either moves. */
+/* Match the standfirst under What to wear, which is a bare <p> and so takes the
+   pane foreground. .practical .lede overrides that to --pane-mute, which is why
+   the opener read lighter than the paragraph beside the rail. Same tone, not the
+   same value: this pane is gold, so --pane-fg resolves per pane. Size already
+   matched — .lede sets no font-size, only measure and margin. */
+html[data-group="family"] .stay__intro { color: var(--pane-fg); }
 
 /* ---- the locked state ----
    What a signed-out visitor sees where their accommodation would be. It has to
