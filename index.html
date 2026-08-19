@@ -731,6 +731,13 @@ a:hover, a:focus-visible { color: var(--pane-fg, var(--ink)); }
   max-width: none; text-align: center;
 }
 .stay__intro + .stay__grid, .stay__intro + .stay__intro + .stay__grid { margin-top: 2.6rem; }
+/* Family's opener is a single line, where friends' is a full paragraph, so the
+   2.6rem above reads as far more air on /zebracrossing than it does on
+   /hippoproblems for the same number. Tightened for family only rather than
+   changing the shared number, which is correctly sized under a paragraph.
+   Scoped on the <html> element, which gate.js stamps with the signed-in group —
+   NOT on [data-group], which is also on the blocks themselves. */
+html[data-group="family"] .stay__intro + .stay__grid { margin-top: 1.3rem; }
 
 /* ---- the locked state ----
    What a signed-out visitor sees where their accommodation would be. It has to
@@ -1262,8 +1269,8 @@ footer p + p { margin-top: .5rem; }
     <div data-stay="reserve">
       <!-- The opener sits full width under the heading, the same shape as the
            standfirst in What to wear. Everything after it runs beside the rail. -->
-      <p class="lede stay__intro" data-group="family"><strong>Our beloved family! Accommodation is on
-        us for the wedding weekend!</strong></p>
+      <p class="lede stay__intro" data-group="family">Our beloved family! Accommodation is on
+        us for the wedding weekend!</p>
 
       <p class="lede stay__intro" data-group="friends"><strong>Our nearest and dearest!</strong> We
         would love to invite you to stay at the venue with us on the Friday and
