@@ -1023,62 +1023,31 @@ body.scrolled nav { opacity: 1; visibility: visible; transform: none; }
   color: var(--pane-mute); font-size: var(--text-md);
 }
 /* ---- the Instagram card ----
-   Chrome that reads as a post: avatar row, square photograph, action icons,
-   caption. It sits on the maroon ground, so the card sets its OWN light
-   surface and inks rather than inheriting the pane's - otherwise the borders
-   and the muted text would be tuned for dark and vanish on cream. */
+   The post chrome is inside the image, so there is nothing to build here: a
+   linked picture, sized small on purpose. It is a signpost under the call to
+   action, not a second hero. */
 .gram__card {
-  --ig-fg: var(--ink);
-  --ig-mute: #8a6f52;
-  --ig-rule: rgba(55, 11, 11, .14);
-  display: block; width: min(20rem, 86vw); margin: 0 auto;
-  background: var(--card-bg); color: var(--ig-fg);
-  border-radius: 10px; overflow: hidden; text-align: left;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, .3);
+  display: block; width: min(15rem, 66vw); margin: 0 auto;
+  text-decoration: none; color: inherit;
+}
+.gram__post {
+  display: block; width: 100%; height: auto; border-radius: 4px;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, .32);
   transition: transform .2s ease, box-shadow .2s ease;
 }
-.gram__card:hover, .gram__card:focus-visible {
-  transform: translateY(-3px); box-shadow: 0 22px 52px rgba(0, 0, 0, .38);
+.gram__card:hover .gram__post, .gram__card:focus-visible .gram__post {
+  transform: translateY(-3px); box-shadow: 0 20px 44px rgba(0, 0, 0, .4);
 }
-
-/* The header row: avatar, handle over place, and the overflow dots. */
-.gram__head { display: flex; align-items: center; gap: .6rem; padding: .7rem .8rem; }
-.gram__avatar {
-  flex: none; width: 2rem; height: 2rem; border-radius: 50%;
-  display: grid; place-items: center;
-  background: var(--gold); color: var(--gold-fg);
-  font: 600 .625rem/1 var(--font-body); letter-spacing: .5px;
-}
-.gram__who { display: flex; flex-direction: column; gap: .1rem; min-width: 0; }
-.gram__name { font: 600 var(--text-xs)/1.2 var(--font-body); letter-spacing: 0; color: var(--ig-fg); }
-.gram__place { font: 400 var(--text-2xs)/1.2 var(--font-body); color: var(--ig-mute); }
-.gram__dots { margin-left: auto; color: var(--ig-mute); letter-spacing: 1px; }
-
-/* Square, because a post is. The photograph is portrait, so it fills and crops. */
-.gram__post {
-  display: block; width: 100%; aspect-ratio: 1; object-fit: cover;
-  object-position: center 35%;
-  border-block: 1px solid var(--ig-rule);
-}
-
-/* The action row. Decorative: aria-hidden in the markup, and no hover state, so
-   nothing invites a tap that would do nothing. */
-.gram__bar { display: flex; align-items: center; gap: .85rem; padding: .7rem .8rem .3rem; }
-.gram__bar svg { width: 1.35rem; height: 1.35rem; color: var(--ig-fg); }
-.gram__bar .gram__save { margin-left: auto; }
-
-.gram__caption {
-  display: block; padding: 0 .8rem .9rem;
-  font-size: var(--text-xs); line-height: 1.5; color: var(--ig-fg);
-}
-/* The one honest affordance in the card, so the chrome above is never the thing
-   a guest has to work out how to use. */
+/* Says where the card goes. The heart and the comment bubble are painted into
+   the picture, so without this there is nothing telling a guest that the only
+   thing here that does anything is the link itself. */
 .gram__cta {
-  display: block; margin-top: .5rem;
+  display: block; margin-top: .9rem; color: var(--pane-link);
   font: 600 var(--text-2xs)/1 var(--font-body);
-  letter-spacing: 1.4px; text-transform: uppercase; color: var(--accent);
+  letter-spacing: 1.4px; text-transform: uppercase;
+  transition: color .15s ease;
 }
-.gram__card:hover .gram__cta, .gram__card:focus-visible .gram__cta { color: var(--ig-fg); }
+.gram__card:hover .gram__cta, .gram__card:focus-visible .gram__cta { color: var(--pane-fg); }
 
 /* padding-top, not zero: without it the first <p>'s margin collapses out of
    the footer and a stripe of page ground shows between two maroon sections. */
@@ -1762,23 +1731,17 @@ footer p + p { margin-top: .5rem; }
     <a class="btn" href="/rsvp">RSVP</a>
 
     <!-- ===== instagram =====
-         Built to READ as an Instagram post: avatar and handle row, the square
-         photograph, the action icons, then a caption. The chrome is decorative
-         and every bit of it is aria-hidden - the heart does not like anything
-         and the bubble does not open comments. What it actually is, is one link
-         to the profile, and the caption's last line says so in words so nobody
-         taps a heart expecting it to do something.
+         The card chrome is BAKED INTO THE IMAGE - Gabby's own mockup, avatar
+         row, action icons and all - so there is no hand-built post shell here
+         any more. That means nothing in it is real: the heart is part of the
+         picture, not a control, which is why the whole thing is one anchor to
+         the profile and a line underneath says in words where it goes.
 
-         One anchor wrapping the whole card, so the entire thing is the target.
-         That is also why nothing inside it may be an <a>: an anchor inside an
-         anchor is invalid and the parser unnests it.
+         Deliberately small. It is a signpost under the call to action, not a
+         second hero, so it is capped well under the RSVP button's weight.
 
          The account is PRIVATE, so this lands on "This account is private" for
-         anyone not already approved.
-
-         Inside .rsvp, on the same maroon ground as the call to action, so it
-         reads as a footnote to the RSVP rather than a fourth thing to do.
-         Untagged, so all three groups see it. -->
+         anyone not already approved. Untagged, so all three groups see it. -->
     <div class="gram">
       <p class="kicker">Keep up with us</p>
       <p class="gram__lede">We&rsquo;re putting the week&rsquo;s details, the small
@@ -1787,46 +1750,10 @@ footer p + p { margin-top: .5rem; }
 
       <a class="gram__card" href="https://www.instagram.com/affyandgabby"
          target="_blank" rel="noopener">
-        <span class="gram__head">
-          <span class="gram__avatar" aria-hidden="true">A&amp;G</span>
-          <span class="gram__who">
-            <span class="gram__name">affyandgabby</span>
-            <span class="gram__place">Oudtshoorn, South Africa</span>
-          </span>
-          <span class="gram__dots" aria-hidden="true">&middot;&middot;&middot;</span>
-        </span>
-
-        <!-- 720x1085 portrait in a square frame, so object-fit crops it. Nudged
-             above centre because the faces sit about a third of the way down and
-             a straight centre crop pushes them to the very top. -->
-        <img class="gram__post" src="images/instagram-latest.jpg" width="720" height="1085"
-             loading="lazy" alt="Affy and Gabby laughing with their arms around each other
-             in a park, bare winter trees behind them">
-
-        <span class="gram__bar" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
-               stroke-linecap="round" stroke-linejoin="round">
-            <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 1 0-7.8 7.8l1.1 1L12 21l7.7-7.6 1.1-1a5.5 5.5 0 0 0 0-7.8z"/>
-          </svg>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
-               stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7A8.4 8.4 0 0 1 4 11.5 8.5 8.5 0 0 1 12.5 3 8.5 8.5 0 0 1 21 11.5z"/>
-          </svg>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
-               stroke-linecap="round" stroke-linejoin="round">
-            <path d="M22 2 11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/>
-          </svg>
-          <svg class="gram__save" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-               stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
-          </svg>
-        </span>
-
-        <span class="gram__caption">
-          <span class="gram__name">affyandgabby</span> Everything for the week lives here
-          &ndash; the details, the changes, and the countdown to 20 March 2027.
-          <span class="gram__cta">View profile on Instagram</span>
-        </span>
+        <img class="gram__post" src="images/instagram-post.jpg" width="600" height="670"
+             loading="lazy" alt="An Instagram post from Affy and Gabby: the two of them
+             laughing with their arms around each other in a park, bare winter trees behind">
+        <span class="gram__cta">View profile on Instagram</span>
       </a>
     </div>
   </div>
