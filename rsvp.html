@@ -183,7 +183,7 @@ a.back { color:var(--muted); font-size:.875rem; }
         <span class="hint">we&rsquo;re providing these, handed out at the picnic</span></label>
       <select id="outfit" name="outfit"></select>
 
-      <label for="size">Outfit size</label>
+      <label for="size">Holud outfit size</label>
       <select id="size" name="size"></select>
 
       <label for="dietary">Dietary requirements <span class="hint">(allergies too)</span></label>
@@ -432,15 +432,18 @@ const SIZES = ['S', 'M', 'L', 'XL'];
 // The field now names who each option is for, so the note that used to sit above
 // it ("Ladies pick one. Men automatically get a kurta.") is gone.
 //
+// The salwar kameez is no longer offered (Gabby, 2026-08-19) — sari or kurta.
+// Anyone it does not suit is covered by the line in the What to wear drawer
+// asking them to get in touch, rather than by a third option here.
+//
 // !! THESE STRINGS ARE AIRTABLE SELECT OPTIONS, AND THEY HAVE CHANGED. The API
 // sends with typecast:true, which SILENTLY CREATES a new choice rather than
-// erroring, so the Holud outfit field will gain these three alongside the old
+// erroring, so the Holud outfit field will gain these two alongside the old
 // 'Sari, shades of pink' / 'Seluar kameez, shades of pink' / 'Kurta, shades of
 // green'. Any RSVP already in the base still carries the old wording. Tidy the
 // field by hand, or a filter on the old strings will quietly miss new replies.
 const OUTFITS = [
   'Ladies Pink Sari',
-  'Ladies Pink Salwar Kameez',
   'Gents Green Kurta',
 ];
 
