@@ -715,6 +715,10 @@ a:hover, a:focus-visible { color: var(--pane-fg, var(--ink)); }
   margin-top: 2.6rem;
 }
 @media (min-width: 52rem) { .stay__grid { grid-template-columns: 1fr 1fr; } }
+/* The rail is family-only and gate.js deletes it for everyone else, which would
+   otherwise leave friends with their words in the left half and an empty right
+   one. No rail, one column. */
+.stay__grid:not(:has(.rail)) { grid-template-columns: 1fr; }
 /* The rail is the last thing in the grid, so its own bottom margin would show
    up as a gap above the friends' money paragraphs on a phone. */
 .stay__copy > :last-child { margin-bottom: 0; }
@@ -1273,6 +1277,23 @@ footer p + p { margin-top: .5rem; }
             else (like an elephant or lion experience).</p>
         </div>
 
+        <!-- Family only. Same markup and same class as the Our story rail, so the
+             one script at the foot picks it up and it inherits everything that
+             one does: snap scrolling, the 4s timer that stands down on hover,
+             focus or touch, and the clone that makes it loop rather than rewind.
+             Buffelsdrift's own photographs, franked to match the album upstairs.
+             gate.js removes this for friends, and .stay__grid collapses to one
+             column when it goes. -->
+        <div class="rail" data-group="family" tabindex="0" role="group"
+             aria-roledescription="carousel" aria-label="Photographs of Buffelsdrift, the game lodge">
+          <figure class="stamp"><img loading="lazy" width="500" height="500" src="images/stamps-lodge/12.webp" alt="A luxury tent at dusk, aloes and red flowers on the slope below it"></figure>
+          <figure class="stamp"><img loading="lazy" width="500" height="500" src="images/stamps-lodge/13.webp" alt="Inside a tent: bed, patterned cushions and an armchair by the window"></figure>
+          <figure class="stamp"><img loading="lazy" width="500" height="500" src="images/stamps-lodge/14.webp" alt="A tent bedroom with the deck door open onto the reserve"></figure>
+          <figure class="stamp"><img loading="lazy" width="500" height="500" src="images/stamps-lodge/15.webp" alt="A tent bathroom: stone basin, mirror lights and a freestanding bath by the window"></figure>
+          <figure class="stamp"><img loading="lazy" width="500" height="500" src="images/stamps-lodge/16.webp" alt="The view from a shaded deck across the waterhole to the Swartberg"></figure>
+          <figure class="stamp"><img loading="lazy" width="500" height="500" src="images/stamps-lodge/17.webp" alt="Five meerkats standing on a sandy bank"></figure>
+          <figure class="stamp"><img loading="lazy" width="500" height="500" src="images/stamps-lodge/18.webp" alt="The thatched main lodge on stilts, reflected in the waterhole"></figure>
+        </div>
       </div>
 
       <p class="lede" data-group="friends">Most of the rooms are for two sharing. There are
