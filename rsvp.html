@@ -165,8 +165,8 @@ a.back:hover, a.back:focus-visible { color:var(--fg); }
   <a class="back" href="/">&larr; Back</a>
 
   <div id="thanks" class="done" hidden>
-    <h1>Thank you</h1>
-    <p id="thanksMsg" class="lede"></p>
+    <h1>Thank you for your RSVP 💛</h1>
+    <p id="thanksMsg" class="lede" hidden></p>
     <a class="back" href="/">Back to the site</a>
   </div>
 
@@ -711,9 +711,15 @@ form.addEventListener('submit', async (e) => {
 
     form.hidden = true;
     document.getElementById('thanks').hidden = false;
-    document.getElementById('thanksMsg').textContent = attending
-      ? 'That is all of it. See you in the Karoo.'
-      : 'Thank you for letting us know. We will miss you.';
+    // Nothing under the heading for a yes — "Thank you for your RSVP" says it.
+    // A no still gets a line, because the same heading alone would read as
+    // cheerful at someone who has just told us they cannot come. The <p> starts
+    // hidden and is only shown when there is something to put in it, or it would
+    // hold its 2.5rem margin under the heading for every accepted RSVP.
+    const msg = attending ? '' : 'Thank you for letting us know. We will miss you.';
+    const msgEl = document.getElementById('thanksMsg');
+    msgEl.textContent = msg;
+    msgEl.hidden = !msg;
     window.scrollTo(0, 0);
   } catch (err) {
     status.className = 'error';
