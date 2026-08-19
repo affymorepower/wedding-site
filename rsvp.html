@@ -198,7 +198,6 @@ a.back { color:var(--muted); font-size:.875rem; }
       <div class="checks" id="activities"></div>
 
       <h2>Getting there</h2>
-      <p class="note" id="coachNote"></p>
       <!-- A choice, not a tick. The old checkbox had no way to say "I'll make my
            own way" that was distinguishable from not having answered. Still
            submitted as the boolean the Airtable Coach field already holds — see
@@ -413,14 +412,11 @@ const ACTIVITY_NOTE = onReserve
   : 'None of these come with a room in town, but you&rsquo;re very welcome to join. Tick '
     + 'whatever appeals and we&rsquo;ll come back to you with prices and a slot.';
 
-/* The coach is on us. Reserve guests are dropped at the lodge, town guests in
-   Oudtshoorn — same bus, different stop, and saying which one stops a town
-   guest wondering whether this is the local hop on the wedding day. */
-const COACH_NOTE = onReserve
-  ? 'Covered by us &mdash; Cape Town to Buffelsdrift on the Friday, back on the Sunday. '
-    + 'We just need to know who wants a seat.'
-  : 'Covered by us &mdash; Cape Town to Oudtshoorn on the Friday, back on the Sunday. '
-    + 'We just need to know who wants a seat.';
+/* The coach note that used to sit under Getting there is gone (Gabby,
+   2026-08-19). It had two variants — dropping reserve guests at the lodge and
+   town guests in Oudtshoorn — so BOTH went with it. Nothing on this form now
+   says the coach is free, or where it starts and ends; if that turns out to be
+   missed, it belongs here rather than in the select's option labels. */
 
 // Four sizes (Gabby, 2026-08-19), down from seven. All four already exist on
 // the Airtable Outfit size field, so nothing new is created; XS, XXL and
@@ -492,7 +488,6 @@ document.getElementById('phoneCode').innerHTML =
 document.getElementById('outfit').innerHTML = choose(OUTFITS);
 document.getElementById('size').innerHTML = choose(SIZES);
 document.getElementById('activityNote').innerHTML = ACTIVITY_NOTE;
-document.getElementById('coachNote').innerHTML = COACH_NOTE;
 
 /* One tick list, used for the guest and again inside every child block. */
 function activityChecks() {
