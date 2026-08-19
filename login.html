@@ -45,6 +45,9 @@
   --cream: #f4efe1; --gold: #d9a257; --maroon: #370b0a;
   --ink: #370b0b; --tan: #aa8c6d; --sand: #f0dfc0; --chalk: #f5f0e1;
   --gold-fg: #3a1608; --gold-mute: #6b3d16;
+  /* The link colour the front page uses on a gold ground (.practical--gold's
+     --pane-link). Named the same here so the two cannot drift. */
+  --pane-link: #6e1f27;
   --font-display: 'Fraunces', Georgia, serif;
   --font-body: 'Inter', system-ui, -apple-system, sans-serif;
 }
@@ -107,13 +110,19 @@ button {
 button:hover:not(:disabled) { background: #52140f; }
 button:disabled { opacity: .55; cursor: default; }
 
+/* Styled as a link the way the rest of the site styles links: no underline,
+   --pane-link at rest, and the pane foreground on hover — the site carries no
+   underline anywhere, so hover IS the affordance (see --link-fade on the front
+   page). Still a <button>, because it swaps a panel rather than navigating;
+   only the look is borrowed. :focus-visible is included as well as :hover, so
+   it answers to the keyboard the same way a real link does. */
 .linkish {
   margin-top: 0; background: none; border: 0; padding: .5rem; width: auto;
-  color: var(--gold-mute); letter-spacing: .4px; text-transform: none;
-  font-size: 14px; font-weight: 400; text-decoration: underline;
-  text-underline-offset: 3px; cursor: pointer;
+  color: var(--pane-link); letter-spacing: .4px; text-transform: none;
+  font-size: 14px; font-weight: 400; text-decoration: none;
+  transition: color .15s ease; cursor: pointer;
 }
-.linkish:hover { background: none; color: var(--gold-fg); }
+.linkish:hover, .linkish:focus-visible { background: none; color: var(--gold-fg); }
 
 /* The gap from the Enter button down to "I don't have a password" is built to
    equal .sub's 2rem — the same step as the one from "Login using the password"
