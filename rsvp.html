@@ -225,114 +225,54 @@ a.back { color:var(--muted); font-size:.875rem; }
       <button type="button" class="minor" id="addChild">Add a child</button>
 
       <!-- =================================================================
-           STAYING OVER — three variants, one per group. js/gate.js deletes the
-           two that don't apply, so only one <select id="accommodation"> ever
-           reaches the DOM and the submit code doesn't need to know which.
+           ACCOMMODATION — family and friends only.
 
-             family   no question at all; their room is covered
-             friends  on-reserve rooms, which they pay for
-             town     Oudtshoorn guesthouses
+           ONE block for both, not two. It used to be three variants with
+           different copy — family told their room was covered, friends quoted
+           R4 887 to R6 615, town asked which guesthouse — and gate.js deleted
+           the two that did not apply. The reserve copy is now identical for both
+           groups (Gabby, 2026-08-19), so the two blocks collapse into one
+           data-group="family friends" and there is no duplicate pair of ids to
+           keep in step.
 
-           Group also rides along on every row (see payload below) so the base
-           can be reconciled against who is being billed for what.
+           TOWN NOW HAS NO ACCOMMODATION SECTION AT ALL. Consequences worth
+           knowing: the <select id="accommodation"> is gone with it, so the
+           Airtable Accommodation field is never written again and can be
+           deleted; and the friends' price range is no longer stated anywhere on
+           this form — /hippoproblems still carries it, but a friend filling this
+           in is no longer told they are paying at the moment they commit.
            ================================================================= -->
+      <div data-group="family friends">
+        <h2>Accommodation</h2>
+        <p class="note">You&rsquo;re invited to stay with us at the venue, Buffelsdrift
+          Game Lodge, for the wedding weekend.</p>
 
-      <!-- ---------- family: no money, but we still have to place them ----------
-           Neither reserve group picks a room. There are 76 guest beds for very
-           nearly 76 people and the four-sleepers have to go four-up for everyone
-           to fit, so a free choice could not be honoured.
-
-           We don't ask who they'd like to share with either: there are only five
-           four-sleepers, so the matchmaking is small enough to do by hand from the
-           "happy to share" ticks. What we ask for is what we can't infer — whether
-           they'll take both nights, who is small enough to share a bed, and who
-           wants the Sunday.
-
-           family and friends use the SAME four ids. gate.js deletes whichever
-           block doesn't apply, so only one of each ever reaches the DOM — the
-           same trick the accommodation select already relied on. -->
-      <div data-group="family">
-        <h2>Staying over</h2>
-        <p class="note">You&rsquo;re with us at Buffelsdrift on the reserve and we&rsquo;re
-          taking care of the room, so there&rsquo;s nothing to pay for here. A game drive
-          is included too &mdash; we&rsquo;ll be in touch about slots. We just need a few
-          things to work out who sleeps where.</p>
-
-        <label for="nights">Are you happy to stay on the game reserve for both the Friday
-          and Saturday nights?</label>
+        <label for="nights">Are you happy to stay at the game lodge for both Friday
+          &amp; Saturday night (19 and 20 March 2027)?</label>
+        <!-- Option strings deliberately unchanged. They are Airtable choices on
+             the Nights field and match the Buffelsdrift rates sheet, so leaving
+             them alone keeps the room allocation pasteable. -->
         <select id="nights" name="nights">
-          <option value="">Choose…</option>
+          <option value="">Choose&hellip;</option>
           <option>Yes, both nights</option>
           <option>No</option>
         </select>
 
-
         <div class="checks">
-          <label><input type="checkbox" id="shareFamily"> Happy to share a four-sleeper
-            family tent with another couple</label>
+          <label><input type="checkbox" id="shareFamily"> Interested in sharing a
+            four-sleeper family tent with another couple.</label>
         </div>
 
-        <label for="thirdNight">Would you like to stay an extra night, the Sunday?
-          <span class="hint">the safari runs again on the Sunday morning &mdash; we&rsquo;ll
-          confirm the rate once we know how many of you want it</span></label>
+        <label for="thirdNight">Would you be interested in staying on the Sunday night
+          as well?</label>
+        <!-- These three ARE new Airtable choices. The field previously held
+             'Yes please' / 'No' / 'Maybe, tell us more'; typecast will add these
+             alongside rather than replace them. -->
         <select id="thirdNight" name="thirdNight">
-          <option value="">Choose…</option>
-          <option>Yes please</option>
+          <option value="">Choose&hellip;</option>
+          <option>Yes</option>
+          <option>Maybe</option>
           <option>No</option>
-          <option>Maybe, tell us more</option>
-        </select>
-      </div>
-
-      <!-- ---------- friends: on the reserve, paying ---------- -->
-      <div data-group="friends">
-        <h2>Staying over</h2>
-        <p class="note">You&rsquo;re at Buffelsdrift on the reserve. Rooms are booked through
-          us and you&rsquo;ll settle up for yours &mdash; R4 887 to R6 615 per person for
-          both nights depending on the tent, with breakfasts and a game drive included.
-          Photographs and prices are on the <a href="/#stay">website</a>. We&rsquo;ll match
-          you to a tent, and the lodge emails you a payment link with the exact amount.</p>
-
-        <label for="nights">Are you happy to stay on the game reserve for both the Friday
-          and Saturday nights?</label>
-        <select id="nights" name="nights">
-          <option value="">Choose…</option>
-          <option>Yes, both nights</option>
-          <option>No</option>
-        </select>
-
-
-        <div class="checks">
-          <label><input type="checkbox" id="shareFamily"> Happy to share a four-sleeper
-            family tent with another couple <span class="hint">&mdash; it works out
-            cheapest per person</span></label>
-        </div>
-
-        <label for="thirdNight">Would you like to stay an extra night, the Sunday?
-          <span class="hint">the safari runs again on the Sunday morning &mdash; we&rsquo;ll
-          confirm the rate once we know how many of you want it</span></label>
-        <select id="thirdNight" name="thirdNight">
-          <option value="">Choose…</option>
-          <option>Yes please</option>
-          <option>No</option>
-          <option>Maybe, tell us more</option>
-        </select>
-      </div>
-
-      <!-- ---------- town: Oudtshoorn ---------- -->
-      <div data-group="town">
-        <h2>Staying over</h2>
-        <p class="note">Oudtshoorn fills up over the wedding weekend, so book early. The
-          three we&rsquo;d point you at are on the <a href="/#stay">website</a>, with
-          prices.</p>
-        <label for="accommodation">Where are you staying?</label>
-        <select id="accommodation" name="accommodation">
-          <option value="">Choose…</option>
-          <option>Old Mill Lodge</option>
-          <option>De Zeekoe Guest Farm</option>
-          <option>La Pension Guest House</option>
-          <option>Somewhere else in Oudtshoorn</option>
-          <option>Haven&rsquo;t booked yet</option>
-          <option>Not staying over</option>
         </select>
       </div>
 
@@ -575,12 +515,9 @@ form.addEventListener('submit', async (e) => {
   const attending = coming.value === 'Yes';
   const el = (id) => document.getElementById(id);
 
-  // gate.js has already deleted the two staying-over blocks that don't apply, so
-  // every one of these is a read on an element that may legitimately be absent
-  // rather than empty. Optional chaining, not a value read.
-  //   accommodation  town only
-  //   the other four family + friends
-  const accommodation = el('accommodation')?.value || '';
+  // gate.js deletes the accommodation block for town, so these are reads on
+  // elements that may legitimately be absent rather than empty. Optional
+  // chaining, not a value read.
   const nights        = el('nights')?.value || '';
   const thirdNight    = el('thirdNight')?.value || '';
   const shareFamily   = !!el('shareFamily')?.checked;
@@ -617,7 +554,6 @@ form.addEventListener('submit', async (e) => {
       // same boolean, so nothing in Airtable has to change. Unanswered reads as
       // false, exactly as an unticked box did.
       coach: attending && el('transport').value === 'yes',
-      accommodation: attending ? accommodation : '',
       nights: attending ? nights : '',
       thirdNight: attending ? thirdNight : '',
       shareFamily: attending ? shareFamily : false,
