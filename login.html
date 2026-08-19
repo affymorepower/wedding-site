@@ -150,7 +150,10 @@ button:disabled { opacity: .55; cursor: default; }
    nothing needs scrolling, not that the phone gets a different design. */
 @media (max-width: 30rem) {
   body { padding: 1.25rem; }
-  h1 { font-size: clamp(1.7rem, 7.5vw, 2.4rem); margin: .5rem 0 .8rem; }
+  h1 { font-size: clamp(1.9rem, 8vw, 2.5rem); margin: .5rem 0 .8rem; }
+  /* Two lines on a phone, as on desktop. Scoped to #signin: the other h1,
+     "No password?", is short and wants to stay on one. */
+  #signin h1 .brk { display: block; }
   .stamp { width: min(100%, 30svh); margin: .8rem auto 1rem; }
   .sub { margin-bottom: 1.4rem; }
   input { padding: .8rem .9rem; margin-bottom: .8rem; }
@@ -165,7 +168,13 @@ button:disabled { opacity: .55; cursor: default; }
 
   <!-- ===== password ===== -->
   <section id="signin">
-    <h1>An African adventure awaits</h1>
+    <!-- The span carries the phone break. On desktop it is inline and the line
+         falls where it falls; on a handset it goes block, so the heading reads
+         over two lines there the way it does here rather than shrinking onto
+         one. A forced break beats sizing it to wrap: type metrics differ
+         between the variable face and its Georgia fallback, so a size that
+         wraps in Fraunces can sit on one line in the fallback. -->
+    <h1>An African adventure <span class="brk">awaits</span></h1>
     <img class="stamp" src="images/ostrich-stamp.webp" width="660" height="660"
          alt="A postage stamp of an ostrich looking into the camera, mountains behind">
     <p class="sub">Login using the password we sent you</p>
