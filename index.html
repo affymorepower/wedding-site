@@ -984,7 +984,16 @@ body.scrolled nav { opacity: 1; visibility: visible; transform: none; }
   --pane-bg: var(--maroon); --pane-fg: var(--chalk); --pane-link: var(--accent-warm);
   --pane-mute: var(--mute-dark); --pane-rule: rgba(240, 223, 192, .2);
   background: var(--pane-bg); color: var(--pane-fg);
-  padding: calc(var(--pane-y) * 1.1) 0 calc(var(--pane-y) * .55); text-align: center;
+  /* The bottom is NOT the whole gap under the Instagram card. footer adds its
+     own 2.5rem padding-top, and both panes are maroon, so the two run together
+     as one uninterrupted space - which is why the bottom read as far larger
+     than the .5 of --pane-y above the card. Subtracting the footer's share
+     makes the two match. max(), because on a phone --pane-y drops to 4rem and
+     the subtraction would otherwise go negative, which is invalid and would
+     silently drop the whole declaration. Coupled by hand: change footer's
+     padding-top and this has to follow. */
+  padding: calc(var(--pane-y) * 1.1) 0 max(0rem, calc(var(--pane-y) * .5 - 2.5rem));
+  text-align: center;
 }
 .rsvp h2 { color: var(--pane-fg); }
 .rsvp p { max-width: 34rem; margin: 1.2rem auto 2.2rem; color: var(--pane-mute); }
