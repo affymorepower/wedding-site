@@ -82,8 +82,13 @@ h1 {
    sits in the file's own alpha, running from roughly 8.5% to 91.5% of the
    square, so the stamp you can SEE is about 83% of this element — which is why
    --field-w below is 83% and not 100%. No frame or radius here; the border is
-   painted into the file. */
-.stamp { display: block; width: 100%; height: auto; margin: 1.2rem 0 1.4rem; }
+   painted into the file.
+
+   The top margin here IS the gap under the heading: it and h1's bottom margin
+   are adjacent siblings in normal flow, so they COLLAPSE to the larger of the
+   two rather than summing. Raising h1's bottom alone moves nothing until it
+   passes this number, so the gap is set here. */
+.stamp { display: block; width: 100%; height: auto; margin: 2.1rem 0 1.4rem; }
 .sub { margin: 0 0 2rem; color: var(--gold-mute); font-size: 15px; }
 
 label {
@@ -154,7 +159,7 @@ button:disabled { opacity: .55; cursor: default; }
   /* Two lines on a phone, as on desktop. Scoped to #signin: the other h1,
      "No password?", is short and wants to stay on one. */
   #signin h1 .brk { display: block; }
-  .stamp { width: min(100%, 30svh); margin: .8rem auto 1rem; }
+  .stamp { width: min(100%, 30svh); margin: 1.5rem auto 1rem; }
   .sub { margin-bottom: 1.4rem; }
   input { padding: .8rem .9rem; margin-bottom: .8rem; }
   button { padding: .85rem; }
