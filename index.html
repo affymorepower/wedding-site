@@ -726,28 +726,25 @@ a:hover, a:focus-visible { color: var(--pane-fg, var(--ink)); }
 .stay__grid + .lede { margin-top: 2.6rem; }
 /* The opener runs full width under the heading, centred like the standfirst in
    What to wear, and the rest of the words sit beside the rail below it. */
+/* The opener above the rail, for both groups on the reserve.
+
+   Colour: the standfirst under What to wear is a bare <p>, so it takes the pane
+   foreground. .practical .lede overrides that to --pane-mute, which is why this
+   read lighter than the paragraph beside the rail. Same token, not the same
+   value — this pane is gold, so --pane-fg resolves per pane. Size needed
+   nothing: .lede sets no font-size, only measure and margin. */
 .stay__intro {
   /* .lede caps at the reading measure; the standfirst in What to wear does not,
      so this has to opt out of it to sit on the same width. */
   max-width: none; text-align: center;
+  color: var(--pane-fg);
 }
-.stay__intro + .stay__grid, .stay__intro + .stay__intro + .stay__grid { margin-top: 2.6rem; }
-/* Family's opener is one short line where friends' is a full paragraph, so the
-   shared 2.6rem — right under a paragraph, and matching What to wear's
-   byline-to-dress-code step — leaves too much air under a single line here.
-   Roughly half of it (Gabby, 2026-08-19). Family only, by explicit instruction:
-   friends' accommodation section is a separate pass, so do NOT fold this into
-   the shared rule above without revisiting /hippoproblems.
-
-   Scoped on <html>, which gate.js stamps with the signed-in group — NOT a bare
-   [data-group], which is also on the content blocks themselves. */
-html[data-group="family"] .stay__intro + .stay__grid { margin-top: 1.4rem; }
-/* Match the standfirst under What to wear, which is a bare <p> and so takes the
-   pane foreground. .practical .lede overrides that to --pane-mute, which is why
-   the opener read lighter than the paragraph beside the rail. Same tone, not the
-   same value: this pane is gold, so --pane-fg resolves per pane. Size already
-   matched — .lede sets no font-size, only measure and margin. */
-html[data-group="family"] .stay__intro { color: var(--pane-fg); }
+/* 1.4rem, not the 2.6rem this used to carry. Both openers are short now, and
+   under a short line 2.6rem — the step What to wear uses under a paragraph —
+   reads as far too much air. Family had this as an html[data-group] override
+   while friends waited; both take it now, so the override is gone rather than
+   duplicated. */
+.stay__intro + .stay__grid, .stay__intro + .stay__intro + .stay__grid { margin-top: 1.4rem; }
 
 /* ---- the locked state ----
    What a signed-out visitor sees where their accommodation would be. It has to
@@ -1327,7 +1324,7 @@ footer p + p { margin-top: .5rem; }
       <p class="lede stay__intro" data-group="family">Our beloved family! Accommodation is on
         us for the wedding weekend!</p>
 
-      <p class="lede stay__intro" data-group="friends"><strong>Our nearest and dearest!</strong> We
+      <p class="lede stay__intro" data-group="friends">Our nearest and dearest! We
         would love to invite you to stay at the venue with us on the Friday and
         Saturday night. You&rsquo;ll also have the option to extend to Sunday night if
         you would like to soak up more of the bush before heading home.</p>
