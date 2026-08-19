@@ -1007,6 +1007,49 @@ body.scrolled nav { opacity: 1; visibility: visible; transform: none; }
 .stamps .btn:hover, .event--wedding .btn:hover,
 .practical--dark .btn:hover, .rsvp .btn:hover { background: var(--gold); }
 
+/* ---- instagram, under the call to action ----
+   A footnote to the RSVP, on the same maroon ground, so it reads as "and keep
+   up with us here" rather than as a second thing being asked of the guest.
+   Ruled off above for that reason: same pane, separate thought. */
+.gram {
+  margin-top: calc(var(--pane-y) * .55);
+  padding-top: calc(var(--pane-y) * .5);
+  border-top: 1px solid var(--pane-rule);
+}
+/* .rsvp p is capped at 34rem and centred; this needs the same but has to say so
+   itself, since it is not a bare <p> in that pane. */
+.gram__lede {
+  max-width: 34rem; margin: 0 auto 1.8rem;
+  color: var(--pane-mute); font-size: var(--text-md);
+}
+/* Picture and handle are one link, so the card is the anchor. color:inherit
+   because the handle sets its own; the shared a rule would tint the whole box. */
+.gram__card {
+  display: block; width: min(15rem, 62vw); margin: 0 auto;
+  text-decoration: none; color: inherit;
+}
+/* Square, because an Instagram post is. The photograph is portrait, so it fills
+   and crops - and a 4:5 post would drop in later without reflowing anything. */
+.gram__post {
+  display: block; width: 100%; aspect-ratio: 1; object-fit: cover;
+  object-position: center 35%;
+  border: 1px solid var(--pane-rule);
+  transition: transform .2s ease, border-color .2s ease;
+}
+.gram__card:hover .gram__post, .gram__card:focus-visible .gram__post {
+  transform: translateY(-3px); border-color: var(--sand);
+}
+/* The handle carries the site's link treatment - no underline, colour on hover
+   - with the glyph riding along on currentColor so the two move together. */
+.gram__handle {
+  display: inline-flex; align-items: center; gap: .5rem;
+  margin-top: 1.1rem; color: var(--pane-link);
+  font: 600 var(--text-xs)/1 var(--font-body); letter-spacing: 1.6px;
+  text-transform: uppercase; transition: color .15s ease;
+}
+.gram__card:hover .gram__handle, .gram__card:focus-visible .gram__handle { color: var(--pane-fg); }
+.gram__glyph { flex: none; }
+
 /* padding-top, not zero: without it the first <p>'s margin collapses out of
    the footer and a stripe of page ground shows between two maroon sections. */
 footer {
@@ -1687,6 +1730,45 @@ footer p + p { margin-top: .5rem; }
     <h2>Will you join us?</h2>
     <p>Please RSVP by <strong>15 October 2026</strong></p>
     <a class="btn" href="/rsvp">RSVP</a>
+
+    <!-- ===== instagram =====
+         ONE link, not two. The mockup had the picture going to the post and the
+         handle to the profile, but the account is private, so there is no
+         public post to point at - both halves now sit inside a single anchor to
+         the profile. If it ever goes public and you want the picture to open a
+         specific post, split it back out: the picture cannot be wrapped in the
+         handle's anchor, since an <a> inside an <a> is invalid.
+
+         Inside .rsvp rather than a section of its own, so it stays on the same
+         maroon ground as the call to action and reads as a footnote to it
+         rather than as a fourth thing to do. Untagged, so all three groups see
+         it. -->
+    <div class="gram">
+      <p class="kicker">Keep up with us</p>
+      <p class="gram__lede">We&rsquo;re putting the week&rsquo;s details, the small
+        changes and the build-up on Instagram. It&rsquo;s the quickest way to keep up
+        between now and March.</p>
+
+      <a class="gram__card" href="https://www.instagram.com/affyandgabby"
+         target="_blank" rel="noopener">
+        <!-- 720x1085 portrait in a square frame, so object-fit crops it. The
+             position is nudged above centre because the faces sit about a third
+             of the way down and a straight centre crop pushes them to the very
+             top of the square. -->
+        <img class="gram__post" src="images/instagram-latest.jpg" width="720" height="1085"
+             loading="lazy" alt="Affy and Gabby laughing with their arms around each other
+             in a park, bare winter trees behind them">
+        <span class="gram__handle">
+          <svg class="gram__glyph" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"
+               fill="none" stroke="currentColor" stroke-width="1.9">
+            <rect x="2.6" y="2.6" width="18.8" height="18.8" rx="5.4"/>
+            <circle cx="12" cy="12" r="4.6"/>
+            <circle cx="17.9" cy="6.1" r="1.15" fill="currentColor" stroke="none"/>
+          </svg>
+          @affyandgabby
+        </span>
+      </a>
+    </div>
   </div>
 </section>
 
