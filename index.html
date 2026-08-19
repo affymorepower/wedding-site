@@ -191,6 +191,26 @@
   --pane-y:  clamp(4rem, 9vw, 7rem);   /* vertical padding inside a colour pane */
 }
 
+/* ---- phones ----
+   The desktop ladder was landing too large on a handset: 17px body is a
+   comfortable desktop reading size but reads oversized on a 375px screen,
+   where 16px is the web's normal. The gutter goes up at the same time, so the
+   text has more room off the edge rather than running to it — the two have to
+   move together, since smaller type against the same gutter just looks lost.
+
+   Tokens only, deliberately. Every component reads --text-body / --gutter, so
+   one override here moves the whole page instead of thirty component rules
+   drifting out of step. 46rem matches the breakpoint the hero already uses. */
+@media (max-width: 46rem) {
+  :root {
+    --text-body: 16px;
+    --gutter: 1.5rem;
+  }
+  /* The display face shouts on a narrow screen at its desktop floor. Only the
+     floor moves; the clamp still scales it up from there. */
+  h2 { font-size: clamp(1.8rem, 7vw, 2.7rem); }
+}
+
 *, *::before, *::after { box-sizing: border-box; }
 html {
   scroll-behavior: smooth; color-scheme: light;
@@ -903,20 +923,31 @@ body.scrolled nav { opacity: 1; visibility: visible; transform: none; }
   --pane-mute: var(--mute-light); --pane-rule: rgba(55, 11, 11, .16);
   background: var(--pane-bg); color: var(--pane-fg);
   padding: var(--pane-y) 0; text-align: center;
+  --arcade-w: 44rem;   /* the screen's width, and the column everything shares */
 }
 .arcade .kicker { color: var(--mute-dark); }
 .arcade h2 { color: var(--pane-fg); }
-/* Full wrap, like the event panes and the logistics cards, so the last section
-   of the page sits on the same column as everything above it. */
-.arcade .lede { margin: 1.4rem auto 0; max-width: none; color: var(--pane-mute); }
+/* The copy above the game, the game, and the caption under it all sit on ONE
+   column, the width of the screen itself — so the section reads as a single
+   block rather than 62rem of prose with a 44rem panel floating in it. Every
+   width below comes from --arcade-w; change it once and the three stay aligned. */
+.arcade .lede { margin: 1.4rem auto 0; max-width: var(--arcade-w); color: var(--pane-mute); }
 /* inherit, not a literal — the link should follow .lede's colour if that ever
    changes, rather than quietly drifting out of step with the text around it. */
 /* the shared link colour and hover apply; nothing pane-specific needed here */
-.arcade .aside { margin: 1.1rem 0 0; font-size: var(--text-xs); color: var(--pane-mute); }
+/* .aside is a hung note in What to wear — capped at the measure, hung off a
+   left rule, and margin 0 on the sides, so it sits LEFT in the wrap. Under the
+   game it is a caption instead: same column as the screen, centred under it,
+   and no rule, which would read as a stray bar on a centred pane. */
+.arcade .aside {
+  max-width: var(--arcade-w); margin: 1.1rem auto 0;
+  padding-left: 0; border-left: 0;
+  font-size: var(--text-xs); color: var(--pane-mute);
+}
 
 
 .arcade__screen {
-  max-width: 44rem; margin: 2.2rem auto 0;
+  max-width: var(--arcade-w); margin: 2.2rem auto 0;
   aspect-ratio: 8 / 5;
   background: #1a0a05;
   border: 1px solid rgba(55, 11, 11, .18);
@@ -924,6 +955,20 @@ body.scrolled nav { opacity: 1; visibility: visible; transform: none; }
   overflow: hidden;
 }
 .arcade__screen iframe { display: block; width: 100%; height: 100%; border: 0; }
+
+/* On a phone the 8:5 letterbox is only about 210px tall, and the game's own
+   title card and end-of-round overlays are taller than that — so they were
+   being cut off top and bottom by the frame, not by anything on this page.
+   Giving the frame real height lets those overlays show in full. The game
+   keeps letterboxing itself to 8:5 inside, and .arcade__screen's background is
+   the same #1a0a05 the game paints, so the extra height reads as part of the
+   screen rather than as bars. */
+@media (max-width: 46rem) {
+  .arcade__screen {
+    aspect-ratio: auto;
+    height: min(70vh, 28rem);
+  }
+}
 
 /* =========================================================================
    RSVP FOOT — gold, so the last thing on the page is the brightest.
@@ -1452,8 +1497,9 @@ footer p + p { margin-top: .5rem; }
       <ul class="tips">
         <li><strong>Uber tips:</strong> get Uber Black or above; the lower end can be a bit
           shoddy.</li>
-        <li><strong>Car rental tips:</strong> we drive on the left-hand side! Also please
-          don&rsquo;t leave your car on the road overnight wherever possible.</li>
+        <li><strong>Car rental tips:</strong> this is very affordable and we recommend
+          Sixt. Note that we drive on the left-hand side! Also, try not to leave your car
+          on the road overnight wherever possible.</li>
       </ul></details>
 
     <details><summary>Where should we stay in Cape Town?</summary>
