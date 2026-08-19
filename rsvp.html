@@ -76,6 +76,14 @@ h2 {
   font-size:.75rem; letter-spacing:.12em; text-transform:uppercase; color:var(--accent);
   margin:2.5rem 0 .25rem; font-family:var(--font-body); font-weight:600;
 }
+/* A note anywhere: under a question, or as the second and third note in a
+   stack. This used to be h2 + .note ONLY, so any note not sitting directly
+   after a heading fell through to default body type — which is what the two
+   extra notes under Children were doing, rendering full size and in full
+   contrast as though they were prose. */
+.note { color:var(--muted); font-size:.875rem; margin:.45rem 0 0; }
+/* Directly under a heading it introduces the section, so it keeps the roomier
+   bottom margin and no top one. */
 h2 + .note { color:var(--muted); font-size:.875rem; margin:0 0 1rem; }
 
 label { display:block; margin:1.1rem 0 .3rem; font-weight:500; font-size:.9375rem; }
@@ -257,6 +265,12 @@ a.back { color:var(--muted); font-size:.875rem; }
           <option>Yes, both nights</option>
           <option>No</option>
         </select>
+        <!-- Friends pay for their room; family do not. Nested inside the shared
+             block rather than splitting it back into two: gate.js walks every
+             [data-group] in the document, not just the top-level ones, so this
+             is removed for family and the one set of ids stays intact. -->
+        <p class="note" data-group="friends">At around &euro;300 per person for both
+          nights.</p>
 
         <div class="checks">
           <label><input type="checkbox" id="shareFamily"> Interested in sharing a
