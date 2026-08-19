@@ -87,6 +87,11 @@ h2 {
 h2 + .note { color:var(--muted); font-size:.875rem; margin:0 0 1rem; }
 
 label { display:block; margin:1.1rem 0 .3rem; font-weight:500; font-size:.9375rem; }
+/* A question title with nothing to fill in under it — family's Holud outfit,
+   which is a statement rather than a question. Same type and rhythm as a label
+   but NOT a <label>: there is no control for it to point at, and a label
+   pointing at nothing is announced as one to a screen reader. */
+.qtitle { display:block; margin:1.1rem 0 .3rem; font-weight:500; font-size:.9375rem; }
 .hint { font-weight:400; color:var(--muted); font-size:.8125rem; }
 input, select, textarea {
   font:inherit; width:100%; padding:.6rem .7rem; color:inherit;
@@ -220,8 +225,11 @@ a.back:hover, a.back:focus-visible { color:var(--fg); }
             <span class="hint">we&rsquo;re providing these, handed out at the picnic</span></label>
           <select id="outfit" name="outfit"></select>
         </div>
-        <p class="note" data-group="family">As our family you will be asked to wear
-          something special for the Holud. We will be in touch about this.</p>
+        <div data-group="family">
+          <p class="qtitle">Holud outfit</p>
+          <p class="note">As our family you will be asked to wear something special for
+            the Holud. We will be in touch about this.</p>
+        </div>
 
         <!-- Size is still asked of everyone: the special outfit needs one too. -->
         <label for="size">Holud outfit size</label>
