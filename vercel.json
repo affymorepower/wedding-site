@@ -4,15 +4,15 @@
   "rewrites": [
     {
       "source": "/zebracrossing",
-      "destination": "/index.html"
+      "destination": "/index"
     },
     {
       "source": "/hippoproblems",
-      "destination": "/index.html"
+      "destination": "/index"
     },
     {
       "source": "/marriedtothestars",
-      "destination": "/index.html"
+      "destination": "/index"
     }
   ]
 }
