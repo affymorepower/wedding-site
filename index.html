@@ -1434,16 +1434,27 @@ footer p + p { margin-top: .5rem; }
            /hotel/za/... URLs they resolve to: the share link carries her
            affiliate and referral parameters, and the long URL does not.
 
-           NO PHOTOS AND NO DESCRIPTIONS YET, and that is a limitation rather
-           than a choice. Booking.com answers every automated request with a
-           202 and a JavaScript bot challenge — no property page, no image URL,
-           no review score — so the only facts available here are the names,
-           which come from the resolved slugs, and the links themselves. Writing
-           "a guest farm 7 km out, breakfast included" under any of these would
-           be invention. Awaiting a photo and a line each; .stay renders an
-           <img> above .stay__body when they arrive. -->
+           Photos are hotlinked off cf.bstatic.com, the way this section's cards
+           always were — that CDN serves fine, it is the property PAGES that
+           answer automated requests with a 202 and a JS bot challenge, so every
+           image URL here has to be copied out of a browser by hand. Karoo
+           Retreat has hers; the other three are still to come.
+
+           The k= in those URLs is a signed hash. If Booking.com rotates it the
+           image 404s with nothing on this page changing, so if these start
+           dropping out, self-host them under images/stays/ rather than hunting
+           for a new URL.
+
+           NO PRICES, by instruction (Gabby, 2026-08-19) — and the old cards are
+           the argument for it: they carried "R1 762 for the two nights" under a
+           fineprint admitting the figure moves, taken in August 2026 for a
+           March 2027 weekend. No descriptions yet either; the review scores and
+           blurbs the old cards had were read off pages that can no longer be
+           fetched, and writing them from memory would be invention. -->
       <div class="stays stays--town">
         <a class="stay" target="_blank" rel="noopener" href="https://www.booking.com/Share-RXMrDuu">
+          <img loading="lazy" src="https://cf.bstatic.com/xdata/images/hotel/max1024x768/892535926.jpg?k=b18c31719e03a884c34c448b6786dda585b7a39db338e1325e8e89708983d725&amp;o="
+               alt="A wide lawn and olive trees in front of the long white building and pool at Karoo Retreat">
           <div class="stay__body">
             <h4>Karoo Retreat</h4>
             <p class="meta">View on Booking.com</p>
