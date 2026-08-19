@@ -210,10 +210,20 @@ a.back:hover, a.back:focus-visible { color:var(--fg); }
       <!-- Only asked of someone actually coming to the holud. data-needs is read
            by applyConditionals() at the foot of the page. -->
       <div data-needs="holud">
-        <label for="outfit">Holud outfit
-          <span class="hint">we&rsquo;re providing these, handed out at the picnic</span></label>
-        <select id="outfit" name="outfit"></select>
+        <!-- Family are not choosing an outfit — theirs is being arranged off the
+             form — so the question itself is removed for them rather than
+             answered. gate.js deletes whichever of these two does not apply, so
+             #outfit genuinely is not in the DOM for a family guest; the script
+             reads it with optional chaining for exactly that reason. -->
+        <div data-group="friends town">
+          <label for="outfit">Holud outfit
+            <span class="hint">we&rsquo;re providing these, handed out at the picnic</span></label>
+          <select id="outfit" name="outfit"></select>
+        </div>
+        <p class="note" data-group="family">As our family you will be asked to wear
+          something special for the Holud. We will be in touch about this.</p>
 
+        <!-- Size is still asked of everyone: the special outfit needs one too. -->
         <label for="size">Holud outfit size</label>
         <select id="size" name="size"></select>
       </div>
@@ -489,7 +499,10 @@ const choose = (list) => `<option value="">Choose&hellip;</option>${opts(list)}`
 document.getElementById('phoneCode').innerHTML =
   '<option value="">Code&hellip;</option>' +
   DIAL_CODES.map(([code, name]) => `<option value="${code}">${name} (${code})</option>`).join('');
-document.getElementById('outfit').innerHTML = choose(OUTFITS);
+// Absent for family, whose outfit is arranged off the form — gate.js has
+// already removed it by the time this runs.
+const outfitEl = document.getElementById('outfit');
+if (outfitEl) outfitEl.innerHTML = choose(OUTFITS);
 document.getElementById('size').innerHTML = choose(SIZES);
 // An empty .note still carries its margin, so drop the element rather than
 // leaving a blank line between the heading and the tick box.
@@ -658,7 +671,9 @@ form.addEventListener('submit', async (e) => {
       picnic: attending && el('evPicnic').checked,
       holud: attending && el('evHolud').checked,
       wedding: attending && el('evWedding').checked,
-      outfit: atHolud ? el('outfit').value : '',
+      // Optional chaining, not a value read: the whole control is gone for
+      // family. Empty, so prune() drops the field rather than clearing it.
+      outfit: atHolud ? (el('outfit')?.value || '') : '',
       size: atHolud ? el('size').value : '',
       dietary: attending ? el('dietary').value : '',
       activities: guestActivities,
