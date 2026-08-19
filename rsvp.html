@@ -127,6 +127,10 @@ button {
    must not take the gold fill. Same shape of bug as the login page's linkish. */
 button:not(.minor):hover:not([disabled]) { background:#c8913f; }
 button[disabled] { opacity:.5; cursor:default; }
+/* The hidden attribute is only a UA default, so any display: declaration beats
+   it — .checks is display:grid and would ignore it outright. Forced, because
+   the conditional sections below depend on it. */
+[hidden] { display:none !important; }
 .hp { position:absolute; left:-9999px; }
 #status { margin-top:1rem; text-align:center; min-height:1.5rem; font-size:.9375rem; }
 #status.error { color:var(--error); }
@@ -203,12 +207,16 @@ a.back:hover, a.back:focus-visible { color:var(--fg); }
         <label><input type="checkbox" id="evWedding" checked> Wedding &middot; Sat 20, Oudtshoorn</label>
       </div>
 
-      <label for="outfit">Holud outfit
-        <span class="hint">we&rsquo;re providing these, handed out at the picnic</span></label>
-      <select id="outfit" name="outfit"></select>
+      <!-- Only asked of someone actually coming to the holud. data-needs is read
+           by applyConditionals() at the foot of the page. -->
+      <div data-needs="holud">
+        <label for="outfit">Holud outfit
+          <span class="hint">we&rsquo;re providing these, handed out at the picnic</span></label>
+        <select id="outfit" name="outfit"></select>
 
-      <label for="size">Holud outfit size</label>
-      <select id="size" name="size"></select>
+        <label for="size">Holud outfit size</label>
+        <select id="size" name="size"></select>
+      </div>
 
       <label for="dietary">Dietary requirements <span class="hint">(allergies too)</span></label>
       <input id="dietary" name="dietary">
@@ -217,9 +225,14 @@ a.back:hover, a.back:focus-visible { color:var(--fg); }
            multiple <select> is close to unusable on a phone. NO PRICES — the 2027 rates
            aren't published anywhere citable, so we quote on request. See the ACTIVITIES
            comment in the script. -->
+      <!-- Wildlife activities and the coach both hang off the wedding weekend, and
+           they are adjacent, so one wrapper covers both. Accommodation is the
+           third wedding-only block but Children sits between, so it carries its
+           own data-needs rather than being dragged into this one. -->
+      <div data-needs="wedding">
       <h2>Wildlife activities</h2>
       <p class="note" id="activityNote"></p>
-      <p class="note">You can learn more about the activities
+      <p class="note" data-stay="reserve">You can learn more about the activities
         <a href="https://www.buffelsdrift.com/activities" target="_blank" rel="noopener">here</a>.</p>
       <div class="checks" id="activities"></div>
 
@@ -234,6 +247,7 @@ a.back:hover, a.back:focus-visible { color:var(--fg); }
         <option value="yes">I would like to take the transport provided</option>
         <option value="no">I will get myself there</option>
       </select>
+      </div>
 
       <!-- Children. Their own blocks rather than a free-text box: the rooming list needs
            a bed count and an age band per child (under 3s free and share, 4 to 12 are
@@ -268,7 +282,7 @@ a.back:hover, a.back:focus-visible { color:var(--fg); }
            this form — /hippoproblems still carries it, but a friend filling this
            in is no longer told they are paying at the moment they commit.
            ================================================================= -->
-      <div data-group="family friends">
+      <div data-group="family friends" data-needs="wedding">
         <h2>Accommodation</h2>
         <p class="note">You&rsquo;re invited to stay with us at the venue, Buffelsdrift
           Game Lodge, for the wedding weekend.</p>
@@ -380,13 +394,15 @@ const ACTIVITIES = [
    in Beadri's rate sheet and on buffelsdrift.com/pricing. Town guests get
    neither, so nothing is marked included for them: the markers below are drawn
    from `inc` but only rendered when onReserve. */
+/* Town gets no note at all (Gabby, 2026-08-19) — heading and one tick box, and
+   nothing under the heading. Empty rather than deleted so the reserve branch
+   still has somewhere to render; the element is removed below when it is. */
 const ACTIVITY_NOTE = onReserve
   ? 'Tick whichever activities you are interested in! Either of the first 2 is included '
     + 'in your stay, and you can add the others for an additional cost (ranging from '
     + 'about &euro;40 &ndash; &euro;70 pp). A few have age requirements (for the kiddies) '
     + 'so we will contact you if there are any issues!'
-  : 'None of these come with a room in town, but you&rsquo;re very welcome to join. Tick '
-    + 'whatever appeals and we&rsquo;ll come back to you with prices and a slot.';
+  : '';
 
 /* The coach note that used to sit under Getting there is gone (Gabby,
    2026-08-19). It had two variants — dropping reserve guests at the lodge and
@@ -469,10 +485,21 @@ document.getElementById('phoneCode').innerHTML =
   DIAL_CODES.map(([code, name]) => `<option value="${code}">${name} (${code})</option>`).join('');
 document.getElementById('outfit').innerHTML = choose(OUTFITS);
 document.getElementById('size').innerHTML = choose(SIZES);
-document.getElementById('activityNote').innerHTML = ACTIVITY_NOTE;
+// An empty .note still carries its margin, so drop the element rather than
+// leaving a blank line between the heading and the tick box.
+const noteEl = document.getElementById('activityNote');
+if (ACTIVITY_NOTE) noteEl.innerHTML = ACTIVITY_NOTE;
+else noteEl.remove();
 
 /* One tick list, used for the guest and again inside every child block. */
 function activityChecks() {
+  /* Town guests are offered the bush safari and nothing else. The value is the
+     same 'Bush Safari' the reserve list uses, so both groups land on one
+     Airtable choice rather than two spellings of the same drive. */
+  if (!onReserve) {
+    return '<label><input type="checkbox" data-activity="Bush Safari">'
+      + ' I am interested in a Bush Safari</label>';
+  }
   return ACTIVITIES.map((a) => {
     // Only the reserve groups get the included markers; nothing comes with a
     // room in town, so the hint would be a promise we are not making.
@@ -541,12 +568,42 @@ function readChildren() {
   }).filter(c => c.name.trim());
 }
 
+const evHolud   = document.getElementById('evHolud');
+const evWedding = document.getElementById('evWedding');
+
+/* Sections that only apply if the guest is coming to that event, keyed by
+   data-needs in the markup:
+     holud    the outfit and its size
+     wedding  wildlife activities, the coach, and accommodation
+
+   Hidden AND disabled, both deliberately. Hidden alone still submits and can
+   still be tabbed into, so a keyboard could land in a section nobody can see.
+   Disabled alone leaves it on screen looking broken.
+
+   MUST run after the yesOnly pass below, which re-enables everything inside it
+   in one sweep and would otherwise switch these back on. */
+function applyConditionals(yes) {
+  const on = {
+    holud: yes && evHolud.checked,
+    wedding: yes && evWedding.checked,
+  };
+  document.querySelectorAll('[data-needs]').forEach((el) => {
+    const show = !!on[el.dataset.needs];
+    el.hidden = !show;
+    el.querySelectorAll('input,select,textarea,button').forEach((c) => { c.disabled = !show; });
+  });
+}
+
 const toggle = () => {
   const yes = coming.value === 'Yes';
   yesOnly.hidden = !yes;
   yesOnly.querySelectorAll('input,select,button').forEach(el => el.disabled = !yes);
+  applyConditionals(yes);
 };
 coming.addEventListener('change', toggle);
+// The two event ticks drive the sections below them, so they re-run the same pass.
+evHolud.addEventListener('change', toggle);
+evWedding.addEventListener('change', toggle);
 toggle();
 
 form.addEventListener('submit', async (e) => {
@@ -557,6 +614,12 @@ form.addEventListener('submit', async (e) => {
 
   const attending = coming.value === 'Yes';
   const el = (id) => document.getElementById(id);
+
+  // A question that was hidden was never answered, whatever value its control
+  // happens to be holding — the selects keep whatever was chosen before the tick
+  // came off. Gate on the event, not on the control.
+  const atHolud   = attending && el('evHolud').checked;
+  const atWedding = attending && el('evWedding').checked;
 
   // gate.js deletes the accommodation block for town, so these are reads on
   // elements that may legitimately be absent rather than empty. Optional
@@ -574,7 +637,7 @@ form.addEventListener('submit', async (e) => {
 
   // "We will assume you would like them to join you on the selected wildlife
   // activity" — the note under Children says it, so the form has to do it.
-  const guestActivities = attending ? ticked(el('activities')) : [];
+  const guestActivities = atWedding ? ticked(el('activities')) : [];
   const kids = attending ? readChildren() : [];
   kids.forEach((c) => { c.activities = guestActivities; });
 
@@ -589,17 +652,17 @@ form.addEventListener('submit', async (e) => {
       picnic: attending && el('evPicnic').checked,
       holud: attending && el('evHolud').checked,
       wedding: attending && el('evWedding').checked,
-      outfit: attending ? el('outfit').value : '',
-      size: attending ? el('size').value : '',
+      outfit: atHolud ? el('outfit').value : '',
+      size: atHolud ? el('size').value : '',
       dietary: attending ? el('dietary').value : '',
       activities: guestActivities,
       // The control is now a two-option select, but the field behind it is the
       // same boolean, so nothing in Airtable has to change. Unanswered reads as
       // false, exactly as an unticked box did.
-      coach: attending && el('transport').value === 'yes',
-      nights: attending ? nights : '',
-      thirdNight: attending ? thirdNight : '',
-      shareFamily: attending ? shareFamily : false,
+      coach: atWedding && el('transport').value === 'yes',
+      nights: atWedding ? nights : '',
+      thirdNight: atWedding ? thirdNight : '',
+      shareFamily: atWedding ? shareFamily : false,
       song: attending ? el('song').value : '',
       message: el('message').value,
     },
