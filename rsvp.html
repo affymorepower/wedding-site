@@ -303,13 +303,14 @@ a.back:hover, a.back:focus-visible { color:var(--fg); }
 
         <label for="nights">Are you happy to stay at the game lodge for both Friday
           &amp; Saturday night (19 and 20 March 2027)?</label>
-        <!-- Option strings deliberately unchanged. They are Airtable choices on
-             the Nights field and match the Buffelsdrift rates sheet, so leaving
-             them alone keeps the room allocation pasteable. -->
+        <!-- "Yes, both nights" is left exactly as it was: it is an Airtable choice
+             on the Nights field matching the Buffelsdrift rates sheet, so the room
+             allocation still pastes. "No" now says what it means, and IS a new
+             choice - typecast will add it beside the bare "No" already there. -->
         <select id="nights" name="nights">
           <option value="">Choose&hellip;</option>
           <option>Yes, both nights</option>
-          <option>No</option>
+          <option>No - we will stay somewhere else</option>
         </select>
         <!-- Friends pay for their room; family do not. Nested inside the shared
              block rather than splitting it back into two: gate.js walks every
