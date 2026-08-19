@@ -191,25 +191,6 @@
   --pane-y:  clamp(4rem, 9vw, 7rem);   /* vertical padding inside a colour pane */
 }
 
-/* ---- phones ----
-   The desktop ladder was landing too large on a handset: 17px body is a
-   comfortable desktop reading size but reads oversized on a 375px screen,
-   where 16px is the web's normal. The gutter goes up at the same time, so the
-   text has more room off the edge rather than running to it — the two have to
-   move together, since smaller type against the same gutter just looks lost.
-
-   Tokens only, deliberately. Every component reads --text-body / --gutter, so
-   one override here moves the whole page instead of thirty component rules
-   drifting out of step. 46rem matches the breakpoint the hero already uses. */
-@media (max-width: 46rem) {
-  :root {
-    --text-body: 16px;
-    --gutter: 1.5rem;
-  }
-  /* The display face shouts on a narrow screen at its desktop floor. Only the
-     floor moves; the clamp still scales it up from there. */
-  h2 { font-size: clamp(1.8rem, 7vw, 2.7rem); }
-}
 
 *, *::before, *::after { box-sizing: border-box; }
 html {
@@ -1012,6 +993,26 @@ footer p { margin: 0; }
 footer p + p { margin-top: .5rem; }
 
 
+/* ---- phones ----
+   The desktop ladder was landing too large on a handset: 17px body is a
+   comfortable desktop reading size but reads oversized on a 375px screen,
+   where 16px is the web's normal. The gutter goes up at the same time, so the
+   text has more room off the edge rather than running to it — the two have to
+   move together, since smaller type against the same gutter just looks lost.
+
+   Tokens only, deliberately. Every component reads --text-body / --gutter, so
+   one override here moves the whole page instead of thirty component rules
+   drifting out of step. 46rem matches the breakpoint the hero already uses. */
+@media (max-width: 46rem) {
+  :root {
+    --text-body: 16px;
+    --gutter: 1.5rem;
+  }
+  /* The display face shouts on a narrow screen at its desktop floor. Only the
+     floor moves; the clamp still scales it up from there. */
+  h2 { font-size: clamp(1.8rem, 7vw, 2.7rem); }
+
+}
 </style>
 </head>
 <body>

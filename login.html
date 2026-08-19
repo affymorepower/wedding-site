@@ -61,17 +61,25 @@ body {
   background: var(--gold);
 }
 .card { width: 100%; max-width: 26rem; text-align: center; }
+/* Fields line up with the stamp's printed edge rather than its bounding box,
+   so the password box and Enter button read as sitting under the stamp instead
+   of overhanging it. Both forms take it, so Request access matches. */
+:root { --field-w: 83%; }
+form { width: var(--field-w); margin-inline: auto; }
 .brand {
   margin: 0 0 .4rem; font: 600 11px/1 var(--font-body);
   letter-spacing: 2.4px; text-transform: uppercase; color: var(--gold-mute);
 }
 h1 {
-  margin: 0 0 .6rem; font-family: var(--font-display); font-weight: 500;
+  margin: .9rem 0 1.2rem; font-family: var(--font-display); font-weight: 500;
   font-style: italic; font-size: clamp(2.2rem, 8vw, 3rem); line-height: 1.05;
   letter-spacing: -1.5px;
 }
-/* Width of the password box, which is the card. The stamp's scalloped edge and
-   cream border are in the file's own alpha, so no frame or radius here. */
+/* The stamp fills the card; the artwork inside it does not. The scalloped edge
+   sits in the file's own alpha, running from roughly 8.5% to 91.5% of the
+   square, so the stamp you can SEE is about 83% of this element — which is why
+   --field-w below is 83% and not 100%. No frame or radius here; the border is
+   painted into the file. */
 .stamp { display: block; width: 100%; height: auto; margin: 1.2rem 0 1.4rem; }
 .sub { margin: 0 0 2rem; color: var(--gold-mute); font-size: 15px; }
 
@@ -100,18 +108,45 @@ button:hover:not(:disabled) { background: #52140f; }
 button:disabled { opacity: .55; cursor: default; }
 
 .linkish {
-  margin-top: 1.5rem; background: none; border: 0; padding: .5rem; width: auto;
+  margin-top: 0; background: none; border: 0; padding: .5rem; width: auto;
   color: var(--gold-mute); letter-spacing: .4px; text-transform: none;
   font-size: 14px; font-weight: 400; text-decoration: underline;
   text-underline-offset: 3px; cursor: pointer;
 }
 .linkish:hover { background: none; color: var(--gold-fg); }
 
-.msg { margin: 1rem 0 0; min-height: 1.4em; font-size: 14px; }
+/* The gap from the Enter button down to "I don't have a password" is built to
+   equal .sub's 2rem — the same step as the one from "Login using the password"
+   to the field above. It is made of three parts, because .msg sits between
+   them: this margin (.3rem) + the reserved message line (1.4em of 14px, 19.6px)
+   + .linkish's own .5rem top padding = 32.4px, against 2rem = 32px.
+   min-height stays: it holds the line open so the page doesn't jump when a
+   message appears. Change any one of the three and the match goes. */
+.msg { margin: .3rem 0 0; min-height: 1.4em; font-size: 14px; }
 .msg[data-tone='bad'] { color: #7d1f14; }
 .msg[data-tone='good'] { color: #2f5233; }
 
 [hidden] { display: none !important; }
+
+/* ---- phones: the whole card on one screen ----
+   The stamp is square, so on a handset it is the one element that can eat the
+   viewport: at 100% of a 26rem card it is as tall as it is wide, and the card
+   then runs off the bottom. Capping it against the viewport HEIGHT is what
+   makes the rest fit, and because it is square, width and height cap together.
+
+   svh, not vh: on iOS vh is the tall address-bar-collapsed height, so a card
+   sized against it overflows on load — which is exactly the bug being fixed.
+
+   Everything else here is a small trim rather than a rethink: the point is that
+   nothing needs scrolling, not that the phone gets a different design. */
+@media (max-width: 30rem) {
+  body { padding: 1.25rem; }
+  h1 { font-size: clamp(1.7rem, 7.5vw, 2.4rem); margin: .5rem 0 .8rem; }
+  .stamp { width: min(100%, 30svh); margin: .8rem auto 1rem; }
+  .sub { margin-bottom: 1.4rem; }
+  input { padding: .8rem .9rem; margin-bottom: .8rem; }
+  button { padding: .85rem; }
+}
 </style>
 </head>
 <body>
