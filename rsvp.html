@@ -229,26 +229,6 @@ a.back:hover, a.back:focus-visible { color:var(--fg); }
            they are adjacent, so one wrapper covers both. Accommodation is the
            third wedding-only block but Children sits between, so it carries its
            own data-needs rather than being dragged into this one. -->
-      <div data-needs="wedding">
-      <h2>Wildlife activities</h2>
-      <p class="note" id="activityNote"></p>
-      <p class="note" data-stay="reserve">You can learn more about the activities
-        <a href="https://www.buffelsdrift.com/activities" target="_blank" rel="noopener">here</a>.</p>
-      <div class="checks" id="activities"></div>
-
-      <h2>Transport to the wedding venue</h2>
-      <!-- A choice, not a tick. The old checkbox had no way to say "I'll make my
-           own way" that was distinguishable from not having answered. Still
-           submitted as the boolean the Airtable Coach field already holds — see
-           the payload. -->
-      <label for="transport">How will you get there?</label>
-      <select id="transport" name="transport">
-        <option value="">Choose&hellip;</option>
-        <option value="yes">I would like to take the transport provided</option>
-        <option value="no">I will get myself there</option>
-      </select>
-      </div>
-
       <!-- Children. Their own blocks rather than a free-text box: the rooming list needs
            a bed count and an age band per child (under 3s free and share, 4 to 12 are
            half rate and can take one of the six extra beds), and prose can't be counted.
@@ -263,6 +243,22 @@ a.back:hover, a.back:focus-visible { color:var(--fg); }
       <p class="note">They will also receive an outfit for the holud if attending!</p>
       <div id="children"></div>
       <button type="button" class="minor" id="addChild">Add a child</button>
+
+
+      <!-- Wedding-only, and no longer adjacent to the wildlife list, so it carries its own marker. -->
+      <div data-needs="wedding">
+      <h2>Transport to the wedding venue</h2>
+      <!-- A choice, not a tick. The old checkbox had no way to say "I'll make my
+           own way" that was distinguishable from not having answered. Still
+           submitted as the boolean the Airtable Coach field already holds — see
+           the payload. -->
+      <label for="transport">How will you get there?</label>
+      <select id="transport" name="transport">
+        <option value="">Choose&hellip;</option>
+        <option value="yes">I would like to take the transport provided</option>
+        <option value="no">I will get myself there</option>
+      </select>
+      </div>
 
       <!-- =================================================================
            ACCOMMODATION — family and friends only.
@@ -320,6 +316,16 @@ a.back:hover, a.back:focus-visible { color:var(--fg); }
           <option>Maybe</option>
           <option>No</option>
         </select>
+      </div>
+
+      <!-- Moved below Accommodation (Gabby, 2026-08-19) so it reads last before the closing questions. -->
+      <div data-needs="wedding">
+      <h2>Wildlife activities</h2>
+      <p class="note" id="activityNote"></p>
+      <p class="note" data-stay="reserve">You can learn more about the activities
+        <a href="https://www.buffelsdrift.com/activities" target="_blank" rel="noopener">here</a>.</p>
+      <div class="checks" id="activities"></div>
+
       </div>
 
       <h2>Final questions</h2>
