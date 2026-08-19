@@ -51,6 +51,12 @@
   // Changing any path changes that group's password with it, so keep each equal
   // to the plain string behind its hash above. The old /stay/group-1..3 URLs
   // redirect here and can be deleted once no thread still carries one.
+  // One page, three URLs. vercel.json rewrites all three of these to
+  // index.html, so there is a single source file and each group still has its
+  // own address to be sent. The slug is still that group's password, so the
+  // link both signs a guest in and lands them on their own version — renaming
+  // one changes that group's password, so keep these equal to the plain strings
+  // behind the hashes above.
   const PAGE = { family: '/zebracrossing', friends: '/hippoproblems', town: '/marriedtothestars' };
 
   async function sha256(text) {

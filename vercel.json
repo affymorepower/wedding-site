@@ -1,4 +1,18 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "cleanUrls": true
+  "cleanUrls": true,
+  "rewrites": [
+    {
+      "source": "/zebracrossing",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/hippoproblems",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/marriedtothestars",
+      "destination": "/index.html"
+    }
+  ]
 }

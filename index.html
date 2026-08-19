@@ -29,7 +29,32 @@
      is still in view-source. See the header of js/gate.js.
      ==================================================================== -->
 <script src="js/gate.js"></script>
-<script>if (!AG.group()) location.replace('/login');</script>
+<script>
+  /* Three URLs, one file. vercel.json rewrites /zebracrossing, /hippoproblems
+     and /marriedtothestars all to this page; which version a guest sees comes
+     from their group, not from the file.
+
+       signed out, on a password path  ->  sign in from the slug, reload once
+       signed out, anywhere else       ->  /login
+       signed in, on the wrong URL     ->  moved to their own
+       signed in, on their own URL     ->  nothing happens, no flash
+
+     The reload is deliberate. Signing in is async (it hashes the slug), and the
+     rest of the page reads the group synchronously, so rather than race it we
+     let the second pass render normally. It only ever costs the first arrival
+     from a link. */
+  (function () {
+    var norm = function (p) { return p.replace(/\.html?$/i, '').replace(/\/+$/, '') || '/'; };
+    var route = function () {
+      var mine = AG.stayPath();
+      if (mine && norm(location.pathname) !== norm(mine)) location.replace(mine);
+    };
+    if (AG.group()) { route(); return; }
+    AG.enterFromPath().then(function (g) {
+      if (g) location.reload(); else location.replace('/login');
+    });
+  })();
+</script>
 
 <!-- Tab icon: the elephant emoji, rendered out of Apple Color Emoji into real
      files rather than left as an SVG <text> glyph, so Windows and Android show
@@ -1248,31 +1273,7 @@ footer p + p { margin-top: .5rem; }
             else (like an elephant or lion experience).</p>
         </div>
 
-        <!-- Photographs are the lodge's own, from buffelsdrift.com, framed as
-             stamps to match Our story and served locally so they don't vanish if
-             that site is redesigned. Same markup as #rail; the script below picks
-             up every .rail on the page, and gate.js has already removed this one
-             for town guests by the time it runs. -->
-        <div class="rail" tabindex="0" role="group" aria-roledescription="carousel"
-             aria-label="Photographs of Buffelsdrift, the game lodge">
-          <figure class="stamp"><img loading="lazy" width="500" height="500" src="images/stamps-lodge/12.webp" alt="A luxury tent at dusk, aloes and red flowers on the slope below it"></figure>
-          <figure class="stamp"><img loading="lazy" width="500" height="500" src="images/stamps-lodge/13.webp" alt="Inside a tent: bed, patterned cushions and an armchair by the window"></figure>
-          <figure class="stamp"><img loading="lazy" width="500" height="500" src="images/stamps-lodge/14.webp" alt="A tent bedroom with the deck door open onto the reserve"></figure>
-          <figure class="stamp"><img loading="lazy" width="500" height="500" src="images/stamps-lodge/15.webp" alt="A tent bathroom: stone basin, mirror lights and a freestanding bath by the window"></figure>
-          <figure class="stamp"><img loading="lazy" width="500" height="500" src="images/stamps-lodge/16.webp" alt="The view from a shaded deck across the waterhole to the Swartberg"></figure>
-          <figure class="stamp"><img loading="lazy" width="500" height="500" src="images/stamps-lodge/17.webp" alt="Five meerkats standing on a sandy bank"></figure>
-          <figure class="stamp"><img loading="lazy" width="500" height="500" src="images/stamps-lodge/18.webp" alt="The thatched main lodge on stilts, reflected in the waterhole"></figure>
-        </div>
       </div>
-
-      <!-- Friends only, and it stays full width under the two-up: these are the
-           numbers someone budgets from, and they read better as prose than
-           squeezed into half a column. -->
-      <p class="lede" data-group="friends"><strong>Rooms are booked through us, and
-        you&rsquo;ll settle up for yours.</strong> Accommodation is roughly
-        <strong>&euro;300 per person</strong> for the Friday and Saturday night, depending
-        on your room, and that covers breakfast on both days, a safari drive and a simple
-        lunch on the wedding day. Kiddies 4 to 13 are half price and 3 and under stay free.</p>
 
       <p class="lede" data-group="friends">Most of the rooms are for two sharing. There are
         also five four-person rooms, each with two bedrooms &mdash; if you&rsquo;d be happy
@@ -1285,11 +1286,6 @@ footer p + p { margin-top: .5rem; }
         exit. Say so on the RSVP and we&rsquo;ll come back to you with the rate for the
         extra night.</p>
 
-      <p class="fineprint" data-group="friends">The euro figure is a guide, not a quote
-        &mdash; it moves with the exchange rate, and what you actually pay depends on which
-        room we can fit you into. We&rsquo;ve already negotiated a discount off the
-        lodge&rsquo;s rates for the Friday night, so it will be better than their published
-        price.</p>
     </div>
 
     <!-- ---------- everyone else: Oudtshoorn ---------- -->
