@@ -201,8 +201,10 @@ a.back { color:var(--muted); font-size:.875rem; }
            multiple <select> is close to unusable on a phone. NO PRICES — the 2027 rates
            aren't published anywhere citable, so we quote on request. See the ACTIVITIES
            comment in the script. -->
-      <h2>Game activities</h2>
+      <h2>Wildlife activities</h2>
       <p class="note" id="activityNote"></p>
+      <p class="note">You can learn more about the activities
+        <a href="https://www.buffelsdrift.com/activities" target="_blank" rel="noopener">here</a>.</p>
       <div class="checks" id="activities"></div>
 
       <h2>Getting there</h2>
@@ -333,36 +335,40 @@ const GROUP_LABEL = {
 
 const onReserve = GROUP === 'family' || GROUP === 'friends';
 
-/* Buffelsdrift's activity list. DELIBERATELY NO PRICES.
-   The 2027 rates are not citable: only the bush safari (R870) appears in
-   Beadri's quote, and the venue's own site publishes 2026 prices about 8%
-   lower. Guests tick what appeals and we quote them individually — which also
-   stops a ticked list reading like a basket they owe money on.
+/* Buffelsdrift's activity list, in the order Gabby wants them read: the two
+   included ones first, then the extras.
 
-   The values MUST match the choices on the Airtable Safari field, which is now
-   a MULTIPLE select. Labels and meta can be reworded freely; values can't.
-   Age limits are the venue's own, from buffelsdrift.com, checked 18 Aug 2026 —
-   they matter more than prices here because children are now on this form. */
+   !! THE VALUES ARE AIRTABLE CHOICES ON THE Safari MULTIPLE-SELECT, AND ALL
+   SEVEN HAVE CHANGED — every one has been recapitalised, and 'Lion feeding' is
+   now 'Lion Feeding Experience'. typecast:true creates choices silently, so the
+   field will end up holding both spellings of all seven. Clear the old set:
+   Bush safari / Elephant experience / Night drive / Lion feeding / Meerkat
+   safari / Elephant observation / Cheetah experience.
+
+   No per-activity meta any more. The age limits that used to hang off each line
+   ("4 and up", "8 and up", "12 and up") are gone in favour of the single line in
+   the note about getting in touch — so nothing on this form now tells a parent
+   which activity their child is too young for BEFORE they tick it. */
 const ACTIVITIES = [
-  { v: 'Bush safari',          meta: '2 hours, 4 and up' },
-  { v: 'Elephant experience',  meta: '30 minutes at the feeding deck' },
-  { v: 'Night drive',          meta: '2 hours, 4 and up, small groups' },
-  { v: 'Lion feeding',         meta: '4 and up' },
-  { v: 'Meerkat safari',       meta: 'at dawn, 8 and up' },
-  { v: 'Elephant observation', meta: '45 minutes, 1.2m and up' },
-  { v: 'Cheetah experience',   meta: 'half a day, 12 and up' },
+  { v: 'Bush Safari',            inc: 'included option 1' },
+  { v: 'Elephant Experience',    inc: 'included option 2' },
+  { v: 'Night Drive' },
+  { v: 'Meerkat Safari' },
+  { v: 'Cheetah Experience' },
+  { v: 'Lion Feeding Experience' },
+  { v: 'Elephant Observation' },
 ];
 
 /* One activity comes with a stay on the reserve — the venue's "Complete Wedding
    Package" is B&B plus a bush safari OR an elephant experience, confirmed both
    in Beadri's rate sheet and on buffelsdrift.com/pricing. Town guests get
-   neither, so nothing is marked included for them. */
-const INCLUDED = new Set(['Bush safari', 'Elephant experience']);
-
+   neither, so nothing is marked included for them: the markers below are drawn
+   from `inc` but only rendered when onReserve. */
 const ACTIVITY_NOTE = onReserve
-  ? 'Tick whatever appeals. One is included with your stay &mdash; the bush safari or the '
-    + 'elephant experience. Anything else is a paid extra; tick it and we&rsquo;ll come '
-    + 'back to you with the price.'
+  ? 'Tick whichever activities you are interested in! Either of the first 2 is included '
+    + 'in your stay, and you can add the others for an additional cost (ranging from '
+    + 'about &euro;40 &ndash; &euro;70 pp). A few have age requirements (for the kiddies) '
+    + 'so we will contact you if there are any issues!'
   : 'None of these come with a room in town, but you&rsquo;re very welcome to join. Tick '
     + 'whatever appeals and we&rsquo;ll come back to you with prices and a slot.';
 
@@ -446,9 +452,10 @@ document.getElementById('activityNote').innerHTML = ACTIVITY_NOTE;
 /* One tick list, used for the guest and again inside every child block. */
 function activityChecks() {
   return ACTIVITIES.map((a) => {
-    const meta = onReserve && INCLUDED.has(a.v) ? `included &mdash; ${a.meta}` : a.meta;
-    return `<label><input type="checkbox" data-activity="${a.v}"> ${a.v}
-      <span class="hint">${meta}</span></label>`;
+    // Only the reserve groups get the included markers; nothing comes with a
+    // room in town, so the hint would be a promise we are not making.
+    const hint = onReserve && a.inc ? ` <span class="hint">(${a.inc})</span>` : '';
+    return `<label><input type="checkbox" data-activity="${a.v}"> ${a.v}${hint}</label>`;
   }).join('');
 }
 document.getElementById('activities').innerHTML = activityChecks();
