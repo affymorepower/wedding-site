@@ -48,7 +48,11 @@
      Light only; there is no dark variant. */
   --bg:#f4efe6; --surface:#fbf8f2; --fg:#3a2e24; --muted:#6e6055;
   --line:#e2d8c9; --accent:#b0802c; --accent-fg:#fff; --error:#6e1f27;
+  /* The submit button is the site's gold, the same pair the Holud and RSVP
+     panes use on index.html. --cta kept as the old green in case anything else
+     wants it. */
   --cta:#46603f; --cta-fg:#ffffff;
+  --gold:#d9a257; --gold-fg:#3a1608;
   --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
   --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --measure: 34rem; --gutter: 1.25rem; --radius: 4px;
@@ -63,6 +67,11 @@ body {
 .wrap { max-width:var(--measure); margin:0 auto; padding:3rem var(--gutter) 5rem; }
 h1 { font-family:var(--font-display); font-weight:400; font-size:2.25rem; margin:0 0 .35rem; }
 .lede { color:var(--muted); margin:0 0 2.5rem; }
+/* The head of the form is centred; every question below it stays left, because
+   labels and fields are read down a column. Scoped to the form's own h1 so the
+   Thank you panel, which centres itself, is unaffected. */
+#rsvp > h1, #rsvp > .lede { text-align:center; }
+#rsvp > .lede { margin-inline:auto; }
 h2 {
   font-size:.75rem; letter-spacing:.12em; text-transform:uppercase; color:var(--accent);
   margin:2.5rem 0 .25rem; font-family:var(--font-body); font-weight:600;
@@ -88,6 +97,13 @@ legend { font-family:var(--font-display); font-size:1.125rem; padding:0 .5rem; }
 .row { display:grid; gap:1rem; grid-template-columns:1fr 1fr; }
 @media (max-width:30rem) { .row { grid-template-columns:1fr; } }
 
+/* Dialling code beside the number. The code select is sized to its content
+   rather than a share of the row: "South Africa (+27)" has to be readable when
+   closed, which it is not in half of a 34rem column, so phone came out of .row
+   and runs full width. Stacks on a narrow phone. */
+.phone { display:grid; gap:.5rem; grid-template-columns:minmax(0, 13rem) 1fr; }
+@media (max-width:26rem) { .phone { grid-template-columns:1fr; } }
+
 button.minor {
   font:inherit; font-weight:500; width:auto; margin:.75rem 0 0; padding:.5rem .8rem;
   background:none; color:var(--fg); border:1px solid var(--line);
@@ -95,9 +111,13 @@ button.minor {
 }
 button {
   font:inherit; font-weight:600; width:100%; margin-top:2rem; padding:.85rem;
-  background:var(--cta); color:var(--cta-fg);
+  background:var(--gold); color:var(--gold-fg);
   border:none; border-radius:var(--radius); cursor:pointer;
+  transition:background .2s ease;
 }
+/* :not(.minor) — .minor is Add a child / Remove, which are outline buttons and
+   must not take the gold fill. Same shape of bug as the login page's linkish. */
+button:not(.minor):hover:not([disabled]) { background:#c8913f; }
 button[disabled] { opacity:.5; cursor:default; }
 .hp { position:absolute; left:-9999px; }
 #status { margin-top:1rem; text-align:center; min-height:1.5rem; font-size:.9375rem; }
@@ -124,25 +144,22 @@ a.back { color:var(--muted); font-size:.875rem; }
 
   <form id="rsvp">
     <h1>RSVP</h1>
-    <p class="lede">Three events over a week: two in Cape Town, one in the Karoo.
-      Tell us which ones you're up for. Please reply by <strong>15 October 2026</strong>.</p>
-
-    <h2>You</h2>
-    <p class="note">One form each &mdash; your partner gets their own, so you only answer
-      for yourself and any children with you.</p>
+    <p class="lede">Please reply by <strong>15 October</strong>. One entry per adult.</p>
 
     <label for="guestName">Your name</label>
     <input id="guestName" name="guestName" required autocomplete="name">
 
-    <div class="row">
-      <div>
-        <label for="email">Email</label>
-        <input id="email" name="email" type="email" required autocomplete="email">
-      </div>
-      <div>
-        <label for="phone">Phone</label>
-        <input id="phone" name="phone" type="tel" autocomplete="tel">
-      </div>
+    <label for="email">Email</label>
+    <input id="email" name="email" type="email" required autocomplete="email">
+
+    <label for="phone">Phone</label>
+    <div class="phone">
+      <!-- Filled from DIAL_CODES in the script. Its own label rather than a
+           shared one: a select and a text box are two controls, and "Phone"
+           alone leaves a screen reader announcing the code list as "Phone". -->
+      <select id="phoneCode" name="phoneCode" aria-label="Country dialling code"></select>
+      <input id="phone" name="phone" type="tel" autocomplete="tel"
+             inputmode="tel" aria-label="Phone number">
     </div>
 
     <label for="coming">Can you make it?</label>
@@ -164,7 +181,6 @@ a.back { color:var(--muted); font-size:.875rem; }
 
       <label for="outfit">Holud outfit
         <span class="hint">we&rsquo;re providing these, handed out at the picnic</span></label>
-      <p class="note">Ladies pick one. Men automatically get a kurta.</p>
       <select id="outfit" name="outfit"></select>
 
       <label for="size">Outfit size</label>
@@ -182,10 +198,17 @@ a.back { color:var(--muted); font-size:.875rem; }
       <div class="checks" id="activities"></div>
 
       <h2>Getting there</h2>
-      <div class="checks">
-        <label><input type="checkbox" id="coach" checked> Save me a coach seat</label>
-      </div>
       <p class="note" id="coachNote"></p>
+      <!-- A choice, not a tick. The old checkbox had no way to say "I'll make my
+           own way" that was distinguishable from not having answered. Still
+           submitted as the boolean the Airtable Coach field already holds — see
+           the payload. -->
+      <label for="transport">How will you get there?</label>
+      <select id="transport" name="transport">
+        <option value="">Choose&hellip;</option>
+        <option value="yes">I would like to take the transport provided</option>
+        <option value="no">I will get myself there</option>
+      </select>
 
       <!-- Children. Their own blocks rather than a free-text box: the rooming list needs
            a bed count and an age band per child (under 3s free and share, 4 to 12 are
@@ -195,6 +218,10 @@ a.back { color:var(--muted); font-size:.875rem; }
       <h2>Children</h2>
       <p class="note">Add any children coming with you. If your partner has already filled
         this in, don&rsquo;t worry &mdash; once is enough.</p>
+      <p class="note">We will assume you would like them to join you on the selected
+        wildlife activity. We&rsquo;ll need to review the age requirements before
+        confirming. Let us know otherwise.</p>
+      <p class="note">They will also receive an outfit for the holud if attending!</p>
       <div id="children"></div>
       <button type="button" class="minor" id="addChild">Add a child</button>
 
@@ -310,7 +337,7 @@ a.back { color:var(--muted); font-size:.875rem; }
         </select>
       </div>
 
-      <h2>Anything else</h2>
+      <h2>Final questions</h2>
       <label for="song">A song that will get you dancing</label>
       <input id="song" name="song">
     </div>
@@ -323,7 +350,7 @@ a.back { color:var(--muted); font-size:.875rem; }
       <input id="website" name="website" tabindex="-1" autocomplete="off">
     </div>
 
-    <button type="submit">Send RSVP</button>
+    <button type="submit">Submit RSVP</button>
     <p id="status" role="status"></p>
   </form>
 </div>
@@ -395,23 +422,56 @@ const COACH_NOTE = onReserve
   : 'Covered by us &mdash; Cape Town to Oudtshoorn on the Friday, back on the Sunday. '
     + 'We just need to know who wants a seat.';
 
-const SIZES = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'Not sure, measure me'];
+// Four sizes (Gabby, 2026-08-19), down from seven. All four already exist on
+// the Airtable Outfit size field, so nothing new is created; XS, XXL and
+// "Not sure, measure me" simply stop being offered. Anyone who already answered
+// with one of those keeps it on their row.
+const SIZES = ['S', 'M', 'L', 'XL'];
 
 // Pink for the women, green for the men, as the Holud section on the site says.
-// Women choose between the two pink options; men are getting a kurta either way,
-// which is what the note above the field says rather than a third "either".
-// These strings are the Airtable "Holud outfit" select options.
+// The field now names who each option is for, so the note that used to sit above
+// it ("Ladies pick one. Men automatically get a kurta.") is gone.
+//
+// !! THESE STRINGS ARE AIRTABLE SELECT OPTIONS, AND THEY HAVE CHANGED. The API
+// sends with typecast:true, which SILENTLY CREATES a new choice rather than
+// erroring, so the Holud outfit field will gain these three alongside the old
+// 'Sari, shades of pink' / 'Seluar kameez, shades of pink' / 'Kurta, shades of
+// green'. Any RSVP already in the base still carries the old wording. Tidy the
+// field by hand, or a filter on the old strings will quietly miss new replies.
 const OUTFITS = [
-  'Sari, shades of pink',
-  'Seluar kameez, shades of pink',
-  'Kurta, shades of green',
+  'Ladies Pink Sari',
+  'Ladies Pink Salwar Kameez',
+  'Gents Green Kurta',
+];
+
+/* Dialling codes for the phone field. Ordered by where the guest list actually
+   is — South Africa and the UK first, then Europe, then the rest — rather than
+   alphabetically, so the common answers are not buried. The value IS the code;
+   it is prefixed onto the number on submit so Airtable keeps one phone string. */
+const DIAL_CODES = [
+  ['+27', 'South Africa'], ['+44', 'United Kingdom'], ['+353', 'Ireland'],
+  ['+31', 'Netherlands'], ['+49', 'Germany'], ['+33', 'France'],
+  ['+32', 'Belgium'], ['+34', 'Spain'], ['+39', 'Italy'], ['+351', 'Portugal'],
+  ['+41', 'Switzerland'], ['+43', 'Austria'], ['+45', 'Denmark'],
+  ['+46', 'Sweden'], ['+47', 'Norway'], ['+48', 'Poland'], ['+30', 'Greece'],
+  ['+1', 'USA / Canada'], ['+61', 'Australia'], ['+64', 'New Zealand'],
+  ['+880', 'Bangladesh'], ['+91', 'India'], ['+92', 'Pakistan'],
+  ['+971', 'UAE'], ['+974', 'Qatar'], ['+966', 'Saudi Arabia'],
+  ['+65', 'Singapore'], ['+60', 'Malaysia'], ['+66', 'Thailand'],
+  ['+254', 'Kenya'], ['+255', 'Tanzania'], ['+260', 'Zambia'],
+  ['+263', 'Zimbabwe'], ['+264', 'Namibia'], ['+267', 'Botswana'],
+  ['+258', 'Mozambique'], ['+230', 'Mauritius'], ['+234', 'Nigeria'],
+  ['+20', 'Egypt'], ['+90', 'Turkey'], ['+81', 'Japan'], ['+86', 'China'],
 ];
 
 // Age bands, not birthdays: these are the venue's billing bands. Under 3s are
 // free and share a bed, 4 to 12 are half rate and can take one of the six extra
 // child beds, 13 and over are charged as adults.
 const AGES = ['Under 3', '4 to 12', '13 or older'];
-const BEDS = ['In our tent', 'Needs their own bed'];
+// BEDS is gone with the per-child Sleeping question (Gabby, 2026-08-19). Worth
+// knowing what that costs: the rooming list no longer learns which children need
+// their own bed, and there are only six extra child beds, so that has to be
+// asked for by hand before the tents are allocated.
 
 const form     = document.getElementById('rsvp');
 const coming   = document.getElementById('coming');
@@ -423,6 +483,9 @@ const button   = form.querySelector('button[type="submit"]');
 const opts = (list) => list.map(o => `<option>${o}</option>`).join('');
 const choose = (list) => `<option value="">Choose&hellip;</option>${opts(list)}`;
 
+document.getElementById('phoneCode').innerHTML =
+  '<option value="">Code&hellip;</option>' +
+  DIAL_CODES.map(([code, name]) => `<option value="${code}">${name} (${code})</option>`).join('');
 document.getElementById('outfit').innerHTML = choose(OUTFITS);
 document.getElementById('size').innerHTML = choose(SIZES);
 document.getElementById('activityNote').innerHTML = ACTIVITY_NOTE;
@@ -450,13 +513,13 @@ function addChild() {
   fs.innerHTML = `
     <legend>Child ${i + 1}</legend>
 
-    <label for="c${i}name">Their name</label>
+    <label for="c${i}name">Name</label>
     <input id="c${i}name" data-field="name">
 
     <label for="c${i}age">Age</label>
     <select id="c${i}age" data-field="age">${choose(AGES)}</select>
 
-    <label>Which events?</label>
+    <label>Which events will they attend?</label>
     <div class="checks">
       <label><input type="checkbox" data-field="picnic" checked> Welcome picnic</label>
       <label><input type="checkbox" data-field="holud" checked> Holud</label>
@@ -465,12 +528,6 @@ function addChild() {
 
     <label for="c${i}diet">Dietary requirements</label>
     <input id="c${i}diet" data-field="dietary">
-
-    <label>Game activities <span class="hint">same age limits apply</span></label>
-    <div class="checks">${activityChecks()}</div>
-    ${onReserve ? `
-    <label for="c${i}bed">Sleeping</label>
-    <select id="c${i}bed" data-field="sleeping">${choose(BEDS)}</select>` : ''}
 
     <button type="button" class="minor" data-remove>Remove</button>`;
   fs.querySelector('[data-remove]').addEventListener('click', () => fs.remove());
@@ -489,11 +546,15 @@ function readChildren() {
       name: val('name'),
       age: val('age'),
       dietary: val('dietary'),
-      sleeping: val('sleeping'),
+      // Still sent, so the API and the Airtable columns keep their shape, but
+      // no longer asked for. Sleeping went with the per-child bed question;
+      // activities are filled in from the adult's ticks at submit time, which
+      // is the promise the note under the Children heading makes.
+      sleeping: '',
       picnic: chk('picnic'),
       holud: chk('holud'),
       wedding: chk('wedding'),
-      activities: ticked(fs),
+      activities: [],
     };
   // A block someone opened and left blank is not a child.
   }).filter(c => c.name.trim());
@@ -526,12 +587,25 @@ form.addEventListener('submit', async (e) => {
   const thirdNight    = el('thirdNight')?.value || '';
   const shareFamily   = !!el('shareFamily')?.checked;
 
+  // One string for Airtable, code included. Only joined when both halves are
+  // there — a bare "+27" tells us nothing, and a number with no code is still
+  // better than no number.
+  const rawPhone = el('phone').value.trim();
+  const dial = el('phoneCode').value;
+  const phone = rawPhone && dial ? `${dial} ${rawPhone.replace(/^0+/, '')}` : rawPhone;
+
+  // "We will assume you would like them to join you on the selected wildlife
+  // activity" — the note under Children says it, so the form has to do it.
+  const guestActivities = attending ? ticked(el('activities')) : [];
+  const kids = attending ? readChildren() : [];
+  kids.forEach((c) => { c.activities = guestActivities; });
+
   const payload = {
     website: el('website').value,   // honeypot
     guest: {
       name: el('guestName').value,
       email: el('email').value,
-      phone: el('phone').value,
+      phone,
       attending: coming.value,
       group: GROUP_LABEL,
       picnic: attending && el('evPicnic').checked,
@@ -540,8 +614,11 @@ form.addEventListener('submit', async (e) => {
       outfit: attending ? el('outfit').value : '',
       size: attending ? el('size').value : '',
       dietary: attending ? el('dietary').value : '',
-      activities: attending ? ticked(el('activities')) : [],
-      coach: attending && el('coach').checked,
+      activities: guestActivities,
+      // The control is now a two-option select, but the field behind it is the
+      // same boolean, so nothing in Airtable has to change. Unanswered reads as
+      // false, exactly as an unticked box did.
+      coach: attending && el('transport').value === 'yes',
       accommodation: attending ? accommodation : '',
       nights: attending ? nights : '',
       thirdNight: attending ? thirdNight : '',
@@ -551,7 +628,7 @@ form.addEventListener('submit', async (e) => {
     },
     // Children ride on the adult's answers for the things they can't answer
     // themselves: the same coach, the same group, the same contact details.
-    children: attending ? readChildren() : [],
+    children: kids,
   };
 
   try {
