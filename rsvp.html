@@ -136,7 +136,18 @@ button[disabled] { opacity:.5; cursor:default; }
   display:inline-block; font-size:.6875rem; letter-spacing:.08em; text-transform:uppercase;
   color:var(--accent); border:1px dashed currentColor; border-radius:2px; padding:.1rem .4rem;
 }
+/* Links, matching index.html: no underline anywhere on this site, --accent at
+   rest, the page foreground on hover, .15s. This page had no <a> rule at all,
+   so every link fell through to the browser default — blue and underlined,
+   which the rest of the site never does. Includes :focus-visible, so it answers
+   to the keyboard the same way.
+
+   .back is a class and out-ranks this on colour, so the two Back links keep
+   their quieter grey; they pick up the missing text-decoration:none from here. */
+a { color:var(--accent); text-decoration:none; transition:color .15s ease; }
+a:hover, a:focus-visible { color:var(--fg); }
 a.back { color:var(--muted); font-size:.875rem; }
+a.back:hover, a.back:focus-visible { color:var(--fg); }
 </style>
 </head>
 <body>
@@ -207,7 +218,7 @@ a.back { color:var(--muted); font-size:.875rem; }
         <a href="https://www.buffelsdrift.com/activities" target="_blank" rel="noopener">here</a>.</p>
       <div class="checks" id="activities"></div>
 
-      <h2>Getting there</h2>
+      <h2>Transport to the wedding venue</h2>
       <!-- A choice, not a tick. The old checkbox had no way to say "I'll make my
            own way" that was distinguishable from not having answered. Still
            submitted as the boolean the Airtable Coach field already holds — see
