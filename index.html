@@ -723,6 +723,14 @@ a:hover, a:focus-visible { color: var(--pane-fg, var(--ink)); }
    up as a gap above the friends' money paragraphs on a phone. */
 .stay__copy > :last-child { margin-bottom: 0; }
 .stay__grid + .lede { margin-top: 2.6rem; }
+/* The opener runs full width under the heading, centred like the standfirst in
+   What to wear, and the rest of the words sit beside the rail below it. */
+.stay__intro {
+  /* .lede caps at the reading measure; the standfirst in What to wear does not,
+     so this has to opt out of it to sit on the same width. */
+  max-width: none; text-align: center;
+}
+.stay__intro + .stay__grid, .stay__intro + .stay__intro + .stay__grid { margin-top: 2.6rem; }
 
 /* ---- the locked state ----
    What a signed-out visitor sees where their accommodation would be. It has to
@@ -1252,42 +1260,51 @@ footer p + p { margin-top: .5rem; }
          Family and friends SHARE this block, so anything about who pays is
          tagged data-group. Untagged paragraphs are read by both. -->
     <div data-stay="reserve">
+      <!-- The opener sits full width under the heading, the same shape as the
+           standfirst in What to wear. Everything after it runs beside the rail. -->
+      <p class="lede stay__intro" data-group="family"><strong>Our beloved family! Accommodation is on
+        us for the wedding weekend!</strong> We&rsquo;ll be hosting you at Buffelsdrift
+        (the venue) for Friday and Saturday night, and you&rsquo;ll have the option to
+        extend to Sunday night as well to soak up more of the bush before heading
+        home.</p>
+
+      <p class="lede stay__intro" data-group="friends"><strong>Our nearest and dearest!</strong> We
+        would love to invite you to stay at the venue with us on the Friday and
+        Saturday night. You&rsquo;ll also have the option to extend to Sunday night if
+        you would like to soak up more of the bush before heading home.</p>
+
       <div class="stay__grid">
         <div class="stay__copy">
-          <p class="lede" data-group="family"><strong>Our beloved family! Accommodation is on
-            us for the wedding weekend!</strong> We&rsquo;ll be hosting you at Buffelsdrift
-            (the venue) for Friday and Saturday night, and you&rsquo;ll have the option to
-            extend to Sunday night as well to soak up more of the bush before heading
-            home.</p>
-
-          <!-- Friends' opener. They are in the same rooms on the same nights, so
-               they need the same orientation without the line about it being on us;
-               their money paragraphs follow below the rail. Gabby's wording, and it
-               opens /hippoproblems the same way, so the two read as one voice. -->
-          <p class="lede" data-group="friends"><strong>Our nearest and dearest!</strong> We
-            would love to invite you to stay at the venue with us on the Friday and
-            Saturday night. You&rsquo;ll also have the option to extend to Sunday night if
-            you would like to soak up more of the bush before heading home.</p>
-
-          <!-- Family only now. Friends used to read this too, but their own
-               paragraph below carries the braai and the lodge's extras, so leaving
-               it shared would say it to them twice. -->
           <p class="lede" data-group="family">Saturday is the big day, so we will host a relaxed braai on the
             Friday evening for all those staying at the venue. A safari drive is included in
             your stay, and the lodge also has a spa, a pool and a few extra wildlife
             experiences if you&rsquo;d rather swap out the standard safari for something
             else (like an elephant or lion experience).</p>
+
+          <p class="lede" data-group="friends">Accommodation is roughly <strong>&euro;300 per
+            person</strong> for the Friday &amp; Saturday night (depending on your room). This
+            includes breakfast on both days, a safari drive, and a simple lunch on the wedding
+            day. Also, since Saturday is the big day, we will host a relaxed braai on the Friday
+            evening for all those staying at the venue. The lodge also has a spa, a pool and a
+            few extra wildlife experiences you can sign up for or swap out for the standard
+            safari.</p>
+
+          <p class="lede" data-group="friends">Most of the rooms are for 2 persons sharing.
+            There are also five 4-person rooms, each with 2 bedrooms. If you would like to / are
+            open to staying in one of these with another couple, please let us know in the RSVP.
+            If you have kids, we can add a small bed to your room (kiddies 4&ndash;13 stay at
+            half price, kiddies 3 and under stay for free). We will collect the relevant info in
+            the RSVP, but also feel free to reach out with any questions! Once the RSVPs and
+            rooms are confirmed, we will send through a payment link.</p>
         </div>
 
         <!-- Both groups on the reserve see this: it is a picture of where they
              will wake up, and that is true whoever is paying. Same markup and
-             same class as the Our story rail, so the one script at the foot
-             picks it up and it inherits everything that one does: snap
-             scrolling, the 4s timer that stands down on hover, focus or touch,
-             and the clone that makes it loop rather than rewind. Buffelsdrift's
-             own photographs, franked to match the album upstairs. -->
+             class as the Our story rail, so the one script at the foot picks it
+             up and it inherits snap scrolling, the 4s timer that stands down on
+             hover, focus or touch, and the clone that makes it loop. -->
         <div class="rail" tabindex="0" role="group"
-             aria-roledescription="carousel" aria-label="Photographs of Buffelsdrift, the game lodge">
+          aria-roledescription="carousel" aria-label="Photographs of Buffelsdrift, the game lodge">
           <figure class="stamp"><img loading="lazy" width="500" height="500" src="images/stamps-lodge/12.webp" alt="A luxury tent at dusk, aloes and red flowers on the slope below it"></figure>
           <figure class="stamp"><img loading="lazy" width="500" height="500" src="images/stamps-lodge/13.webp" alt="Inside a tent: bed, patterned cushions and an armchair by the window"></figure>
           <figure class="stamp"><img loading="lazy" width="500" height="500" src="images/stamps-lodge/14.webp" alt="A tent bedroom with the deck door open onto the reserve"></figure>
@@ -1295,72 +1312,8 @@ footer p + p { margin-top: .5rem; }
           <figure class="stamp"><img loading="lazy" width="500" height="500" src="images/stamps-lodge/16.webp" alt="The view from a shaded deck across the waterhole to the Swartberg"></figure>
           <figure class="stamp"><img loading="lazy" width="500" height="500" src="images/stamps-lodge/17.webp" alt="Five meerkats standing on a sandy bank"></figure>
           <figure class="stamp"><img loading="lazy" width="500" height="500" src="images/stamps-lodge/18.webp" alt="The thatched main lodge on stilts, reflected in the waterhole"></figure>
-        </div>
-      </div>
-
-      <p class="lede" data-group="friends">Accommodation is roughly <strong>&euro;300 per
-        person</strong> for the Friday &amp; Saturday night (depending on your room). This
-        includes breakfast on both days, a safari drive, and a simple lunch on the wedding
-        day. Also, since Saturday is the big day, we will host a relaxed braai on the Friday
-        evening for all those staying at the venue. The lodge also has a spa, a pool and a
-        few extra wildlife experiences you can sign up for or swap out for the standard
-        safari.</p>
-
-      <p class="lede" data-group="friends">Most of the rooms are for 2 persons sharing.
-        There are also five 4-person rooms, each with 2 bedrooms. If you would like to / are
-        open to staying in one of these with another couple, please let us know in the RSVP.
-        If you have kids, we can add a small bed to your room (kiddies 4&ndash;13 stay at
-        half price, kiddies 3 and under stay for free). We will collect the relevant info in
-        the RSVP, but also feel free to reach out with any questions! Once the RSVPs and
-        rooms are confirmed, we will send through a payment link.</p>
-
           </div>
-
-    <!-- ---------- everyone else: Oudtshoorn ---------- -->
-    <div data-stay="town">
-    <!-- Affy's wording, and it opens /marriedtothestars the same way, so the two
-         read as one voice. The three cards below are the same three, in the same
-         order, cheapest first. -->
-    <p class="lede">We highly recommend staying in Oudtshoorn or the surrounding area for
-      the wedding weekend. Oudtshoorn itself is a 9-minute drive from Buffelsdrift, and we
-      will also arrange transfers there and back on the wedding day.</p>
-
-    <div class="stays">
-      <a class="stay" target="_blank" rel="noopener"
-         href="https://www.booking.com/hotel/za/old-mill-lodge-a-la-carte-restaurant.en-gb.html">
-        <img loading="lazy" alt="Poplars and a still dam below the mountain at Old Mill Lodge"
-             src="https://cf.bstatic.com/xdata/images/hotel/square600/198889117.webp?k=19f69644a24c999d954853656caf35c422f13b9f40ddb8f109ebaac831f67a58&amp;o=">
-        <div class="stay__body">
-          <h4>Old Mill Lodge</h4>
-          <p class="meta">A working ostrich farm, 14 km out of town. Scored 8.5 across
-            2,989 reviews.</p>
-          <p class="price">R1 762 <span>for the two nights</span></p>
-        </div>
-      </a>
-
-      <a class="stay" target="_blank" rel="noopener"
-         href="https://www.booking.com/hotel/za/de-zeekoe-guest-farm.en-gb.html">
-        <img loading="lazy" alt="A windmill and palms at sunset on De Zeekoe Guest Farm"
-             src="https://cf.bstatic.com/xdata/images/hotel/square600/225418475.webp?k=11b2804ca2a93e16acf6a8327c82f0e795242df94a0437239d714a8c8eaf6ca9&amp;o=">
-        <div class="stay__body">
-          <h4>De Zeekoe Guest Farm</h4>
-          <p class="meta">A guest farm 7 km out, breakfast included. Scored 8.9 across
-            738 reviews.</p>
-          <p class="price">R4 068 <span>for the two nights</span></p>
-        </div>
-      </a>
-
-      <a class="stay" target="_blank" rel="noopener"
-         href="https://www.booking.com/hotel/za/la-pension-guest-house.en-gb.html">
-        <img loading="lazy" alt="Pool and shaded terrace at La Pension Guest House"
-             src="https://cf.bstatic.com/xdata/images/hotel/square600/411756616.webp?k=3468da1580ca40cabd99632909ceb5d24f584da4351db9eafb702a07d38df8a4&amp;o=">
-        <div class="stay__body">
-          <h4>La Pension Guest House</h4>
-          <p class="meta">In town, a ten minute walk from the centre, breakfast included.
-            Scored 9.8 across 755 reviews.</p>
-          <p class="price">R4 800 <span>for the two nights</span></p>
-        </div>
-      </a>
+      </div>
     </div>
 
       <!-- The $50 day-visitor figure that used to sit here is gone (2026-08-18).
