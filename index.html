@@ -731,10 +731,16 @@ a:hover, a:focus-visible { color: var(--pane-fg, var(--ink)); }
   max-width: none; text-align: center;
 }
 .stay__intro + .stay__grid, .stay__intro + .stay__intro + .stay__grid { margin-top: 2.6rem; }
-/* The family-only 1.3rem that briefly sat here is gone (Gabby, 2026-08-19):
-   the gap should match What to wear's byline-to-dress-code step, which is
-   .cards' 2.6rem — the same number the shared rule above already carries. So
-   there is nothing to override. Keep these two in step if either moves. */
+/* Family's opener is one short line where friends' is a full paragraph, so the
+   shared 2.6rem — right under a paragraph, and matching What to wear's
+   byline-to-dress-code step — leaves too much air under a single line here.
+   Roughly half of it (Gabby, 2026-08-19). Family only, by explicit instruction:
+   friends' accommodation section is a separate pass, so do NOT fold this into
+   the shared rule above without revisiting /hippoproblems.
+
+   Scoped on <html>, which gate.js stamps with the signed-in group — NOT a bare
+   [data-group], which is also on the content blocks themselves. */
+html[data-group="family"] .stay__intro + .stay__grid { margin-top: 1.4rem; }
 /* Match the standfirst under What to wear, which is a bare <p> and so takes the
    pane foreground. .practical .lede overrides that to --pane-mute, which is why
    the opener read lighter than the paragraph beside the rail. Same tone, not the
