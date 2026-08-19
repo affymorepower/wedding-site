@@ -1263,10 +1263,7 @@ footer p + p { margin-top: .5rem; }
       <!-- The opener sits full width under the heading, the same shape as the
            standfirst in What to wear. Everything after it runs beside the rail. -->
       <p class="lede stay__intro" data-group="family"><strong>Our beloved family! Accommodation is on
-        us for the wedding weekend!</strong> We&rsquo;ll be hosting you at Buffelsdrift
-        (the venue) for Friday and Saturday night, and you&rsquo;ll have the option to
-        extend to Sunday night as well to soak up more of the bush before heading
-        home.</p>
+        us for the wedding weekend!</strong></p>
 
       <p class="lede stay__intro" data-group="friends"><strong>Our nearest and dearest!</strong> We
         would love to invite you to stay at the venue with us on the Friday and
@@ -1275,6 +1272,10 @@ footer p + p { margin-top: .5rem; }
 
       <div class="stay__grid">
         <div class="stay__copy">
+          <p class="lede" data-group="family">We&rsquo;ll be hosting you at Buffelsdrift (the venue)
+            for Friday and Saturday night, and you&rsquo;ll have the option to extend to Sunday
+            night as well to soak up more of the bush before heading home.</p>
+
           <p class="lede" data-group="family">Saturday is the big day, so we will host a relaxed braai on the
             Friday evening for all those staying at the venue. A safari drive is included in
             your stay, and the lodge also has a spa, a pool and a few extra wildlife
@@ -1316,15 +1317,27 @@ footer p + p { margin-top: .5rem; }
       </div>
     </div>
 
-      <!-- The $50 day-visitor figure that used to sit here is gone (2026-08-18).
-           The rate isn't settled, and a number on the front page that /marriedtothestars
-           doesn't repeat is the kind of thing a guest budgets from and then queries.
-           The RSVP collects interest instead, and we quote once we know numbers. -->
+    <!-- The $50 day-visitor figure that used to sit here is gone (2026-08-18).
+         The rate isn't settled, and a number on the front page that /marriedtothestars
+         doesn't repeat is the kind of thing a guest budgets from and then queries.
+         The RSVP collects interest instead, and we quote once we know numbers.
+
+         Both paragraphs used to sit untagged as direct children of the wrap, so
+         every group read them — including family, who are neither day visitors
+         nor booking anything on Booking.com. Tagged off family (Gabby,
+         2026-08-19). They are addressed to people NOT sleeping at the reserve,
+         which makes friends a live question too: friends are at the venue, so
+         this reads as oddly to them as it did to family. Left in for now because
+         only family was asked for. -->
+    <div data-group="friends town">
       <p class="lede" style="margin-top:2.4rem">Unfortunately, the wedding venue
         can&rsquo;t accommodate all our guests, but they are very happy to organise safari
         drives for any day visitors. If you are interested in this, let us know in the
         RSVP, and we will share pricing and options.</p>
 
+      <!-- Note this fineprint outlived the thing it annotates: the .stays price
+           cards it refers to came out on 2026-08-18. The only rates left are in
+           the FAQ table. -->
       <p class="fineprint">Prices are what Booking.com showed for a double room for two
         adults over the wedding weekend, Friday 19 to Sunday 21 March 2027, and they move.
         Book it yourself, and book it early.</p>
