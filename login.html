@@ -88,7 +88,7 @@ h1 {
    are adjacent siblings in normal flow, so they COLLAPSE to the larger of the
    two rather than summing. Raising h1's bottom alone moves nothing until it
    passes this number, so the gap is set here. */
-.stamp { display: block; width: 100%; height: auto; margin: 2.1rem 0 1.4rem; }
+.stamp { display: block; width: 100%; height: auto; margin: 2.1rem 0 2rem; }
 .sub { margin: 0 0 2rem; color: var(--gold-mute); font-size: 15px; }
 
 label {
@@ -129,11 +129,12 @@ button:disabled { opacity: .55; cursor: default; }
 }
 .linkish:hover, .linkish:focus-visible { background: none; color: var(--gold-fg); }
 
-/* The gap from the Enter button down to "I don't have a password" is built to
-   equal .sub's 2rem — the same step as the one from "Login using the password"
-   to the field above. It is made of three parts, because .msg sits between
-   them: this margin (.3rem) + the reserved message line (1.4em of 14px, 19.6px)
-   + .linkish's own .5rem top padding = 32.4px, against 2rem = 32px.
+/* The gap from the Enter button down to "I don't have a password" is 2rem, the
+   same step the stamp now holds above the field. It is made of three parts,
+   because .msg sits between them: this margin (.3rem) + the reserved message
+   line (1.4em of 14px, 19.6px) + .linkish's own .5rem top padding = 32.4px,
+   against 2rem = 32px. (It was matched to .sub's margin, but that line came
+   out of the sign-in panel — the number is what mattered, not the source.)
    min-height stays: it holds the line open so the page doesn't jump when a
    message appears. Change any one of the three and the match goes. */
 .msg { margin: .3rem 0 0; min-height: 1.4em; font-size: 14px; }
@@ -159,7 +160,7 @@ button:disabled { opacity: .55; cursor: default; }
   /* Two lines on a phone, as on desktop. Scoped to #signin: the other h1,
      "No password?", is short and wants to stay on one. */
   #signin h1 .brk { display: block; }
-  .stamp { width: min(100%, 30svh); margin: 1.5rem auto 1rem; }
+  .stamp { width: min(100%, 30svh); margin: 1.5rem auto 1.5rem; }
   .sub { margin-bottom: 1.4rem; }
   input { padding: .8rem .9rem; margin-bottom: .8rem; }
   button { padding: .85rem; }
@@ -182,8 +183,6 @@ button:disabled { opacity: .55; cursor: default; }
     <h1>An African adventure <span class="brk">awaits</span></h1>
     <img class="stamp" src="images/ostrich-stamp.webp" width="660" height="660"
          alt="A postage stamp of an ostrich looking into the camera, mountains behind">
-    <p class="sub">Login using the password we sent you</p>
-
     <form id="loginForm" novalidate>
       <label for="password">Password</label>
       <input id="password" name="password" type="password" autocomplete="current-password"
