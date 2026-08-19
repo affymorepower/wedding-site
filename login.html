@@ -118,7 +118,11 @@ button {
   font: 600 13px/1 var(--font-body); letter-spacing: 2px; text-transform: uppercase;
   transition: background .2s ease;
 }
-button:hover:not(:disabled) { background: #52140f; }
+/* :not(.linkish) matters. Without it this selector scores (0,2,1) — element +
+   :hover + :not(:disabled) — and out-ranks .linkish:hover at (0,2,0), so the
+   solid button fill paints behind the link-styled buttons on hover no matter
+   what background they set. Only the real submit buttons want the fill. */
+button:not(.linkish):hover:not(:disabled) { background: #52140f; }
 button:disabled { opacity: .55; cursor: default; }
 
 /* Styled as a link the way the rest of the site styles links: no underline,
@@ -133,7 +137,8 @@ button:disabled { opacity: .55; cursor: default; }
   font-size: 14px; font-weight: 400; text-decoration: none;
   transition: color .15s ease; cursor: pointer;
 }
-.linkish:hover, .linkish:focus-visible { background: none; color: var(--gold-fg); }
+/* Colour only, like every link on the site — no fill, no underline. */
+.linkish:hover, .linkish:focus-visible { color: var(--gold-fg); }
 
 /* The gap from the Enter button down to "I don't have a password" is 2rem, the
    same step the stamp now holds above the field. It is made of three parts,
