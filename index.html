@@ -1266,25 +1266,27 @@ footer p + p { margin-top: .5rem; }
                opens /hippoproblems the same way, so the two read as one voice. -->
           <p class="lede" data-group="friends"><strong>Our nearest and dearest!</strong> We
             would love to invite you to stay at the venue with us on the Friday and
-            Saturday night, right on the game reserve, so you don&rsquo;t have to think
-            about getting anywhere on the day. You&rsquo;ll also have the option to extend
-            to Sunday night to soak up more of the bush before heading home.</p>
+            Saturday night. You&rsquo;ll also have the option to extend to Sunday night if
+            you would like to soak up more of the bush before heading home.</p>
 
-          <p class="lede">Saturday is the big day, so we will host a relaxed braai on the
+          <!-- Family only now. Friends used to read this too, but their own
+               paragraph below carries the braai and the lodge's extras, so leaving
+               it shared would say it to them twice. -->
+          <p class="lede" data-group="family">Saturday is the big day, so we will host a relaxed braai on the
             Friday evening for all those staying at the venue. A safari drive is included in
             your stay, and the lodge also has a spa, a pool and a few extra wildlife
             experiences if you&rsquo;d rather swap out the standard safari for something
             else (like an elephant or lion experience).</p>
         </div>
 
-        <!-- Family only. Same markup and same class as the Our story rail, so the
-             one script at the foot picks it up and it inherits everything that
-             one does: snap scrolling, the 4s timer that stands down on hover,
-             focus or touch, and the clone that makes it loop rather than rewind.
-             Buffelsdrift's own photographs, franked to match the album upstairs.
-             gate.js removes this for friends, and .stay__grid collapses to one
-             column when it goes. -->
-        <div class="rail" data-group="family" tabindex="0" role="group"
+        <!-- Both groups on the reserve see this: it is a picture of where they
+             will wake up, and that is true whoever is paying. Same markup and
+             same class as the Our story rail, so the one script at the foot
+             picks it up and it inherits everything that one does: snap
+             scrolling, the 4s timer that stands down on hover, focus or touch,
+             and the clone that makes it loop rather than rewind. Buffelsdrift's
+             own photographs, franked to match the album upstairs. -->
+        <div class="rail" tabindex="0" role="group"
              aria-roledescription="carousel" aria-label="Photographs of Buffelsdrift, the game lodge">
           <figure class="stamp"><img loading="lazy" width="500" height="500" src="images/stamps-lodge/12.webp" alt="A luxury tent at dusk, aloes and red flowers on the slope below it"></figure>
           <figure class="stamp"><img loading="lazy" width="500" height="500" src="images/stamps-lodge/13.webp" alt="Inside a tent: bed, patterned cushions and an armchair by the window"></figure>
@@ -1296,18 +1298,23 @@ footer p + p { margin-top: .5rem; }
         </div>
       </div>
 
-      <p class="lede" data-group="friends">Most of the rooms are for two sharing. There are
-        also five four-person rooms, each with two bedrooms &mdash; if you&rsquo;d be happy
-        in one of those with another couple, say so on the RSVP and we&rsquo;ll do the
-        matchmaking. If you have kids we can add a small bed to your room. Once the RSVPs
-        and rooms are confirmed, we&rsquo;ll send through a payment link.</p>
+      <p class="lede" data-group="friends">Accommodation is roughly <strong>&euro;300 per
+        person</strong> for the Friday &amp; Saturday night (depending on your room). This
+        includes breakfast on both days, a safari drive, and a simple lunch on the wedding
+        day. Also, since Saturday is the big day, we will host a relaxed braai on the Friday
+        evening for all those staying at the venue. The lodge also has a spa, a pool and a
+        few extra wildlife experiences you can sign up for or swap out for the standard
+        safari.</p>
 
-      <p class="lede" data-group="friends"><strong>You can stay on for the Sunday.</strong>
-        The safari runs again on the Sunday morning and plenty of people will want a slower
-        exit. Say so on the RSVP and we&rsquo;ll come back to you with the rate for the
-        extra night.</p>
+      <p class="lede" data-group="friends">Most of the rooms are for 2 persons sharing.
+        There are also five 4-person rooms, each with 2 bedrooms. If you would like to / are
+        open to staying in one of these with another couple, please let us know in the RSVP.
+        If you have kids, we can add a small bed to your room (kiddies 4&ndash;13 stay at
+        half price, kiddies 3 and under stay for free). We will collect the relevant info in
+        the RSVP, but also feel free to reach out with any questions! Once the RSVPs and
+        rooms are confirmed, we will send through a payment link.</p>
 
-    </div>
+          </div>
 
     <!-- ---------- everyone else: Oudtshoorn ---------- -->
     <div data-stay="town">
