@@ -73,6 +73,12 @@ form { width: var(--field-w); margin-inline: auto; }
   margin: 0 0 .4rem; font: 600 11px/1 var(--font-body);
   letter-spacing: 2.4px; text-transform: uppercase; color: var(--gold-mute);
 }
+/* The heading breaks in one fixed place at every width: "Our African" over
+   "adventure awaits". A block span rather than a size tuned to wrap there —
+   Fraunces and its Georgia fallback have different metrics, so a size that
+   breaks correctly in one can break elsewhere, or not at all, in the other.
+   Scoped to #signin: the other h1, "No password?", stays on one line. */
+#signin h1 .brk { display: block; }
 h1 {
   margin: 1.8rem 0 1.2rem; font-family: var(--font-display); font-weight: 500;
   font-style: italic; font-size: clamp(2.2rem, 8vw, 3rem); line-height: 1.05;
@@ -157,9 +163,6 @@ button:disabled { opacity: .55; cursor: default; }
 @media (max-width: 30rem) {
   body { padding: 1.25rem; }
   h1 { font-size: clamp(1.9rem, 8vw, 2.5rem); margin: 1.2rem 0 .8rem; }
-  /* Two lines on a phone, as on desktop. Scoped to #signin: the other h1,
-     "No password?", is short and wants to stay on one. */
-  #signin h1 .brk { display: block; }
   .stamp { width: min(100%, 30svh); margin: 2rem auto 1.5rem; }
   .sub { margin-bottom: 1.4rem; }
   input { padding: .8rem .9rem; margin-bottom: .8rem; }
@@ -180,7 +183,7 @@ button:disabled { opacity: .55; cursor: default; }
          one. A forced break beats sizing it to wrap: type metrics differ
          between the variable face and its Georgia fallback, so a size that
          wraps in Fraunces can sit on one line in the fallback. -->
-    <h1>Our African adventure <span class="brk">awaits</span></h1>
+    <h1>Our African <span class="brk">adventure awaits</span></h1>
     <img class="stamp" src="images/ostrich-stamp.webp" width="660" height="660"
          alt="A postage stamp of an ostrich looking into the camera, mountains behind">
     <form id="loginForm" novalidate>
