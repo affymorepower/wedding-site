@@ -684,6 +684,12 @@ a:hover, a:focus-visible { color: var(--pane-fg, var(--ink)); }
 .drawer[open] summary::after { content: '\2013'; }
 .drawer p { margin: 0 0 .9rem; color: var(--pane-mute); }
 .drawer[open] { padding-bottom: .35rem; }
+/* Two in a row, which first happens on the friends' Where to stay. Each drawer
+   is ruled top AND bottom, so a stacked pair would otherwise show two lines
+   with 1.1rem of gap between them and read as two floating boxes. Collapsed,
+   they read as one list - which is what the Questions section, the pattern this
+   borrows from, already does. */
+.drawer + .drawer { margin-top: 0; border-top: 0; }
 .card .ask { margin-top: 1rem; font-style: italic; }
 
 /* Where to stay. Photo on top, price last and largest — it is the only number
@@ -1396,6 +1402,19 @@ footer p + p { margin-top: .5rem; }
               under stay for free). We will collect the relevant info in the RSVP, but also
               feel free to reach out with any questions! Once the RSVPs and rooms are
               confirmed, we will send through a payment link.</p>
+          </details>
+
+          <!-- Second drawer, so friends who would rather not stay at the venue
+               have the town answer without leaving their own page. Same copy as
+               /marriedtothestars' opener, deliberately: it is the same
+               recommendation, and two wordings of one fact drift apart. -->
+          <details class="drawer" data-group="friends">
+            <summary>Other options</summary>
+            <p>If you don&rsquo;t want to stay at the venue, we highly recommend staying in
+              Oudtshoorn or the surrounding area for the wedding weekend. There are many
+              affordable options and Oudtshoorn itself is a 9-minute drive from
+              Buffelsdrift, and we will also arrange transfers there and back on the
+              wedding day.</p>
           </details>
         </div>
 
