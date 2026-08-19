@@ -1352,13 +1352,23 @@ footer p + p { margin-top: .5rem; }
             few extra wildlife experiences you can sign up for or swap out for the standard
             safari.</p>
 
-          <p class="lede" data-group="friends">Most of the rooms are for 2 persons sharing.
-            There are also five 4-person rooms, each with 2 bedrooms. If you would like to / are
-            open to staying in one of these with another couple, please let us know in the RSVP.
-            If you have kids, we can add a small bed to your room (kiddies 4&ndash;13 stay at
-            half price, kiddies 3 and under stay for free). We will collect the relevant info in
-            the RSVP, but also feel free to reach out with any questions! Once the RSVPs and
-            rooms are confirmed, we will send through a payment link.</p>
+          <!-- The room-by-room detail folds away (Gabby, 2026-08-19). It is the
+               longest paragraph in the section and the one fewest guests need on
+               first read, and beside the rail it was setting the column's height.
+               .drawer, not a hand-rolled details: it is the same affordance as the
+               Questions list — ruled top and bottom, Inter, a + that becomes a –
+               — so a guest meets the pattern once. It reads off the pane vars, so
+               it works on this gold ground with nothing added. -->
+          <details class="drawer" data-group="friends">
+            <summary>More details</summary>
+            <p>Most of the rooms are for 2 persons sharing. There are also five 4-person
+              rooms, each with 2 bedrooms. If you would like to / are open to staying in one
+              of these with another couple, please let us know. If you have kids, we can add
+              a small bed to your room (kiddies 4&ndash;13 stay at half price, kiddies 3 and
+              under stay for free). We will collect the relevant info in the RSVP, but also
+              feel free to reach out with any questions! Once the RSVPs and rooms are
+              confirmed, we will send through a payment link.</p>
+          </details>
         </div>
 
         <!-- Both groups on the reserve see this: it is a picture of where they
