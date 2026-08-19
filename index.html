@@ -744,8 +744,13 @@ a:hover, a:focus-visible { color: var(--pane-fg, var(--ink)); }
   /* .lede caps at the reading measure; the standfirst in What to wear does not,
      so this has to opt out of it to sit on the same width. */
   max-width: none; text-align: center;
-  color: var(--pane-fg);
 }
+/* Scoped to .practical ON PURPOSE. .practical .lede sets --pane-mute and scores
+   (0,2,0); a bare .stay__intro is (0,1,0) and loses to it no matter where it
+   sits in the file, so the colour never landed once this stopped being written
+   as html[data-group="family"] .stay__intro. Matching its weight and coming
+   later is what makes it win. Do not flatten this back to .stay__intro. */
+.practical .stay__intro { color: var(--pane-fg); }
 /* 1.4rem, not the 2.6rem this used to carry. Both openers are short now, and
    under a short line 2.6rem — the step What to wear uses under a paragraph —
    reads as far too much air. Family had this as an html[data-group] override
