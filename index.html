@@ -713,6 +713,17 @@ a:hover, a:focus-visible { color: var(--pane-fg, var(--ink)); }
   margin: .8rem 0 0; font-family: var(--font-display); font-size: var(--text-xl); font-weight: 600;
 }
 .stay .price span { font-family: var(--font-body); font-size: var(--text-xs); font-weight: 400; color: var(--pane-mute); }
+/* Deliberately NOT a nested <a>. The whole card is already the link, and an
+   anchor inside an anchor is invalid — the parser unnests it and the inner one
+   becomes unreachable — so this is a span wearing the site's link look: no
+   underline, --pane-link at rest, pane foreground on hover, .15s. It answers to
+   hover and focus ON THE CARD, since the card is what the pointer and the
+   keyboard actually land on. */
+.stay__more {
+  margin: .9rem 0 0; font-size: var(--text-sm);
+  color: var(--pane-link); transition: color .15s ease;
+}
+.stay:hover .stay__more, .stay:focus-visible .stay__more { color: var(--pane-fg); }
 
 /* Accommodation, on the reserve: copy and a stamp rail side by side above
    52rem, stacked below. Deliberately the same two-up as .story__grid rather
@@ -1464,6 +1475,7 @@ footer p + p { margin-top: .5rem; }
           <div class="stay__body">
             <h4>Karoo Retreat</h4>
             <p class="meta">Villas and rooms in the middle of town, with gardens, a pool and a small spa.</p>
+            <p class="stay__more">View on Booking.com</p>
           </div>
         </a>
         <a class="stay" target="_blank" rel="noopener" href="https://www.booking.com/Share-J95jMW4">
@@ -1472,6 +1484,7 @@ footer p + p { margin-top: .5rem; }
           <div class="stay__body">
             <h4>88 Baron van Reede Guesthouse</h4>
             <p class="meta">A 150-year-old sandstone house in the centre of town, breakfast on the verandah.</p>
+            <p class="stay__more">View on Booking.com</p>
           </div>
         </a>
         <a class="stay" target="_blank" rel="noopener" href="https://www.booking.com/Share-5Jumnp3">
@@ -1480,6 +1493,7 @@ footer p + p { margin-top: .5rem; }
           <div class="stay__body">
             <h4>Hlangana Lodge</h4>
             <p class="meta">A hectare of gardens on the edge of town, on the road up to the Cango Caves.</p>
+            <p class="stay__more">View on Booking.com</p>
           </div>
         </a>
         <a class="stay" target="_blank" rel="noopener" href="https://www.booking.com/Share-8eUdj3">
@@ -1488,6 +1502,7 @@ footer p + p { margin-top: .5rem; }
           <div class="stay__body">
             <h4>La Pension Guest House</h4>
             <p class="meta">Park-like gardens in a quiet suburb two kilometres out, with a pool and a sauna.</p>
+            <p class="stay__more">View on Booking.com</p>
           </div>
         </a>
       </div>
