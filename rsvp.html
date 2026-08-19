@@ -394,13 +394,19 @@ const SIZES = ['S', 'M', 'L', 'XL'];
 //
 // !! THESE STRINGS ARE AIRTABLE SELECT OPTIONS, AND THEY HAVE CHANGED. The API
 // sends with typecast:true, which SILENTLY CREATES a new choice rather than
-// erroring, so the Holud outfit field will gain these two alongside the old
+// erroring, so the Holud outfit field will gain these three alongside the old
 // 'Sari, shades of pink' / 'Seluar kameez, shades of pink' / 'Kurta, shades of
 // green'. Any RSVP already in the base still carries the old wording. Tidy the
 // field by hand, or a filter on the old strings will quietly miss new replies.
 const OUTFITS = [
   'Ladies Pink Sari',
   'Gents Green Kurta',
+  // The third option is the RSVP's half of the line in What to wear's sari
+  // drawer ("If you aren't comfortable wearing a sari we have alternate
+  // options, let us know") — so a guest who read that on the site has somewhere
+  // to say so here, rather than having to pick an outfit they do not want or
+  // leave the question blank, which reads as "not answered yet".
+  'I would like to learn more about this!',
 ];
 
 /* Dialling codes for the phone field. Ordered by where the guest list actually
